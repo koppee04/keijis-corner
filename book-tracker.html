@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book Tracker</title>
+<style>
+:root {
+  --bg: #c2c8ce;
+  --surface: #d4d9de;
+  --surface2: #e0e4e8;
+  --border: #8e98a2;
+  --accent: #d45f00;
+  --accent-dim: #b05200;
+  --accent2: #4d88cc;
+  --text: #18202a;
+  --text-muted: #4e5d6c;
+  --danger: #cc2233;
+  --warning: #a85e00;
+  --success: #1e8050;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13px;
+  min-height: 100vh;
+}
+
+/* ── Top bar ─────────────────────────────────────── */
+.topbar {
+  background: var(--surface);
+  border-bottom: 2px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.topbar-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 5px 10px;
+  width: 180px;
+  outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--text-muted); }
+
+.filter-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 11px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.filter-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-add {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 6px 14px;
+  cursor: pointer;
+  margin-left: auto;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.btn-add:hover { background: var(--accent-dim); }
+
+/* ── Stats row ───────────────────────────────────── */
+.stats-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+.stat-num {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+/* ── Book grid ───────────────────────────────────── */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  padding: 0 16px 20px;
+}
+
+.book-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  position: relative;
+}
+.book-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.book-spine {
+  width: 10px;
+  flex-shrink: 0;
+}
+
+/* Cover thumbnail on card */
+.book-thumb {
+  width: 62px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.book-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.book-body {
+  padding: 10px 10px 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.book-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.book-author {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 6px;
+}
+
+.book-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.status-badge {
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 7px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.status-reading   { background: rgba(77,136,204,0.18); color: var(--accent2); }
+.status-want      { background: rgba(168,94,0,0.14);   color: var(--warning); }
+.status-completed { background: rgba(30,128,80,0.14);  color: var(--success); }
+.status-dnf       { background: rgba(204,34,51,0.14);  color: var(--danger); }
+
+.book-genre {
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--surface2);
+  border-radius: 3px;
+  padding: 2px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.book-stars {
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: -1px;
+  margin-top: 3px;
+}
+
+.progress-wrap {
+  margin-top: 5px;
+}
+.progress-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+.progress-bar-bg {
+  background: var(--surface2);
+  border-radius: 3px;
+  height: 5px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent2);
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.book-card-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: none;
+  gap: 4px;
+}
+.book-card:hover .book-card-actions { display: flex; }
+
+.card-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 11px;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.12s;
+}
+.card-btn:hover { border-color: var(--accent); color: var(--accent); }
+.card-btn.del:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ── Empty state ─────────────────────────────────── */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-muted);
+}
+.empty-icon { font-size: 36px; margin-bottom: 10px; }
+.empty-text { font-size: 13px; }
+
+/* ── Modal ───────────────────────────────────────── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  width: 480px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.modal-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.modal-close {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.modal-close:hover { border-color: var(--danger); color: var(--danger); }
+
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+.form-group.full { flex: none; width: 100%; }
+
+.form-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input, .form-select, .form-textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus { border-color: var(--accent); }
+.form-textarea { resize: vertical; min-height: 64px; }
+.form-select option { background: var(--surface2); }
+
+/* ── Cover upload ────────────────────────────────── */
+.cover-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+}
+.cover-upload-zone:hover,
+.cover-upload-zone.drag-over {
+  border-color: var(--accent);
+  background: rgba(212,95,0,0.04);
+}
+.cover-preview-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.cover-preview {
+  width: 52px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  display: block;
+}
+.cover-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 9px;
+  line-height: 16px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+.cover-upload-hint {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.cover-upload-hint strong {
+  color: var(--accent);
+  font-size: 12px;
+  display: block;
+}
+
+/* Spine color picker */
+.spine-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.spine-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s;
+}
+.spine-swatch:hover { transform: scale(1.15); }
+.spine-swatch.selected { border-color: var(--text); }
+
+/* Star rating input */
+.star-input { display: flex; gap: 4px; }
+.star-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: var(--border);
+  transition: color 0.1s;
+  line-height: 1;
+  padding: 0;
+}
+.star-btn.on { color: var(--accent); }
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.btn-cancel {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+.btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
+
+.btn-save {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 6px 18px;
+  cursor: pointer;
+}
+.btn-save:hover { background: var(--accent-dim); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 7px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <div class="topbar-title">📚 Book Tracker</div>
+  <div class="topbar-controls">
+    <input class="search-input" id="searchInput" type="text" placeholder="Search title or author…" oninput="render()">
+    <div class="filter-row" id="filterRow">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+      <button class="filter-btn" data-filter="reading" onclick="setFilter('reading',this)">Reading</button>
+      <button class="filter-btn" data-filter="want" onclick="setFilter('want',this)">Want</button>
+      <button class="filter-btn" data-filter="completed" onclick="setFilter('completed',this)">Completed</button>
+      <button class="filter-btn" data-filter="dnf" onclick="setFilter('dnf',this)">DNF</button>
+    </div>
+    <button class="btn-add" onclick="openModal()">+ Add Book</button>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats-row" id="statsRow"></div>
+
+<!-- Grid -->
+<div class="book-grid" id="bookGrid"></div>
+
+<!-- Hidden file input -->
+<input type="file" id="coverFileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="overlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Add Book</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- Cover image upload -->
+    <div class="form-row">
+      <div class="form-group full">
+        <label class="form-label">Cover Image</label>
+        <div class="cover-upload-zone" id="coverZone"
+             onclick="triggerCoverPick()"
+             ondragover="event.preventDefault();this.classList.add('drag-over')"
+             ondragleave="this.classList.remove('drag-over')"
+             ondrop="handleDrop(event)">
+          <div class="cover-preview-wrap" id="coverPreviewWrap" style="display:none">
+            <img class="cover-preview" id="coverPreview" src="" alt="cover">
+            <button class="cover-remove" onclick="event.stopPropagation();removeCover()" title="Remove">✕</button>
+          </div>
+          <div class="cover-upload-hint" id="coverHint">
+            <strong>Click or drag & drop</strong>
+            PNG, JPG, WEBP — auto-resized for storage
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group" style="flex:2">
+        <label class="form-label">Title *</label>
+        <input class="form-input" id="f-title" type="text" placeholder="Book title">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Author</label>
+        <input class="form-input" id="f-author" type="text" placeholder="Author name">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Genre</label>
+        <input class="form-input" id="f-genre" type="text" placeholder="e.g. Fiction">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="f-status">
+          <option value="want">Want to Read</option>
+          <option value="reading">Reading</option>
+          <option value="completed">Completed</option>
+          <option value="dnf">DNF</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Pages Read</label>
+        <input class="form-input" id="f-pagesRead" type="number" min="0" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Total Pages</label>
+        <input class="form-input" id="f-pages" type="number" min="0" placeholder="0">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Started</label>
+        <input class="form-input" id="f-started" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Finished</label>
+        <input class="form-input" id="f-finished" type="date">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group full">
+        <label class="form-label">Rating</label>
+        <div class="star-input" id="starInput">
+          <button class="star-btn" data-v="1" onclick="setStar(1)">★</button>
+          <button class="star-btn" data-v="2" onclick="setStar(2)">★</button>
+          <button class="star-btn" data-v="3" onclick="setStar(3)">★</button>
+          <button class="star-btn" data-v="4" onclick="setStar(4)">★</button>
+          <button class="star-btn" data-v="5" onclick="setStar(5)">★</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group full">
+        <label class="form-label">Spine Color</label>
+        <div class="spine-row" id="spineRow"></div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group full">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="f-notes" placeholder="Any thoughts…"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveBook()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SPINE_COLORS = [
+  '#d45f00','#4d88cc','#1e8050','#cc2233','#8855cc',
+  '#cc8800','#2288aa','#aa4466','#558844','#8e7055'
+];
+
+const STATUS_LABELS = { reading:'Reading', want:'Want', completed:'Done', dnf:'DNF' };
+const STATUS_CLASS  = { reading:'status-reading', want:'status-want', completed:'status-completed', dnf:'status-dnf' };
+
+let books = JSON.parse(localStorage.getItem('bt_data') || '[]');
+let currentFilter = 'all';
+let editId = null;
+let currentStar = 0;
+let currentSpine = SPINE_COLORS[0];
+let currentCover = null;  // base64 data URL or null
+
+function save() { localStorage.setItem('bt_data', JSON.stringify(books)); }
+function uid()  { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+// ── Spine picker init ──────────────────────────────
+(function buildSpines() {
+  const row = document.getElementById('spineRow');
+  SPINE_COLORS.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'spine-swatch' + (c === currentSpine ? ' selected' : '');
+    sw.style.background = c;
+    sw.onclick = () => { currentSpine = c; updateSpineUI(); };
+    row.appendChild(sw);
+  });
+})();
+
+function updateSpineUI() {
+  document.querySelectorAll('.spine-swatch').forEach(sw => {
+    sw.classList.toggle('selected', sw.style.background === hexToRgb(currentSpine) || sw.style.background === currentSpine);
+  });
+}
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+// ── Cover image handling ───────────────────────────
+function triggerCoverPick() {
+  document.getElementById('coverFileInput').click();
+}
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processImageFile(file);
+  e.target.value = '';
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('coverZone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) processImageFile(file);
+}
+
+function processImageFile(file) {
+  const reader = new FileReader();
+  reader.onload = ev => resizeAndSetCover(ev.target.result);
+  reader.readAsDataURL(file);
+}
+
+function resizeAndSetCover(dataUrl) {
+  const img = new Image();
+  img.onload = () => {
+    const MAX_W = 160, MAX_H = 240;
+    let w = img.width, h = img.height;
+    const ratio = Math.min(MAX_W / w, MAX_H / h, 1);
+    w = Math.round(w * ratio);
+    h = Math.round(h * ratio);
+    const cv = document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    cv.getContext('2d').drawImage(img, 0, 0, w, h);
+    currentCover = cv.toDataURL('image/jpeg', 0.82);
+    updateCoverUI();
+  };
+  img.src = dataUrl;
+}
+
+function removeCover() {
+  currentCover = null;
+  updateCoverUI();
+}
+
+function updateCoverUI() {
+  const preview = document.getElementById('coverPreview');
+  const wrap    = document.getElementById('coverPreviewWrap');
+  const hint    = document.getElementById('coverHint');
+  if (currentCover) {
+    preview.src = currentCover;
+    wrap.style.display = 'block';
+    hint.style.display = 'none';
+  } else {
+    wrap.style.display = 'none';
+    hint.style.display = 'block';
+  }
+}
+
+// ── Star input ──────────────────────────────────────
+function setStar(n) {
+  currentStar = (currentStar === n) ? 0 : n;
+  updateStarUI();
+}
+function updateStarUI() {
+  document.querySelectorAll('.star-btn').forEach(b => {
+    b.classList.toggle('on', parseInt(b.dataset.v) <= currentStar);
+  });
+}
+function starsHtml(n) {
+  return Array.from({length:5}, (_,i) => `<span style="color:${i<n?'var(--accent)':'var(--border)'}">★</span>`).join('');
+}
+
+// ── Filter ──────────────────────────────────────────
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+// ── Render ──────────────────────────────────────────
+function render() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = books.filter(b => {
+    const matchFilter = currentFilter === 'all' || b.status === currentFilter;
+    const matchSearch = !q || b.title.toLowerCase().includes(q) || (b.author||'').toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+
+  // Stats
+  const stats = { total: books.length, reading: 0, want: 0, completed: 0 };
+  books.forEach(b => { if (b.status in stats) stats[b.status]++; });
+  document.getElementById('statsRow').innerHTML = [
+    ['Total',   stats.total,     ''],
+    ['Reading', stats.reading,   'color:var(--accent2)'],
+    ['Want',    stats.want,      'color:var(--warning)'],
+    ['Done',    stats.completed, 'color:var(--success)'],
+  ].map(([label, num, style]) => `
+    <div class="stat-card">
+      <div class="stat-num" style="${style}">${num}</div>
+      <div class="stat-label">${label}</div>
+    </div>
+  `).join('');
+
+  // Cards
+  const grid = document.getElementById('bookGrid');
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📖</div><div class="empty-text">No books found.</div></div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(b => {
+    const pct = (b.pages && b.pagesRead) ? Math.min(100, Math.round(b.pagesRead / b.pages * 100)) : 0;
+    const showProgress = b.status === 'reading' && b.pages > 0;
+    const thumbHtml = b.coverImage
+      ? `<div class="book-thumb"><img src="${b.coverImage}" alt="cover" draggable="false"></div>`
+      : '';
+    return `
+      <div class="book-card" onclick="openModal('${b.id}')">
+        <div class="book-spine" style="background:${b.spineColor||SPINE_COLORS[0]}"></div>
+        ${thumbHtml}
+        <div class="book-body">
+          <div class="book-title">${esc(b.title)}</div>
+          <div class="book-author">${esc(b.author||'Unknown author')}</div>
+          <div class="book-meta">
+            <span class="status-badge ${STATUS_CLASS[b.status]}">${STATUS_LABELS[b.status]}</span>
+            ${b.genre ? `<span class="book-genre">${esc(b.genre)}</span>` : ''}
+          </div>
+          ${b.rating ? `<div class="book-stars">${starsHtml(b.rating)}</div>` : ''}
+          ${showProgress ? `
+            <div class="progress-wrap">
+              <div class="progress-label">${b.pagesRead}/${b.pages} pages (${pct}%)</div>
+              <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+            </div>` : ''}
+        </div>
+        <div class="book-card-actions">
+          <button class="card-btn del" onclick="event.stopPropagation();deleteBook('${b.id}')">✕</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Modal ─────────────────────────────────────────────
+function openModal(id) {
+  editId = id || null;
+  document.getElementById('modalTitle').textContent = id ? 'Edit Book' : 'Add Book';
+
+  if (id) {
+    const b = books.find(x => x.id === id);
+    if (!b) return;
+    document.getElementById('f-title').value    = b.title || '';
+    document.getElementById('f-author').value   = b.author || '';
+    document.getElementById('f-genre').value    = b.genre || '';
+    document.getElementById('f-status').value   = b.status || 'want';
+    document.getElementById('f-pagesRead').value = b.pagesRead || '';
+    document.getElementById('f-pages').value    = b.pages || '';
+    document.getElementById('f-started').value  = b.started || '';
+    document.getElementById('f-finished').value = b.finished || '';
+    document.getElementById('f-notes').value    = b.notes || '';
+    currentStar  = b.rating || 0;
+    currentSpine = b.spineColor || SPINE_COLORS[0];
+    currentCover = b.coverImage || null;
+  } else {
+    document.getElementById('f-title').value    = '';
+    document.getElementById('f-author').value   = '';
+    document.getElementById('f-genre').value    = '';
+    document.getElementById('f-status').value   = 'want';
+    document.getElementById('f-pagesRead').value = '';
+    document.getElementById('f-pages').value    = '';
+    document.getElementById('f-started').value  = '';
+    document.getElementById('f-finished').value = '';
+    document.getElementById('f-notes').value    = '';
+    currentStar  = 0;
+    currentSpine = SPINE_COLORS[0];
+    currentCover = null;
+  }
+
+  updateStarUI();
+  updateSpineUI();
+  updateCoverUI();
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('f-title').focus(), 50);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  editId = null;
+}
+
+function overlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function saveBook() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { document.getElementById('f-title').focus(); return; }
+
+  const data = {
+    id:         editId || uid(),
+    title,
+    author:     document.getElementById('f-author').value.trim(),
+    genre:      document.getElementById('f-genre').value.trim(),
+    status:     document.getElementById('f-status').value,
+    pagesRead:  parseInt(document.getElementById('f-pagesRead').value) || 0,
+    pages:      parseInt(document.getElementById('f-pages').value) || 0,
+    started:    document.getElementById('f-started').value,
+    finished:   document.getElementById('f-finished').value,
+    notes:      document.getElementById('f-notes').value.trim(),
+    rating:     currentStar,
+    spineColor: currentSpine,
+    coverImage: currentCover,
+  };
+
+  if (editId) {
+    const idx = books.findIndex(b => b.id === editId);
+    if (idx > -1) books[idx] = data;
+  } else {
+    books.unshift(data);
+  }
+
+  save();
+  closeModal();
+  render();
+}
+
+function deleteBook(id) {
+  if (!confirm('Delete this book?')) return;
+  books = books.filter(b => b.id !== id);
+  save();
+  render();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+render();
+</script>
+</body>
+</html>

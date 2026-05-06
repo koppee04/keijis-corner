@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keiji's Corner</title>
+<style>
+  /*
+   * Palette — inspired by PixelDeviant:
+   *   Light gray:  #b8bec6  (bg), #cdd2d8 (surface), #e2e6ea (light surface)
+   *   Orange:      #e06500  (active/accent), #f07820 (hover)
+   *   Light blue:  #5599cc  (title accent, links, decorations)
+   */
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    background: #b8bec6;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  /* ── HEADER ─────────────────────────────────────── */
+  .site-header {
+    background: #8e97a2;
+    border-bottom: 3px solid #e06500;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* pixel-grid texture on header */
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 14px 14px;
+    pointer-events: none;
+  }
+
+  .header-left { position: relative; z-index: 1; }
+
+  .site-title {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #f0f2f4;
+    text-shadow: 2px 2px 0 #3a4450, 3px 3px 0 #2a3340;
+    line-height: 1;
+  }
+
+  .site-title .highlight { color: #e06500; text-shadow: 2px 2px 0 #7a3000, 3px 3px 0 #5a2000; }
+
+  .site-subtitle {
+    color: #5599cc;
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 5px;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+  }
+
+  /* corner decoration boxes */
+  .corner-deco {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 8px; height: 8px;
+    border-top: 2px solid #5599cc;
+    border-left: 2px solid #5599cc;
+    pointer-events: none;
+  }
+  .corner-deco-br {
+    top: auto; left: auto;
+    bottom: 6px; right: 6px;
+    border-top: none; border-left: none;
+    border-bottom: 2px solid #5599cc;
+    border-right: 2px solid #5599cc;
+  }
+
+  /* ── CHARACTER AREA ─────────────────────────────── */
+  .char-area {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .speech-bubble {
+    background: #e06500;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 7px 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1.5;
+    text-align: center;
+    position: relative;
+    border: 2px solid #8a3c00;
+    box-shadow: 2px 2px 0 #8a3c00;
+    max-width: 148px;
+  }
+
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -11px;
+    transform: translateY(-50%);
+    border-left: 9px solid #e06500;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+  }
+
+  .char-frame {
+    border: 2px solid #6a7480;
+    box-shadow:
+      0 0 0 1px #4a5560,
+      2px 2px 8px rgba(0,0,0,0.35);
+    background: #8e97a2;
+    padding: 0;
+    line-height: 0;
+  }
+
+  canvas#char-canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    display: block;
+  }
+
+  /* ── NAV BAR ─────────────────────────────────────── */
+  .nav-bar {
+    background: #9aa2aa;
+    border-bottom: 2px solid #707880;
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+    padding: 0 4px;
+  }
+
+  .nav-tab {
+    padding: 8px 22px;
+    color: #3a4450;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-right: 1px solid #808890;
+    transition: background 0.1s, color 0.1s;
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .nav-tab:first-child { border-left: 1px solid #808890; margin-left: 4px; }
+
+  .nav-tab:hover { background: #adb5bc; color: #1a2430; }
+
+  .nav-tab.active {
+    background: #e06500;
+    color: #ffffff;
+    border-right-color: #8a3c00;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+  }
+
+  .nav-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 5px solid #e06500;
+  }
+
+  /* ── CONTENT ─────────────────────────────────────── */
+  .content-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tab-panel {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .tab-panel.active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* ── FOOTER ──────────────────────────────────────── */
+  .site-footer {
+    background: #707880;
+    border-top: 2px solid #505860;
+    padding: 3px 20px;
+    font-size: 8px;
+    color: #c8d0d8;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .footer-blink {
+    color: #5599cc;
+    animation: fblink 1.4s step-end infinite;
+  }
+
+  @keyframes fblink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* ── SPRITE CANVAS ───────────────────────────────── */
+  .sprites-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="sprites-layer" id="sprites-layer"></div>
+  <div class="corner-deco"></div>
+  <div class="corner-deco corner-deco-br"></div>
+
+  <div class="header-left">
+    <div class="site-title">★ KEIJI'S <span class="highlight">CORNER</span> ★</div>
+    <div class="site-subtitle">Personal Productivity Hub &nbsp;·&nbsp; Est. 2026</div>
+  </div>
+
+  <div class="char-area">
+    <div class="speech-bubble">TRAIN HARD.<br>STAY FOCUSED.<br>GET AFTER IT.</div>
+    <div class="char-frame">
+      <canvas id="char-canvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <button class="nav-tab active" id="tab-calisthenics" onclick="showTab('calisthenics', this)">⚡ Calisthenics</button>
+  <button class="nav-tab" id="tab-timemgr"      onclick="showTab('timemgr', this)">⏱ Time Manager</button>
+  <button class="nav-tab" id="tab-books"         onclick="showTab('books', this)">📚 Books</button>
+</div>
+
+<div class="content-wrap">
+  <div class="tab-panel active" id="panel-calisthenics">
+    <iframe src="calisthenics_program.html" title="Calisthenics Program"></iframe>
+  </div>
+  <div class="tab-panel" id="panel-timemgr">
+    <iframe src="time-manager.html" title="Time Manager"></iframe>
+  </div>
+  <div class="tab-panel" id="panel-books">
+    <iframe src="book-tracker.html" title="Book Tracker"></iframe>
+  </div>
+</div>
+
+<div class="site-footer">
+  <span>★ Keiji's Corner</span>
+  <span class="footer-blink">■</span>
+  <span>INSERT COIN TO CONTINUE</span>
+</div>
+
+<script>
+// ── Draw 8-bit character ───────────────────────────────────────────
+const S  = 4;  // scale: each logical pixel = 4×4 real pixels
+
+const __ = null;
+const H  = '#110600';
+const sk = '#efc090';
+const sk2= '#d4996a';
+const ey = '#1e0800';
+const wh = '#ffffff';
+const nv = '#1c3a8c';
+const nv2= '#142e72';
+const pt = '#0a1230';
+const mt = '#dd4422';
+const te = '#fffdf0';
+const bk = '#0a0a0a';
+const gd = '#999999';
+const sh = '#88aacc';
+
+const px = [
+  [ __,  __,  __,  __,  H,   H,   H,   H,   H,   H,   H,  __,  __,  __,  __,  __],
+  [ __,  __,  __,  H,   H,   H,   H,   H,   H,   H,   H,   H,  __,  __,  __,  __],
+  [ __,  __,  H,   H,   sk,  sk,  sk,  sk,  sk,  sk,  sk,  H,   H,  __,  __,  __],
+  [ __,  __,  H,   sk,  sk,  sk,  sk,  sk,  sk,  sk,  sk,  sk,  H,  __,  __,  __],
+  [ __,  __,  H,   sk,  ey,  ey,  sk,  sk,  sk,  ey,  ey,  sk,  H,  __,  __,  __],
+  [ __,  __,  H,   sk,  sk,  sk,  sk,  sk2, sk,  sk,  sk,  sk,  H,  __,  __,  __],
+  [ __,  __,  H,   sk,  mt,  te,  te,  te,  te,  te,  te,  mt,  H,  __,  __,  __],
+  [ __,  __,  H,   sk,  sk,  sk,  sk,  sk,  sk,  sk,  sk,  sk,  H,  __,  __,  __],
+  [ __,  __,  __,  H,   sk,  sk,  sk,  sk,  sk,  sk,  H,  __,  __,  __,  __,  __],
+  [ __,  __,  __,  wh,  sk,  sk,  sk,  sk,  sk,  sk,  wh,  __,  __,  __,  __,  __],
+  [ __,  wh,  wh,  wh,  wh,  wh,  wh,  wh,  wh,  wh,  wh,  wh,  wh,  wh,  __,  __],
+  [ __,  sh,  nv,  nv,  nv,  wh,  wh,  wh,  wh,  wh,  nv,  nv,  nv,  sh,  __,  __],
+  [ __,  sh,  nv,  nv,  nv,  nv,  wh,  wh,  wh,  nv,  nv,  nv,  nv,  sh,  __,  __],
+  [ __,  sh,  nv,  nv,  nv,  nv,  nv,  wh,  nv,  nv,  nv,  nv,  nv,  sh,  __,  __],
+  [ __,  sh,  nv2, nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv2, sh,  __,  __],
+  [ __,  sh,  nv2, nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv2, sh,  __,  __],
+  [ __,  sh,  nv2, nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv2, sh,  __,  __],
+  [ __,  sh,  nv2, bk,  bk,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv2, sh,  __,  __],
+  [ __,  sh,  nv2, nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv2, sh,  __,  __],
+  [ __,  sh,  wh,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  nv,  wh,  sh,  __,  __],
+  [ __,  __,  wh,  wh,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  wh,  wh,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  pt,  pt,  pt,  __,  __,  __,  __],
+  [ __,  __,  gd,  gd,  gd,  gd,  __,  __,  __,  gd,  gd,  gd,  gd,  __,  __,  __],
+  [ __,  __,  gd,  gd,  gd,  gd,  gd,  gd,  gd,  gd,  gd,  gd,  gd,  __,  __,  __],
+];
+
+const rows = px.length;
+const cols = px[0].length;
+const canvas = document.getElementById('char-canvas');
+canvas.width  = cols * S;
+canvas.height = rows * S;
+const ctx = canvas.getContext('2d');
+
+// background matching the header
+ctx.fillStyle = '#8e97a2';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+// draw pixel art
+for (let r = 0; r < rows; r++) {
+  for (let c = 0; c < cols; c++) {
+    const color = px[r][c];
+    if (!color) continue;
+    ctx.fillStyle = color;
+    ctx.fillRect(c * S, r * S, S, S);
+  }
+}
+
+// subtle grid overlay
+ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+ctx.lineWidth = 0.5;
+for (let r = 0; r <= rows; r++) {
+  ctx.beginPath(); ctx.moveTo(0, r * S); ctx.lineTo(cols * S, r * S); ctx.stroke();
+}
+for (let c = 0; c <= cols; c++) {
+  ctx.beginPath(); ctx.moveTo(c * S, 0); ctx.lineTo(c * S, rows * S); ctx.stroke();
+}
+
+// ── 8-bit conveyor belt sprites ────────────────────────────────────
+(function() {
+  const layer  = document.getElementById('sprites-layer');
+  const header = document.querySelector('.site-header');
+
+  // Pixel indices: 0=transparent 1=pale body 2=dark eye 3=body shadow
+  const PALETTE = [null, 'rgba(230,248,242,0.93)', '#162420', 'rgba(185,228,212,0.86)'];
+
+  // Three sprite types, each with 2 walk frames
+  const DEFS = [
+    { // Type A — standard (8w × 11h)
+      frames: [
+        [[0,0,1,1,1,1,0,0],[0,1,1,1,1,1,1,0],[1,1,1,1,1,1,1,1],[1,1,2,1,1,2,1,1],[1,1,1,1,1,1,1,1],[0,1,3,3,3,3,1,0],[0,0,3,3,3,3,0,0],[0,0,3,3,3,3,0,0],[0,0,1,0,0,1,0,0],[0,1,1,0,0,0,0,0],[0,1,0,0,0,0,0,0]],
+        [[0,0,1,1,1,1,0,0],[0,1,1,1,1,1,1,0],[1,1,1,1,1,1,1,1],[1,1,2,1,1,2,1,1],[1,1,1,1,1,1,1,1],[0,1,3,3,3,3,1,0],[0,0,3,3,3,3,0,0],[0,0,3,3,3,3,0,0],[0,0,1,0,0,1,0,0],[0,0,0,0,0,1,1,0],[0,0,0,0,0,1,0,0]],
+      ],
+      scales: [2, 3, 4],
+    },
+    { // Type B — small (6w × 9h)
+      frames: [
+        [[0,1,1,1,1,0],[1,1,1,1,1,1],[1,2,1,1,2,1],[1,1,1,1,1,1],[0,3,3,3,3,0],[0,3,3,3,3,0],[0,1,0,0,1,0],[1,1,0,0,0,0],[1,0,0,0,0,0]],
+        [[0,1,1,1,1,0],[1,1,1,1,1,1],[1,2,1,1,2,1],[1,1,1,1,1,1],[0,3,3,3,3,0],[0,3,3,3,3,0],[0,1,0,0,1,0],[0,0,0,0,1,1],[0,0,0,0,1,0]],
+      ],
+      scales: [2, 3],
+    },
+    { // Type C — big (10w × 12h)
+      frames: [
+        [[0,0,1,1,1,1,1,1,0,0],[0,1,1,1,1,1,1,1,1,0],[1,1,1,1,1,1,1,1,1,1],[1,1,1,2,1,1,2,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[0,1,3,3,3,3,3,3,1,0],[0,0,3,3,3,3,3,3,0,0],[0,0,3,3,3,3,3,3,0,0],[0,0,1,0,0,0,0,1,0,0],[0,1,1,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0,0]],
+        [[0,0,1,1,1,1,1,1,0,0],[0,1,1,1,1,1,1,1,1,0],[1,1,1,1,1,1,1,1,1,1],[1,1,1,2,1,1,2,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[0,1,3,3,3,3,3,3,1,0],[0,0,3,3,3,3,3,3,0,0],[0,0,3,3,3,3,3,3,0,0],[0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,1,0],[0,0,0,0,0,0,0,1,0,0]],
+      ],
+      scales: [3, 4],
+    },
+  ];
+
+  // Bake each frame to an offscreen canvas
+  function bake(grid, px) {
+    const rows = grid.length, cols = grid[0].length;
+    const cv = document.createElement('canvas');
+    cv.width = cols * px; cv.height = rows * px;
+    const cx = cv.getContext('2d');
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++) {
+        const v = grid[r][c];
+        if (!v) continue;
+        cx.fillStyle = PALETTE[v];
+        cx.fillRect(c * px, r * px, px, px);
+      }
+    return cv;
+  }
+
+  // Flat list of baked variants (type × scale combos)
+  const VARIANTS = [];
+  for (const def of DEFS)
+    for (const px of def.scales)
+      VARIANTS.push({ frames: def.frames.map(f => bake(f, px)), w: def.frames[0][0].length * px, h: def.frames[0].length * px });
+
+  // Canvas
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:absolute;inset:0;pointer-events:none;image-rendering:pixelated;image-rendering:crisp-edges;';
+  layer.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  function resize() { canvas.width = header.offsetWidth; canvas.height = header.offsetHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Spawn sprites spread across full width so belt looks continuous on load
+  const N = 24;
+  const sprites = Array.from({length: N}, (_, i) => {
+    const v = VARIANTS[Math.floor(Math.random() * VARIANTS.length)];
+    return {
+      v,
+      x:     (i / N) * (canvas.width + v.w) - v.w,
+      speed: 0.45 + Math.random() * 0.40,
+      frame: i % 2,
+      tick:  Math.floor(Math.random() * 16),
+      yOff:  Math.floor(Math.random() * 3) * 3,  // slight depth variation
+    };
+  });
+
+  const FRAME_DUR = 16;
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.shadowColor = 'rgba(110,220,175,0.50)';
+    ctx.shadowBlur  = 5;
+    for (const sp of sprites) {
+      sp.x += sp.speed;
+      if (sp.x > canvas.width + sp.v.w) sp.x = -sp.v.w;
+      if (++sp.tick >= FRAME_DUR) { sp.tick = 0; sp.frame ^= 1; }
+      ctx.drawImage(sp.v.frames[sp.frame], Math.round(sp.x), canvas.height - sp.v.h - sp.yOff);
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── Tab switching ──────────────────────────────────────────────────
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
