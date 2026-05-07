@@ -298,6 +298,63 @@ body {
 }
 .card-btn:hover { border-color: var(--accent); color: var(--accent); }
 .card-btn.del:hover { border-color: var(--danger); color: var(--danger); }
+.card-btn.src:hover { border-color: var(--accent2); color: var(--accent2); }
+
+/* ── Import from link ────────────────────────────── */
+.import-section {
+  background: rgba(0,0,0,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-bottom: 16px;
+}
+.import-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 7px;
+}
+.import-row { display: flex; gap: 6px; }
+.import-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 11px;
+  padding: 5px 9px;
+  outline: none;
+  min-width: 0;
+}
+.import-input:focus { border-color: var(--accent2); }
+.import-input::placeholder { color: var(--text-muted); font-style: italic; }
+.btn-fetch {
+  background: var(--accent2);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 5px 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.btn-fetch:hover { background: #3a77bb; }
+.btn-fetch:disabled { opacity: 0.55; cursor: not-allowed; }
+.import-status {
+  font-size: 11px;
+  margin-top: 7px;
+  min-height: 15px;
+  line-height: 1.4;
+}
+.import-status.ok      { color: var(--success); }
+.import-status.err     { color: var(--danger); }
+.import-status.loading { color: var(--text-muted); }
 
 /* ── Empty state ─────────────────────────────────── */
 .empty-state {
@@ -556,6 +613,18 @@ body {
     <div class="modal-header">
       <div class="modal-title" id="modalTitle">Add Book</div>
       <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <!-- Import from link -->
+    <div class="import-section">
+      <div class="import-label">⚡ Import from Link</div>
+      <div class="import-row">
+        <input class="import-input" id="importUrl" type="text"
+               placeholder="Paste Amazon, Goodreads, Google Books link or ISBN…"
+               onpaste="scheduleAutoFetch()" oninput="clearImportStatus()">
+        <button class="btn-fetch" id="fetchBtn" onclick="fetchBookData()">Fetch</button>
+      </div>
+      <div class="import-status" id="importStatus"></div>
     </div>
 
     <!-- Cover image upload -->
@@ -841,6 +910,7 @@ function render() {
             </div>` : ''}
         </div>
         <div class="book-card-actions">
+          ${b.sourceUrl ? `<button class="card-btn src" onclick="event.stopPropagation();window.open('${esc(b.sourceUrl)}','_blank')" title="Open source link">🔗</button>` : ''}
           <button class="card-btn del" onclick="event.stopPropagation();deleteBook('${b.id}')">✕</button>
         </div>
       </div>
@@ -872,6 +942,7 @@ function openModal(id) {
     currentStar  = b.rating || 0;
     currentSpine = b.spineColor || SPINE_COLORS[0];
     currentCover = b.coverImage || null;
+    document.getElementById('importUrl').value = b.sourceUrl || '';
   } else {
     document.getElementById('f-title').value    = '';
     document.getElementById('f-author').value   = '';
@@ -885,13 +956,15 @@ function openModal(id) {
     currentStar  = 0;
     currentSpine = SPINE_COLORS[0];
     currentCover = null;
+    document.getElementById('importUrl').value = '';
   }
+  clearImportStatus();
 
   updateStarUI();
   updateSpineUI();
   updateCoverUI();
   document.getElementById('modalOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('f-title').focus(), 50);
+  setTimeout(() => document.getElementById('importUrl').focus(), 50);
 }
 
 function closeModal() {
@@ -921,6 +994,7 @@ function saveBook() {
     rating:     currentStar,
     spineColor: currentSpine,
     coverImage: currentCover,
+    sourceUrl:  document.getElementById('importUrl').value.trim(),
   };
 
   if (editId) {
@@ -945,6 +1019,180 @@ function deleteBook(id) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
 });
+
+// ── Import from link ───────────────────────────────
+let fetchTimer = null;
+
+function scheduleAutoFetch() {
+  clearTimeout(fetchTimer);
+  // Delay lets the paste finish updating the input value
+  fetchTimer = setTimeout(fetchBookData, 650);
+}
+
+function clearImportStatus() {
+  const el = document.getElementById('importStatus');
+  if (el) { el.textContent = ''; el.className = 'import-status'; }
+}
+
+function setImportStatus(msg, type) {
+  const el = document.getElementById('importStatus');
+  el.textContent = msg;
+  el.className = 'import-status ' + type;
+}
+
+function parseIdentifier(raw) {
+  const s = raw.trim();
+
+  // Bare ISBN-10 (may end in X) or ISBN-13
+  if (/^\d{9}[\dX]$/i.test(s) || /^\d{13}$/.test(s))
+    return { type: 'isbn', value: s };
+
+  // Google Books URL — ?id=XXXX
+  let m = s.match(/books\.google\.[^/]+\/books[^?]*\?[^#]*[?&]id=([^&#]+)/);
+  if (m) return { type: 'gbid', value: m[1] };
+
+  // Amazon — /dp/ASIN or /gp/product/ASIN
+  m = s.match(/amazon\.[^/]+\/(?:[^/]+\/)?(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
+  if (m) return { type: 'isbn', value: m[1] };
+
+  // Open Library by ISBN path
+  m = s.match(/openlibrary\.org\/isbn\/(\d+)/);
+  if (m) return { type: 'isbn', value: m[1] };
+
+  // Goodreads — /book/show/ID-title-slug or /book/show/ID.Title
+  m = s.match(/goodreads\.com\/book\/show\/\d+[-.]([^/?#]+)/);
+  if (m) return { type: 'search', value: m[1].replace(/[-_]/g, ' ').trim() };
+
+  m = s.match(/goodreads\.com\/book\/show\/(\d+)/);
+  if (m) return { type: 'search', value: m[1] };
+
+  // Unknown URL — pull something useful from the path
+  if (s.startsWith('http')) {
+    try {
+      const url = new URL(s);
+      const parts = url.pathname.split('/').filter(Boolean);
+      if (parts.length) {
+        const last = parts[parts.length - 1].replace(/\.\w+$/, '').replace(/[-_]/g, ' ').trim();
+        if (last) return { type: 'search', value: last };
+      }
+    } catch (_) {}
+  }
+
+  // Plain text — treat as title/ISBN search
+  return { type: 'search', value: s };
+}
+
+async function queryGoogleBooks(value, type) {
+  let url;
+  if (type === 'gbid')
+    url = `https://www.googleapis.com/books/v1/volumes/${encodeURIComponent(value)}`;
+  else if (type === 'isbn')
+    url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(value)}&maxResults=1`;
+  else
+    url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(value)}&maxResults=1`;
+
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('API error');
+  const data = await resp.json();
+
+  if (type === 'gbid') {
+    if (!data.volumeInfo) throw new Error('Not found');
+    return data;
+  }
+  if (!data.items || !data.items.length) throw new Error('No results found');
+  return data.items[0];
+}
+
+function imgUrlToBase64(src) {
+  // Prefer HTTPS; bump zoom for a slightly larger cover
+  const url = src.replace(/^http:\/\//, 'https://').replace(/zoom=\d/, 'zoom=2');
+  return new Promise(resolve => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const timer = setTimeout(() => resolve(null), 8000);
+    img.onload = () => {
+      clearTimeout(timer);
+      try {
+        const MAX_W = 160, MAX_H = 240;
+        let w = img.naturalWidth, h = img.naturalHeight;
+        if (!w || !h) { resolve(null); return; }
+        const ratio = Math.min(MAX_W / w, MAX_H / h, 1);
+        const cv = document.createElement('canvas');
+        cv.width = Math.round(w * ratio); cv.height = Math.round(h * ratio);
+        cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+        resolve(cv.toDataURL('image/jpeg', 0.82));
+      } catch (_) { resolve(null); }
+    };
+    img.onerror = () => { clearTimeout(timer); resolve(null); };
+    img.src = url;
+  });
+}
+
+async function fetchBookData() {
+  const raw = document.getElementById('importUrl').value.trim();
+  if (!raw) return;
+
+  const btn = document.getElementById('fetchBtn');
+  btn.disabled = true;
+  setImportStatus('Fetching…', 'loading');
+
+  try {
+    const { type, value } = parseIdentifier(raw);
+    const volume = await queryGoogleBooks(value, type);
+    const info = volume.volumeInfo || {};
+    const filled = [];
+
+    if (info.title) {
+      document.getElementById('f-title').value = info.title;
+      filled.push('title');
+    }
+    if (info.authors && info.authors.length) {
+      document.getElementById('f-author').value = info.authors.join(', ');
+      filled.push('author');
+    }
+    if (info.pageCount) {
+      document.getElementById('f-pages').value = info.pageCount;
+      filled.push('pages');
+    }
+    if (info.categories && info.categories.length) {
+      document.getElementById('f-genre').value = info.categories[0].split('/')[0].trim();
+      filled.push('genre');
+    }
+    if (info.description && !document.getElementById('f-notes').value.trim()) {
+      document.getElementById('f-notes').value =
+        info.description.replace(/<[^>]+>/g, '').slice(0, 500);
+      filled.push('notes');
+    }
+
+    // Cover: try Google Books thumbnail, then Open Library by ISBN fallback
+    let cover = null;
+    const thumbUrl = info.imageLinks && (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail);
+    if (thumbUrl) cover = await imgUrlToBase64(thumbUrl);
+
+    if (!cover && type === 'isbn') {
+      cover = await imgUrlToBase64(
+        `https://covers.openlibrary.org/b/isbn/${value}-L.jpg`
+      );
+    }
+    if (cover) {
+      currentCover = cover;
+      updateCoverUI();
+      filled.push('cover');
+    }
+
+    setImportStatus(
+      filled.length ? `✓ Filled: ${filled.join(', ')}` : 'Found but no data extracted.',
+      filled.length ? 'ok' : 'err'
+    );
+  } catch (e) {
+    setImportStatus(
+      e.message === 'No results found' ? 'No results found — fill in manually.' : `Error: ${e.message}`,
+      'err'
+    );
+  } finally {
+    btn.disabled = false;
+  }
+}
 
 render();
 </script>
