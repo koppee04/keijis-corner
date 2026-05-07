@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Self-Study Curriculum</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  body {
+    background-color: #b8bec6;
+    background-image:
+      linear-gradient(rgba(26,36,48,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,36,48,0.07) 1px, transparent 1px);
+    background-size: 8px 8px;
+    font-family: 'Courier New', monospace;
+    color: #1a2430;
+    padding: 24px 16px 48px 16px;
+  }
+
+  /* ── HEADER ──────────────────────────────────────── */
+  .site-header {
+    background: #1a2430;
+    color: #e2e6ea;
+    padding: 18px 24px 14px;
+    margin-bottom: 24px;
+    box-shadow: 4px 4px 0 #3a4450;
+    border: 2px solid #3a4450;
+    position: relative;
+  }
+
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      #e06500 0px, #e06500 8px,
+      #5599cc 8px, #5599cc 16px
+    );
+  }
+
+  .site-header h1 {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #e2e6ea;
+    line-height: 1.2;
+  }
+
+  .site-header .subtitle {
+    font-size: 0.72rem;
+    color: #5599cc;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .meta-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #3a4450;
+  }
+
+  .meta-pill {
+    background: #3a4450;
+    color: #e2e6ea;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid #5599cc;
+  }
+
+  .meta-pill span {
+    color: #e06500;
+  }
+
+  /* ── PHASES NAV ──────────────────────────────────── */
+  .phases-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .phase-chip {
+    background: #cdd2d8;
+    border: 2px solid #3a4450;
+    box-shadow: 2px 2px 0 #3a4450;
+    padding: 6px 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #1a2430;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.1s;
+  }
+
+  .phase-chip:hover {
+    background: #e06500;
+    color: #fff;
+    border-color: #b84f00;
+    box-shadow: 2px 2px 0 #b84f00;
+  }
+
+  /* ── INTRO BOX ───────────────────────────────────── */
+  .intro-box {
+    background: #cdd2d8;
+    border: 2px solid #3a4450;
+    box-shadow: 4px 4px 0 #3a4450;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+  }
+
+  .intro-box h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #e06500;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #3a4450;
+  }
+
+  .intro-box p {
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #1a2430;
+    margin-bottom: 10px;
+  }
+
+  .intro-box p:last-child { margin-bottom: 0; }
+
+  /* ── RULE BLOCKS ─────────────────────────────────── */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .rule-card {
+    background: #e2e6ea;
+    border: 2px solid #3a4450;
+    box-shadow: 2px 2px 0 #3a4450;
+    padding: 14px 16px;
+  }
+
+  .rule-card .rule-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #5599cc;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .rule-card p {
+    font-size: 0.78rem;
+    line-height: 1.65;
+    color: #1a2430;
+  }
+
+  /* ── PHASE SECTION ───────────────────────────────── */
+  .phase-section {
+    margin-bottom: 36px;
+  }
+
+  .phase-header {
+    background: #1a2430;
+    color: #e2e6ea;
+    padding: 14px 20px;
+    border: 2px solid #3a4450;
+    box-shadow: 4px 4px 0 #3a4450;
+    margin-bottom: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phase-header::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 6px;
+    height: 100%;
+    background: #e06500;
+  }
+
+  .phase-header .phase-num {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #5599cc;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .phase-header h2 {
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #e2e6ea;
+    line-height: 1.2;
+  }
+
+  .phase-header .phase-meta {
+    font-size: 0.68rem;
+    color: #e06500;
+    letter-spacing: 0.08em;
+    margin-top: 6px;
+  }
+
+  .phase-body {
+    background: #cdd2d8;
+    border: 2px solid #3a4450;
+    border-top: none;
+    box-shadow: 4px 4px 0 #3a4450;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+
+  .phase-body p {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: #1a2430;
+    margin-bottom: 10px;
+  }
+
+  .phase-body p:last-child { margin-bottom: 0; }
+
+  .phase-body .structure-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #5599cc;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .milestone-box {
+    background: #1a2430;
+    color: #e2e6ea;
+    padding: 12px 16px;
+    margin-top: 14px;
+    border-left: 4px solid #e06500;
+    font-size: 0.77rem;
+    line-height: 1.65;
+  }
+
+  .milestone-box::before {
+    content: 'MILESTONE CHECK';
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: #e06500;
+    margin-bottom: 6px;
+  }
+
+  /* ── CURRICULUM TABLE ────────────────────────────── */
+  .table-wrap {
+    overflow-x: auto;
+    margin-bottom: 8px;
+  }
+
+  table.curriculum-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Courier New', monospace;
+    font-size: 0.73rem;
+  }
+
+  table.curriculum-table thead tr {
+    background: #1a2430;
+    color: #e2e6ea;
+  }
+
+  table.curriculum-table thead th {
+    padding: 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.65rem;
+    text-align: left;
+    border-right: 1px solid #3a4450;
+    white-space: nowrap;
+  }
+
+  table.curriculum-table thead th:last-child {
+    border-right: none;
+  }
+
+  table.curriculum-table tbody tr {
+    border-bottom: 1px solid #3a4450;
+    background: #e2e6ea;
+  }
+
+  table.curriculum-table tbody tr:nth-child(even) {
+    background: #cdd2d8;
+  }
+
+  table.curriculum-table tbody tr:hover {
+    background: #d4e5f5;
+  }
+
+  table.curriculum-table td {
+    padding: 7px 12px;
+    vertical-align: top;
+    border-right: 1px solid #b8bec6;
+    line-height: 1.5;
+    color: #1a2430;
+  }
+
+  table.curriculum-table td:last-child {
+    border-right: none;
+  }
+
+  table.curriculum-table td:first-child {
+    color: #e06500;
+    font-weight: bold;
+    white-space: nowrap;
+    min-width: 52px;
+  }
+
+  table.curriculum-table td:nth-child(2) {
+    font-weight: bold;
+    color: #1a2430;
+    min-width: 160px;
+  }
+
+  table.curriculum-table td:nth-child(4) {
+    color: #5599cc;
+    min-width: 160px;
+  }
+
+  /* ── RESOURCE TABLE ──────────────────────────────── */
+  table.resource-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Courier New', monospace;
+    font-size: 0.73rem;
+  }
+
+  table.resource-table thead tr {
+    background: #1a2430;
+    color: #e2e6ea;
+  }
+
+  table.resource-table thead th {
+    padding: 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.65rem;
+    text-align: left;
+    border-right: 1px solid #3a4450;
+  }
+
+  table.resource-table thead th:last-child {
+    border-right: none;
+  }
+
+  table.resource-table tbody tr {
+    border-bottom: 1px solid #3a4450;
+    background: #e2e6ea;
+  }
+
+  table.resource-table tbody tr:nth-child(even) {
+    background: #cdd2d8;
+  }
+
+  table.resource-table td {
+    padding: 8px 12px;
+    vertical-align: top;
+    border-right: 1px solid #b8bec6;
+    line-height: 1.5;
+    color: #1a2430;
+  }
+
+  table.resource-table td:last-child {
+    border-right: none;
+  }
+
+  table.resource-table td:first-child {
+    font-weight: bold;
+    color: #1a2430;
+  }
+
+  table.resource-table td:nth-child(2) {
+    color: #5599cc;
+  }
+
+  table.resource-table td:nth-child(3) {
+    color: #3a4450;
+    font-size: 0.7rem;
+  }
+
+  /* ── SECTION HEADING ─────────────────────────────── */
+  .section-heading {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #1a2430;
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #e06500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-heading::before {
+    content: '//';
+    color: #5599cc;
+  }
+
+  /* ── CLOSING NOTE ────────────────────────────────── */
+  .closing-note {
+    background: #1a2430;
+    color: #e2e6ea;
+    border: 2px solid #3a4450;
+    box-shadow: 4px 4px 0 #3a4450;
+    padding: 24px 26px;
+    margin-top: 36px;
+    position: relative;
+  }
+
+  .closing-note::before {
+    content: 'CLOSING NOTE';
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: #e06500;
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .closing-note p {
+    font-size: 0.8rem;
+    line-height: 1.75;
+    color: #c8cfd8;
+    margin-bottom: 14px;
+  }
+
+  .closing-note p:last-child {
+    margin-bottom: 0;
+    color: #e2e6ea;
+    font-style: italic;
+  }
+
+  .closing-note::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: repeating-linear-gradient(
+      90deg,
+      #e06500 0px, #e06500 8px,
+      #5599cc 8px, #5599cc 16px
+    );
+  }
+
+  /* ── DIVIDER ─────────────────────────────────────── */
+  .pixel-divider {
+    height: 4px;
+    background: repeating-linear-gradient(
+      90deg,
+      #3a4450 0px, #3a4450 4px,
+      transparent 4px, transparent 8px
+    );
+    margin: 20px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <h1>Self-Study Curriculum</h1>
+  <div class="subtitle">Science &amp; Mathematics &mdash; Understanding the World from First Principles</div>
+  <div class="meta-bar">
+    <div class="meta-pill">Pace: <span>~1 hr / day</span></div>
+    <div class="meta-pill">Duration: <span>~3 years</span></div>
+    <div class="meta-pill">Phases: <span>5</span></div>
+    <div class="meta-pill">Total: <span>113 weeks</span></div>
+    <div class="meta-pill">Level: <span>Rusty basics &rarr; frontier</span></div>
+  </div>
+</header>
+
+<!-- ═══ QUICK PHASE NAV ═══════════════════════════════════════════════ -->
+<nav class="phases-nav">
+  <a class="phase-chip" href="#phase1">Phase 1 &mdash; Math Foundations (26 wks)</a>
+  <a class="phase-chip" href="#phase2">Phase 2 &mdash; Calculus &amp; Physics (24 wks)</a>
+  <a class="phase-chip" href="#phase3">Phase 3 &mdash; Math Tools &amp; Chemistry (30 wks)</a>
+  <a class="phase-chip" href="#phase4">Phase 4 &mdash; Physics &amp; Life Sciences (26 wks)</a>
+  <a class="phase-chip" href="#phase5">Phase 5 &mdash; Synthesis &amp; Frontier (25 wks+)</a>
+  <a class="phase-chip" href="#resources">Resources</a>
+</nav>
+
+<!-- ═══ HOW TO USE ════════════════════════════════════════════════════ -->
+<section class="intro-box">
+  <h2>// How to use this curriculum</h2>
+  <p>This curriculum is designed for self-directed adult study at roughly one hour per day, seven days a week &mdash; approximately 30 hours per month. The full arc from Phase 1 through Phase 5 spans about three years. The pace is deliberate: science and mathematics cannot be absorbed by reading alone. Every week, work problems.</p>
+</section>
+
+<div class="rules-grid">
+  <div class="rule-card">
+    <span class="rule-label">The Fundamental Rule</span>
+    <p>Do not move to the next topic until you can solve problems from the current one without looking at examples. Reading a chapter and understanding it feels like progress; working through a problem set and getting stuck is actual progress. The sticking points are where learning happens.</p>
+  </div>
+  <div class="rule-card">
+    <span class="rule-label">Weekly Rhythm</span>
+    <p><strong>Days 1&ndash;2:</strong> Learn the new concept (video or textbook). Understand it at a high level before doing anything else.<br>
+    <strong>Days 3&ndash;5:</strong> Work problems. Start with easier ones and increase difficulty.<br>
+    <strong>Days 6&ndash;7:</strong> Review the week&rsquo;s material. Rework problems from scratch, not by reading the solution.</p>
+  </div>
+  <div class="rule-card">
+    <span class="rule-label">When You Get Stuck</span>
+    <p>Sit with confusion for at least 20 minutes before seeking help. Looking up the answer immediately prevents the struggle that cements understanding. After 20 minutes, check your textbook, then Khan Academy, then seek an explanation. Once you understand it, close the source and redo the problem yourself.</p>
+  </div>
+  <div class="rule-card">
+    <span class="rule-label">Crossing Between Phases</span>
+    <p>Do not skip the Phase review weeks. They are not optional. Each one is a genuine checkpoint: work through a set of mixed problems from the phase, identify weak areas, and return to them before continuing. The curriculum is sequential &mdash; gaps in foundations cause compounding difficulties later.</p>
+  </div>
+  <div class="rule-card">
+    <span class="rule-label">Philosophy of Science Thread</span>
+    <p>Begin Kuhn&rsquo;s <em>Structure of Scientific Revolutions</em> during Phase 1 &mdash; it will reframe how you think about what you are doing from the start. Return to Popper and Deutsch later, once you have the scientific content they are describing.</p>
+  </div>
+  <div class="rule-card">
+    <span class="rule-label">On Mathematics</span>
+    <p>Mathematics is not a spectator sport. The difference between someone who &ldquo;understands&rdquo; calculus and someone who has learned it is measured entirely in problems worked. Aim for at least 20 to 30 problems per topic before moving on.</p>
+  </div>
+</div>
+
+<div class="pixel-divider"></div>
+
+<!-- ═══ PHASE 1 ════════════════════════════════════════════════════════ -->
+<section class="phase-section" id="phase1">
+  <div class="phase-header">
+    <span class="phase-num">Phase 1 &mdash; ~26 weeks (~6 months)</span>
+    <h2>Mathematical Foundations</h2>
+    <div class="phase-meta">Pre-algebra &amp; Algebra (Wks 1&ndash;10) &nbsp;&bull;&nbsp; Geometry &amp; Trigonometry (Wks 11&ndash;18) &nbsp;&bull;&nbsp; Precalculus (Wks 19&ndash;26)</div>
+  </div>
+  <div class="phase-body">
+    <p>Mathematics is the language the natural world is written in. Everything in Phases 2 through 5 depends on this foundation. Starting from rusty basics, this phase moves through algebra, geometry, trigonometry, and precalculus. Take the time this phase requires &mdash; a solid algebraic instinct saves enormous pain later.</p>
+    <div class="milestone-box">By the end of Week 26, you should be able to graph any polynomial or trigonometric function, solve a system of equations, work with logarithms and exponents fluently, and describe what a limit means informally. If any of these feel shaky, invest another two weeks in review before entering Phase 2.</div>
+  </div>
+  <div class="table-wrap">
+    <table class="curriculum-table">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Topic</th>
+          <th>What to Cover</th>
+          <th>Primary Resource</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Wk 1</td><td>Numbers &amp; Operations</td><td>Number systems, integers, fractions, decimals, percentages, order of operations</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 2</td><td>Variables &amp; Expressions</td><td>Algebraic expressions, simplifying, substitution, the language of algebra</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 3</td><td>Linear Equations</td><td>One- and two-variable equations, solving and checking, word problems</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 4</td><td>Inequalities &amp; Systems</td><td>Inequalities, graphing on number lines, systems of two equations</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 5</td><td>Functions</td><td>Definition of a function, function notation, domain and range, graphing</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 6</td><td>Exponents &amp; Radicals</td><td>Exponent rules, scientific notation, square roots, simplifying radicals</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 7</td><td>Polynomials</td><td>Operations on polynomials, factoring &mdash; GCF, trinomials, difference of squares</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 8</td><td>Quadratics</td><td>Quadratic equations, factoring, completing the square, the quadratic formula</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 9</td><td>Rational Expressions</td><td>Simplifying, multiplying, dividing, adding rational expressions; rational equations</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 10</td><td>Algebra Review</td><td>Mixed problem sets, timed practice. Identify and revisit any weak areas before moving on</td><td>Khan Academy + Lang</td></tr>
+        <tr><td>Wk 11</td><td>Points, Lines &amp; Angles</td><td>Basic geometry vocabulary, parallel lines, transversals, angle relationships, proofs</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 12</td><td>Triangles</td><td>Triangle types, congruence (SSS, SAS, ASA), similarity, the triangle inequality</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 13</td><td>Pythagorean Theorem</td><td>Proof, applications, distance formula in 2D and 3D, Pythagorean triples</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 14</td><td>Circles &amp; Area</td><td>Circle theorems, arc length, sector area; area and perimeter of polygons</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 15</td><td>Intro to Trigonometry</td><td>SOH-CAH-TOA, right triangle trig, finding sides and angles</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 16</td><td>The Unit Circle</td><td>Radians vs. degrees, standard angles, sin/cos/tan on the unit circle</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 17</td><td>Trig Functions &amp; Graphs</td><td>Graphs of sin, cos, tan &mdash; period, amplitude, phase shift</td><td>Khan Academy / Prof. Leonard</td></tr>
+        <tr><td>Wk 18</td><td>Trig Identities</td><td>Pythagorean identities, sum/difference formulas, solving trig equations</td><td>Khan Academy / Prof. Leonard</td></tr>
+        <tr><td>Wk 19</td><td>Polynomial Functions</td><td>End behavior, zeros, graphing using roots and multiplicity</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 20</td><td>Rational Functions</td><td>Vertical and horizontal asymptotes, holes, graphing rational functions</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 21</td><td>Exponential Functions</td><td>Exponential growth/decay, graphs, the number e and natural exponential</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 22</td><td>Logarithms</td><td>Logarithm definition, log laws, natural log, solving exponential/log equations</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 23</td><td>Sequences &amp; Series</td><td>Arithmetic and geometric sequences, summation notation, intro to limits of sequences</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 24</td><td>Conic Sections</td><td>Parabolas, ellipses, hyperbolas &mdash; equations and graphs; why they appear in physics</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 25</td><td>Introduction to Matrices</td><td>Matrix notation, basic operations; foreshadowing linear algebra</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 26</td><td>Phase 1 Review</td><td>Full review: take a practice test. Spend the week targeting any weak areas. Milestone check</td><td>Mixed practice</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="pixel-divider"></div>
+
+<!-- ═══ PHASE 2 ════════════════════════════════════════════════════════ -->
+<section class="phase-section" id="phase2">
+  <div class="phase-header">
+    <span class="phase-num">Phase 2 &mdash; ~24 weeks (~6 months)</span>
+    <h2>Calculus &amp; Classical Physics</h2>
+    <div class="phase-meta">Single-Variable Calculus (Wks 1&ndash;14) &nbsp;&bull;&nbsp; Classical Mechanics (Wks 15&ndash;24)</div>
+  </div>
+  <div class="phase-body">
+    <p>This is the phase where mathematics becomes physics. Calculus is the language of change &mdash; derivatives describe rates, integrals describe accumulation. Classical mechanics applies these tools to motion, force, and energy. This is Newton&rsquo;s universe, and it is extraordinarily beautiful to see it from the inside.</p>
+    <div class="milestone-box">By Week 24, you should be able to differentiate and integrate standard functions, explain what a derivative means geometrically, draw a free body diagram and apply Newton&rsquo;s laws, and derive the equations of projectile motion from first principles. The capstone goal: understand why planetary orbits are ellipses, derived from calculus and Newton&rsquo;s law of gravity.</div>
+  </div>
+  <div class="table-wrap">
+    <table class="curriculum-table">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Topic</th>
+          <th>What to Cover</th>
+          <th>Primary Resource</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Wk 1</td><td>Limits &mdash; Intuition</td><td>What a limit is, one-sided limits, limits graphically and numerically</td><td>3Blue1Brown + Khan</td></tr>
+        <tr><td>Wk 2</td><td>Limits &mdash; Formally</td><td>Limit laws, limit theorems, limits involving infinity</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 3</td><td>Continuity</td><td>Definition, types of discontinuity, Intermediate Value Theorem</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 4</td><td>The Derivative</td><td>Definition as a limit, geometric meaning as slope of tangent, notation</td><td>3Blue1Brown + Khan</td></tr>
+        <tr><td>Wk 5</td><td>Differentiation Rules</td><td>Power, constant, sum/difference rules; product and quotient rules</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 6</td><td>Chain Rule &amp; Implicit</td><td>Chain rule, implicit differentiation, derivatives of trig/log/exp functions</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 7</td><td>Applications I</td><td>Related rates, linear approximation, L&rsquo;H&ocirc;pital&rsquo;s rule</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 8</td><td>Applications II</td><td>Critical points, optimization, curve sketching; Mean Value Theorem</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 9</td><td>Antiderivatives</td><td>Reversing differentiation, indefinite integrals, basic integration rules</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 10</td><td>The Definite Integral</td><td>Riemann sums, the definite integral as area, Fundamental Theorem of Calculus Part 1</td><td>3Blue1Brown + Khan</td></tr>
+        <tr><td>Wk 11</td><td>FTC &amp; Substitution</td><td>Fundamental Theorem Part 2, u-substitution technique</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 12</td><td>Integration Techniques</td><td>Integration by parts, trigonometric substitution</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 13</td><td>Applications of Integration</td><td>Area between curves, volumes of revolution, average value</td><td>Khan Academy / MIT OCW</td></tr>
+        <tr><td>Wk 14</td><td>Intro to Diff. Equations</td><td>Separation of variables, exponential growth/decay; preview of what DEs model</td><td>Khan Academy</td></tr>
+        <tr><td>Wk 15</td><td>Kinematics in 1D</td><td>Position, displacement, velocity, acceleration; kinematic equations</td><td>Young &amp; Freedman Ch.2</td></tr>
+        <tr><td>Wk 16</td><td>Kinematics in 2D</td><td>Vectors, vector addition, projectile motion &mdash; parabolic trajectories</td><td>Young &amp; Freedman Ch.3</td></tr>
+        <tr><td>Wk 17</td><td>Newton&rsquo;s Laws</td><td>First, second, third laws; force, mass, inertia; free body diagrams</td><td>Young &amp; Freedman Ch.4</td></tr>
+        <tr><td>Wk 18</td><td>Applications of Newton</td><td>Friction (static and kinetic), normal force, tension, circular motion</td><td>Young &amp; Freedman Ch.5</td></tr>
+        <tr><td>Wk 19</td><td>Work &amp; Kinetic Energy</td><td>Definition of work, work-energy theorem, power</td><td>Young &amp; Freedman Ch.6</td></tr>
+        <tr><td>Wk 20</td><td>Potential Energy</td><td>Gravitational and elastic potential energy, conservation of energy</td><td>Young &amp; Freedman Ch.7</td></tr>
+        <tr><td>Wk 21</td><td>Momentum</td><td>Linear momentum, impulse, conservation of momentum, collisions</td><td>Young &amp; Freedman Ch.8</td></tr>
+        <tr><td>Wk 22</td><td>Rotational Motion</td><td>Angular velocity, torque, moment of inertia, angular momentum</td><td>Young &amp; Freedman Ch.10</td></tr>
+        <tr><td>Wk 23</td><td>Gravity &amp; Orbits</td><td>Newton&rsquo;s law of gravitation, gravitational potential, orbital mechanics &mdash; Kepler&rsquo;s laws derived</td><td>Young &amp; Freedman Ch.13</td></tr>
+        <tr><td>Wk 24</td><td>Phase 2 Review</td><td>Full review of calculus and mechanics. Work through MIT OCW problem sets. Milestone checkpoint</td><td>MIT OCW 8.01</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="pixel-divider"></div>
+
+<!-- ═══ PHASE 3 ════════════════════════════════════════════════════════ -->
+<section class="phase-section" id="phase3">
+  <div class="phase-header">
+    <span class="phase-num">Phase 3 &mdash; ~30 weeks (~7 months)</span>
+    <h2>Mathematical Tools &amp; Chemistry</h2>
+    <div class="phase-meta">Linear Algebra (Wks 1&ndash;8) &nbsp;&bull;&nbsp; Statistics &amp; Probability (Wks 9&ndash;15) &nbsp;&bull;&nbsp; General Chemistry (Wks 16&ndash;27) &nbsp;&bull;&nbsp; Multivariable Calculus (Wks 28&ndash;30)</div>
+  </div>
+  <div class="phase-body">
+    <p>This phase expands the mathematical toolkit and introduces the science that bridges physics and biology. Linear algebra reveals the geometric structure underlying quantum mechanics and data. Statistics teaches you to read evidence critically &mdash; essential for anyone engaging with science seriously. Chemistry explains how the atomic world produces the molecular world, which produces life.</p>
+    <div class="milestone-box">By Week 30, you should understand Bayes&rsquo; theorem and why it matters for reasoning, be able to multiply matrices and find eigenvalues, balance a chemical equation and use the ideal gas law, and have a working understanding of thermodynamics and entropy. At this point, you are equipped to read most scientific papers and follow their reasoning.</div>
+  </div>
+  <div class="table-wrap">
+    <table class="curriculum-table">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Topic</th>
+          <th>What to Cover</th>
+          <th>Primary Resource</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Wk 1</td><td>Vectors</td><td>Vectors in 2D and 3D, addition, scalar multiplication, dot product, cross product</td><td>3Blue1Brown (visual)</td></tr>
+        <tr><td>Wk 2</td><td>Linear Transformations</td><td>What a transformation is; how matrices encode transformations; visual intuition first</td><td>3Blue1Brown + Strang</td></tr>
+        <tr><td>Wk 3</td><td>Matrix Operations</td><td>Matrix multiplication, transpose; why row &times; column works the way it does</td><td>Strang / MIT OCW 18.06</td></tr>
+        <tr><td>Wk 4</td><td>Determinants &amp; Inverses</td><td>Determinant as volume scaling, matrix inverses, when they exist</td><td>Strang / MIT OCW 18.06</td></tr>
+        <tr><td>Wk 5</td><td>Systems of Equations</td><td>Gaussian elimination, row reduction, echelon form; connection to geometry</td><td>Strang / MIT OCW 18.06</td></tr>
+        <tr><td>Wk 6</td><td>Vector Spaces &amp; Basis</td><td>Span, linear independence, basis, dimension &mdash; what these mean geometrically</td><td>Strang / MIT OCW 18.06</td></tr>
+        <tr><td>Wk 7</td><td>Eigenvalues &amp; Eigenvectors</td><td>Definition, characteristic polynomial, diagonalization; why this matters for physics</td><td>Strang / MIT OCW 18.06</td></tr>
+        <tr><td>Wk 8</td><td>Applications</td><td>Principal component analysis (concept), Markov chains, quantum state vectors &mdash; connections to come</td><td>Strang Ch. 10</td></tr>
+        <tr><td>Wk 9</td><td>Descriptive Statistics</td><td>Mean, median, mode, variance, standard deviation; histograms, box plots</td><td>Khan Academy Stats</td></tr>
+        <tr><td>Wk 10</td><td>Probability Rules</td><td>Sample spaces, events, addition/multiplication rules, conditional probability</td><td>Khan Academy Stats</td></tr>
+        <tr><td>Wk 11</td><td>Bayes&rsquo; Theorem</td><td>Derivation and interpretation; base rate neglect; why this matters for science and reasoning</td><td>Khan Academy + Wheelan</td></tr>
+        <tr><td>Wk 12</td><td>Distributions</td><td>Binomial, Poisson, normal distributions; the central limit theorem</td><td>Khan Academy Stats</td></tr>
+        <tr><td>Wk 13</td><td>Statistical Inference</td><td>Hypothesis testing, p-values, Type I/II errors; why p &lt; 0.05 is not what you think it is</td><td>Khan Academy + Wheelan</td></tr>
+        <tr><td>Wk 14</td><td>Confidence &amp; Regression</td><td>Confidence intervals, correlation vs. causation, linear regression</td><td>Khan Academy Stats</td></tr>
+        <tr><td>Wk 15</td><td>Bayesian vs. Frequentist</td><td>Conceptual overview of the two frameworks; reading science papers critically after this</td><td>Statistical Rethinking Ch.1</td></tr>
+        <tr><td>Wk 16</td><td>Atoms &amp; Elements</td><td>Atomic structure, protons/neutrons/electrons, isotopes, the periodic table &mdash; patterns and why</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 17</td><td>Chemical Bonding I</td><td>Ionic bonding, covalent bonding, electronegativity, Lewis structures</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 18</td><td>Chemical Bonding II</td><td>VSEPR theory, molecular geometry, polarity, intermolecular forces</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 19</td><td>Stoichiometry</td><td>The mole, molar mass, balancing equations, limiting reagents, yield</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 20</td><td>Gases</td><td>Ideal gas law (PV = nRT), kinetic molecular theory, real gases</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 21</td><td>Solutions</td><td>Solubility, concentration units (molarity), colligative properties</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 22</td><td>Thermodynamics I</td><td>Enthalpy, Hess&rsquo;s law, calorimetry, heat of formation</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 23</td><td>Thermodynamics II</td><td>Entropy, Gibbs free energy, spontaneous reactions; connection to arrow of time</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 24</td><td>Chemical Equilibrium</td><td>Le Chatelier&rsquo;s principle, equilibrium constants, reaction quotient</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 25</td><td>Acids, Bases &amp; pH</td><td>Bronsted-Lowry theory, pH, buffers, titrations</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 26</td><td>Electrochemistry</td><td>Redox reactions, galvanic cells, electrolysis, the Nernst equation</td><td>Brown / Khan Chem</td></tr>
+        <tr><td>Wk 27</td><td>Organic Chemistry Primer</td><td>Carbon bonding, functional groups, isomers; overview for biology preparation</td><td>Khan Academy Organic</td></tr>
+        <tr><td>Wk 28</td><td>Partial Derivatives</td><td>Functions of several variables, partial derivatives, the gradient vector</td><td>MIT OCW 18.02</td></tr>
+        <tr><td>Wk 29</td><td>Multiple Integrals</td><td>Double integrals, iterated integrals, changing order of integration</td><td>MIT OCW 18.02</td></tr>
+        <tr><td>Wk 30</td><td>Phase 3 Review</td><td>Synthesize: how do linear algebra, stats, and chemistry connect? Mixed problem sets</td><td>Mixed sources</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="pixel-divider"></div>
+
+<!-- ═══ PHASE 4 ════════════════════════════════════════════════════════ -->
+<section class="phase-section" id="phase4">
+  <div class="phase-header">
+    <span class="phase-num">Phase 4 &mdash; ~26 weeks (~7 months)</span>
+    <h2>Deeper Physics &amp; Life Sciences</h2>
+    <div class="phase-meta">Electricity, Magnetism &amp; Waves (Wks 1&ndash;12) &nbsp;&bull;&nbsp; Molecular &amp; Cell Biology (Wks 13&ndash;26)</div>
+  </div>
+  <div class="phase-body">
+    <p>Physics deepens into electricity, magnetism, and waves &mdash; culminating in Maxwell&rsquo;s equations and the electromagnetic nature of light. Biology is approached at its most rigorous level: the molecular machinery of life. By the end of this phase, you will understand how physics produces chemistry, and how chemistry produces biology. The connections between these levels are among the most astonishing in all of science.</p>
+    <div class="milestone-box">By Week 26, you should understand how Maxwell&rsquo;s equations predict light, follow the full path from DNA to protein to cell function, and be able to describe photosynthesis and cellular respiration at the molecular level. At this point you have the foundation to read primary research literature in physics and biology &mdash; begin supplementing with journal papers.</div>
+  </div>
+  <div class="table-wrap">
+    <table class="curriculum-table">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Topic</th>
+          <th>What to Cover</th>
+          <th>Primary Resource</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Wk 1</td><td>Electric Charge &amp; Force</td><td>Charge, Coulomb&rsquo;s law, electric force between point charges; superposition</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 2</td><td>Electric Fields</td><td>Field definition, field lines, field of continuous distributions, Gauss&rsquo;s law</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 3</td><td>Electric Potential</td><td>Potential energy, voltage, equipotential surfaces, capacitors</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 4</td><td>Current &amp; Circuits</td><td>Current, resistance, Ohm&rsquo;s law, resistors in series/parallel, Kirchhoff&rsquo;s laws</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 5</td><td>Magnetic Fields</td><td>Magnetic force on moving charges, force on current-carrying wires, magnetic field sources</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 6</td><td>Electromagnetic Induction</td><td>Faraday&rsquo;s law, Lenz&rsquo;s law, inductance, generators and transformers</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 7</td><td>Maxwell&rsquo;s Equations</td><td>Conceptual overview of all four equations; how they unify electricity and magnetism</td><td>Young &amp; Freedman / Feynman II</td></tr>
+        <tr><td>Wk 8</td><td>Electromagnetic Waves</td><td>How Maxwell&rsquo;s equations predict light; the speed of light derived; the EM spectrum</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 9</td><td>Optics</td><td>Reflection, refraction, Snell&rsquo;s law, total internal reflection; lenses and mirrors</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 10</td><td>Interference &amp; Diffraction</td><td>Wave superposition, double-slit experiment &mdash; this foreshadows quantum mechanics directly</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 11</td><td>Waves &amp; Sound</td><td>Mechanical waves, standing waves, resonance, the Doppler effect</td><td>Young &amp; Freedman Vol.2</td></tr>
+        <tr><td>Wk 12</td><td>E&amp;M Review</td><td>Full review. Work MIT OCW 8.02 problem sets. Note how calculus appears everywhere here</td><td>MIT OCW 8.02</td></tr>
+        <tr><td>Wk 13</td><td>Cell Structure</td><td>Prokaryotes vs. eukaryotes, organelle functions, membrane structure (fluid mosaic model)</td><td>Alberts / Khan Bio</td></tr>
+        <tr><td>Wk 14</td><td>Proteins</td><td>Amino acids, protein folding, primary-quaternary structure, enzymes and catalysis</td><td>Alberts</td></tr>
+        <tr><td>Wk 15</td><td>DNA Structure</td><td>Double helix, nucleotides, base pairing, chromosome organization, histones</td><td>Alberts</td></tr>
+        <tr><td>Wk 16</td><td>DNA Replication</td><td>Semiconservative replication, polymerases, proofreading; accuracy and error rates</td><td>Alberts</td></tr>
+        <tr><td>Wk 17</td><td>Transcription</td><td>RNA types, RNA polymerase, promoters, processing of pre-mRNA (splicing, capping)</td><td>Alberts</td></tr>
+        <tr><td>Wk 18</td><td>Translation</td><td>Ribosomes, tRNA, codons, the genetic code; from gene to protein</td><td>Alberts</td></tr>
+        <tr><td>Wk 19</td><td>Gene Regulation</td><td>Transcription factors, operons (prokaryotes), enhancers (eukaryotes), epigenetics overview</td><td>Alberts</td></tr>
+        <tr><td>Wk 20</td><td>Cell Signaling</td><td>Signal transduction pathways, receptors, second messengers; how cells communicate</td><td>Alberts</td></tr>
+        <tr><td>Wk 21</td><td>Cell Division</td><td>Mitosis in detail, meiosis, checkpoints; cancer as a failure of cell cycle control</td><td>Alberts</td></tr>
+        <tr><td>Wk 22</td><td>Metabolism I</td><td>ATP, glycolysis, fermentation; how cells extract energy from glucose</td><td>Alberts</td></tr>
+        <tr><td>Wk 23</td><td>Metabolism II</td><td>Citric acid cycle, electron transport chain, oxidative phosphorylation; total ATP yield</td><td>Alberts</td></tr>
+        <tr><td>Wk 24</td><td>Photosynthesis</td><td>Light reactions, Calvin cycle; how photosynthesis is the reverse of cellular respiration</td><td>Alberts</td></tr>
+        <tr><td>Wk 25</td><td>Genetics</td><td>Mendelian inheritance, Punnett squares, linkage, mutations and their consequences</td><td>Alberts / Khan Bio</td></tr>
+        <tr><td>Wk 26</td><td>Phase 4 Review</td><td>Synthesis: how does chemistry explain biology? How does physics explain chemistry? Full review</td><td>Mixed sources</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="pixel-divider"></div>
+
+<!-- ═══ PHASE 5 ════════════════════════════════════════════════════════ -->
+<section class="phase-section" id="phase5">
+  <div class="phase-header">
+    <span class="phase-num">Phase 5 &mdash; ~25 weeks + ongoing</span>
+    <h2>Synthesis &amp; Frontier Questions</h2>
+    <div class="phase-meta">Modern Physics (Wks 1&ndash;12) &nbsp;&bull;&nbsp; Evolution &amp; Complexity (Wks 13&ndash;20) &nbsp;&bull;&nbsp; Philosophy of Science (Wks 21&ndash;25 and ongoing)</div>
+  </div>
+  <div class="phase-body">
+    <p>Phase 5 is where the threads converge. Modern physics reveals that the world at small scales and high velocities is nothing like everyday intuition. Evolution explains the staggering complexity of life as the product of blind, cumulative processes. Philosophy of science examines what the scientific enterprise actually is, what it can and cannot tell us, and how it relates to the deepest questions humans have asked.</p>
+    <p>Phase 5 has no natural terminus. The curriculum gives you a structured entry into each of these domains, but the questions themselves &mdash; about the nature of reality, the foundations of mathematics, the origin of life, the relationship between science and meaning &mdash; are open. By Week 25, you will have the tools to continue engaging them seriously for the rest of your life.</p>
+  </div>
+  <div class="table-wrap">
+    <table class="curriculum-table">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Topic</th>
+          <th>What to Cover</th>
+          <th>Primary Resource</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Wk 1</td><td>Galilean Relativity</td><td>Classical relativity, reference frames, why Maxwell&rsquo;s equations broke Newtonian physics</td><td>Six Easy Pieces / MIT OCW</td></tr>
+        <tr><td>Wk 2</td><td>Special Relativity I</td><td>Einstein&rsquo;s two postulates, simultaneity, time dilation &mdash; clocks run slower when moving</td><td>Six Easy Pieces</td></tr>
+        <tr><td>Wk 3</td><td>Special Relativity II</td><td>Length contraction, relativistic momentum and energy, E = mc&sup2;</td><td>Six Easy Pieces / Greene</td></tr>
+        <tr><td>Wk 4</td><td>Spacetime</td><td>Minkowski spacetime, spacetime diagrams, invariant interval, light cones</td><td>The Elegant Universe</td></tr>
+        <tr><td>Wk 5</td><td>Quantum Origins</td><td>Blackbody radiation, photoelectric effect, Compton scattering &mdash; how QM was forced on physicists</td><td>Feynman Lectures III</td></tr>
+        <tr><td>Wk 6</td><td>Wave-Particle Duality</td><td>De Broglie wavelength, double-slit experiment revisited, what it actually means</td><td>Feynman Lectures III</td></tr>
+        <tr><td>Wk 7</td><td>The Wavefunction</td><td>Schr&ouml;dinger equation (conceptual), probability amplitude, measurement problem</td><td>MIT OCW 8.04</td></tr>
+        <tr><td>Wk 8</td><td>Quantum Phenomena I</td><td>Heisenberg uncertainty principle, quantum tunneling, superposition</td><td>MIT OCW 8.04</td></tr>
+        <tr><td>Wk 9</td><td>Quantum Phenomena II</td><td>Atomic orbitals, quantum numbers, the hydrogen atom solved exactly</td><td>MIT OCW 8.04</td></tr>
+        <tr><td>Wk 10</td><td>Particle Physics Primer</td><td>Standard model overview, quarks, leptons, bosons; the four fundamental forces</td><td>The Elegant Universe</td></tr>
+        <tr><td>Wk 11</td><td>Cosmology</td><td>Big Bang, cosmic microwave background, expansion of the universe, dark matter and energy</td><td>A Brief History of Time</td></tr>
+        <tr><td>Wk 12</td><td>Modern Physics Review</td><td>Open questions: quantum gravity, string theory, many-worlds. What we don&rsquo;t yet know</td><td>The Elegant Universe</td></tr>
+        <tr><td>Wk 13</td><td>Natural Selection</td><td>Darwin&rsquo;s mechanism, variation, heritability, differential reproductive success</td><td>The Selfish Gene Ch.1-2</td></tr>
+        <tr><td>Wk 14</td><td>Genes &amp; Heredity</td><td>Mendelian inheritance revisited through the lens of evolution; gene as unit of selection</td><td>The Selfish Gene</td></tr>
+        <tr><td>Wk 15</td><td>Adaptation</td><td>Arms races, sexual selection, altruism and kin selection, the prisoner&rsquo;s dilemma</td><td>The Selfish Gene</td></tr>
+        <tr><td>Wk 16</td><td>The Blind Watchmaker</td><td>Why complexity does not require design; Dawkins&rsquo; cumulative selection argument</td><td>The Blind Watchmaker</td></tr>
+        <tr><td>Wk 17</td><td>Speciation</td><td>How new species arise; phylogenetics, cladistics, reading the tree of life</td><td>Coyne: Why Evolution Is True</td></tr>
+        <tr><td>Wk 18</td><td>Origin of Life</td><td>RNA world hypothesis, protocells, abiogenesis &mdash; what we know and don&rsquo;t know</td><td>Alberts + supplementary</td></tr>
+        <tr><td>Wk 19</td><td>Complexity &amp; Emergence</td><td>How simple rules produce complex behavior; cellular automata, self-organization</td><td>Complexity &mdash; Waldrop</td></tr>
+        <tr><td>Wk 20</td><td>Reductionism &amp; Its Limits</td><td>What emergence means for physics; Anderson&rsquo;s &ldquo;More is Different&rdquo;; levels of explanation</td><td>Complexity &mdash; Waldrop</td></tr>
+        <tr><td>Wk 21</td><td>What Is Science?</td><td>Demarcation problem; Popper&rsquo;s falsificationism; why theories can be refuted but not proven</td><td>Conjectures &amp; Refutations</td></tr>
+        <tr><td>Wk 22</td><td>Scientific Revolutions</td><td>Kuhn&rsquo;s paradigm shifts; normal science vs. revolutionary science; incommensurability</td><td>Structure of Sci. Rev.</td></tr>
+        <tr><td>Wk 23</td><td>Lakatos &amp; Research Programs</td><td>Protective belts, progressive vs. degenerating programs; more realistic than Popper</td><td>Lakatos &mdash; Methodology</td></tr>
+        <tr><td>Wk 24</td><td>Explanations &amp; Understanding</td><td>Deutsch: good explanations are hard to vary; reach and scope; the beginning of infinity</td><td>The Beginning of Infinity</td></tr>
+        <tr><td>Wk 25</td><td>Science &amp; Meaning</td><td>What science does and doesn&rsquo;t answer; consilience; where this curriculum leaves you open</td><td>Wilson: Consilience</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="pixel-divider"></div>
+
+<!-- ═══ RESOURCES ═════════════════════════════════════════════════════ -->
+<section id="resources" style="margin-bottom: 36px;">
+  <div class="section-heading">Complete Resource List</div>
+  <p style="font-size:0.78rem; line-height:1.65; color:#1a2430; margin-bottom:16px;">All resources referenced throughout the curriculum are consolidated below. Free resources require no purchase. Books marked &lsquo;purchase&rsquo; are available from most libraries if cost is a concern &mdash; always check your local library system and interlibrary loan before buying.</p>
+  <div class="table-wrap">
+    <table class="resource-table">
+      <thead>
+        <tr>
+          <th>Resource</th>
+          <th>Where to Find</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Khan Academy</td><td>khanacademy.org</td><td>Free. Primary workhorse through Phases 1&ndash;3. Adaptive and well-structured.</td></tr>
+        <tr><td>MIT OpenCourseWare</td><td>ocw.mit.edu</td><td>Free. Lecture notes, problem sets, exams from actual MIT courses.</td></tr>
+        <tr><td>3Blue1Brown</td><td>YouTube / 3b1b.co</td><td>Free. Visual intuition for calculus and linear algebra. Essential supplement.</td></tr>
+        <tr><td>Professor Leonard</td><td>YouTube</td><td>Free. Long-form, rigorous lectures on calculus and precalculus.</td></tr>
+        <tr><td>Basic Mathematics &mdash; Serge Lang</td><td>Book (purchase)</td><td>Rigorous rebuild of arithmetic through precalculus. Terse and excellent.</td></tr>
+        <tr><td>University Physics &mdash; Young &amp; Freedman</td><td>Book (purchase or library)</td><td>Standard two-volume university physics text. Thorough, well-structured problems.</td></tr>
+        <tr><td>Feynman Lectures on Physics</td><td>feynmanlectures.caltech.edu</td><td>Free online. Supplementary reading &mdash; insight over technique. Vol. I and II.</td></tr>
+        <tr><td>Introduction to Linear Algebra &mdash; Strang</td><td>Book (purchase)</td><td>The definitive modern introduction. Pairs with MIT OCW 18.06 videos.</td></tr>
+        <tr><td>Chemistry: The Central Science &mdash; Brown</td><td>Book (purchase or library)</td><td>Standard general chemistry university text. Comprehensive problem sets.</td></tr>
+        <tr><td>Molecular Biology of the Cell &mdash; Alberts</td><td>Book (purchase or library)</td><td>The gold standard for cell and molecular biology. Lavishly illustrated.</td></tr>
+        <tr><td>The Selfish Gene &mdash; Dawkins</td><td>Book</td><td>Phase 5. Evolution as gene-centered view. Paradigm-shifting.</td></tr>
+        <tr><td>The Elegant Universe &mdash; Greene</td><td>Book</td><td>Phase 5. Accessible relativity, quantum mechanics, and string theory.</td></tr>
+        <tr><td>Six Easy Pieces &mdash; Feynman</td><td>Book</td><td>Phase 5. Feynman&rsquo;s accessible lectures on physics fundamentals and QM.</td></tr>
+        <tr><td>Structure of Scientific Revolutions &mdash; Kuhn</td><td>Book</td><td>Phase 5. How science actually progresses &mdash; paradigms and revolutions.</td></tr>
+        <tr><td>Conjectures and Refutations &mdash; Popper</td><td>Book</td><td>Phase 5. Falsificationism and the philosophy of scientific method.</td></tr>
+        <tr><td>The Beginning of Infinity &mdash; Deutsch</td><td>Book</td><td>Phase 5. The reach of good explanations; epistemology for scientists.</td></tr>
+        <tr><td>Statistical Rethinking &mdash; McElreath</td><td>Book</td><td>Phase 3. Bayesian statistics for scientists. Rigorous but accessible.</td></tr>
+        <tr><td>Complexity &mdash; Mitchell Waldrop</td><td>Book</td><td>Phase 5. History of the Santa Fe Institute and complexity science.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ CLOSING NOTE ══════════════════════════════════════════════════ -->
+<div class="closing-note">
+  <p>The physicist Eugene Wigner wrote in 1960 about &ldquo;the unreasonable effectiveness of mathematics in the natural sciences&rdquo; &mdash; the mysterious fact that abstract mathematical structures invented by pure mathematicians for their own reasons turn out, again and again, to describe physical reality with uncanny precision. Nobody knows why this is.</p>
+  <p>You are beginning a journey toward the place where that mystery is most acute. The further you go in this curriculum, the more clearly you will see how the questions at the frontier of science &mdash; about space, time, consciousness, life, and the nature of mathematical truth &mdash; are not separate from the questions you have been asking all along in philosophy and theology. They are the same questions, approached from a different direction.</p>
+  <p>The curriculum gives you the tools. The questions were always already yours.</p>
+</div>
+
+</body>
+</html>
