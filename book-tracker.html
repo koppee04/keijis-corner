@@ -1082,25 +1082,60 @@ function parseIdentifier(raw) {
   return { type: 'search', value: s };
 }
 
-async function queryGoogleBooks(value, type) {
-  let url;
-  if (type === 'gbid')
-    url = `https://www.googleapis.com/books/v1/volumes/${encodeURIComponent(value)}`;
-  else if (type === 'isbn')
-    url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${encodeURIComponent(value)}&maxResults=1`;
-  else
-    url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(value)}&maxResults=1`;
-
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error('API error');
+// Open Library — primary source (CORS-enabled, no key required)
+async function queryOpenLibraryISBN(isbn) {
+  const resp = await fetch(
+    `https://openlibrary.org/api/books?bibkeys=ISBN:${encodeURIComponent(isbn)}&format=json&jscmd=data`
+  );
+  if (!resp.ok) return null;
   const data = await resp.json();
+  const book = data[`ISBN:${isbn}`];
+  if (!book) return null;
+  return {
+    title:     book.title,
+    authors:   (book.authors || []).map(a => a.name),
+    pages:     book.number_of_pages,
+    subjects:  (book.subjects || []).map(s => s.name),
+    coverUrl:  book.cover && (book.cover.large || book.cover.medium),
+  };
+}
 
-  if (type === 'gbid') {
-    if (!data.volumeInfo) throw new Error('Not found');
-    return data;
-  }
-  if (!data.items || !data.items.length) throw new Error('No results found');
-  return data.items[0];
+async function queryOpenLibrarySearch(query) {
+  const resp = await fetch(
+    `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&fields=title,author_name,number_of_pages_median,subject,cover_i&limit=1`
+  );
+  if (!resp.ok) return null;
+  const data = await resp.json();
+  const doc = data.docs && data.docs[0];
+  if (!doc) return null;
+  return {
+    title:    doc.title,
+    authors:  doc.author_name || [],
+    pages:    doc.number_of_pages_median,
+    subjects: doc.subject || [],
+    coverUrl: doc.cover_i
+      ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`
+      : null,
+  };
+}
+
+// Google Books — fallback for google books URLs (gbid type)
+async function queryGoogleBooksById(gbid) {
+  const resp = await fetch(
+    `https://www.googleapis.com/books/v1/volumes/${encodeURIComponent(gbid)}`
+  );
+  if (!resp.ok) return null;
+  const data = await resp.json();
+  const info = data.volumeInfo;
+  if (!info) return null;
+  const thumb = info.imageLinks && (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail);
+  return {
+    title:    info.title,
+    authors:  info.authors || [],
+    pages:    info.pageCount,
+    subjects: info.categories || [],
+    coverUrl: thumb ? thumb.replace(/^http:\/\//, 'https://').replace(/zoom=\d/, 'zoom=2') : null,
+  };
 }
 
 function imgUrlToBase64(src) {
@@ -1138,8 +1173,21 @@ async function fetchBookData() {
 
   try {
     const { type, value } = parseIdentifier(raw);
-    const volume = await queryGoogleBooks(value, type);
-    const info = volume.volumeInfo || {};
+
+    // Resolve book info from the appropriate source
+    let info = null;
+    if (type === 'gbid') {
+      info = await queryGoogleBooksById(value);
+    } else if (type === 'isbn') {
+      info = await queryOpenLibraryISBN(value);
+      // ISBN fallback: Open Library search by ISBN string
+      if (!info) info = await queryOpenLibrarySearch(value);
+    } else {
+      info = await queryOpenLibrarySearch(value);
+    }
+
+    if (!info) throw new Error('No results found — try a different link or fill in manually.');
+
     const filled = [];
 
     if (info.title) {
@@ -1150,45 +1198,31 @@ async function fetchBookData() {
       document.getElementById('f-author').value = info.authors.join(', ');
       filled.push('author');
     }
-    if (info.pageCount) {
-      document.getElementById('f-pages').value = info.pageCount;
+    if (info.pages) {
+      document.getElementById('f-pages').value = info.pages;
       filled.push('pages');
     }
-    if (info.categories && info.categories.length) {
-      document.getElementById('f-genre').value = info.categories[0].split('/')[0].trim();
+    if (info.subjects && info.subjects.length) {
+      document.getElementById('f-genre').value = info.subjects[0].split('/')[0].trim();
       filled.push('genre');
     }
-    if (info.description && !document.getElementById('f-notes').value.trim()) {
-      document.getElementById('f-notes').value =
-        info.description.replace(/<[^>]+>/g, '').slice(0, 500);
-      filled.push('notes');
-    }
 
-    // Cover: try Google Books thumbnail, then Open Library by ISBN fallback
-    let cover = null;
-    const thumbUrl = info.imageLinks && (info.imageLinks.thumbnail || info.imageLinks.smallThumbnail);
-    if (thumbUrl) cover = await imgUrlToBase64(thumbUrl);
-
-    if (!cover && type === 'isbn') {
-      cover = await imgUrlToBase64(
-        `https://covers.openlibrary.org/b/isbn/${value}-L.jpg`
-      );
-    }
-    if (cover) {
-      currentCover = cover;
-      updateCoverUI();
-      filled.push('cover');
+    // Cover image
+    if (info.coverUrl) {
+      const cover = await imgUrlToBase64(info.coverUrl);
+      if (cover) {
+        currentCover = cover;
+        updateCoverUI();
+        filled.push('cover');
+      }
     }
 
     setImportStatus(
-      filled.length ? `✓ Filled: ${filled.join(', ')}` : 'Found but no data extracted.',
+      filled.length ? `✓ Filled: ${filled.join(', ')}` : 'Found but no usable data.',
       filled.length ? 'ok' : 'err'
     );
   } catch (e) {
-    setImportStatus(
-      e.message === 'No results found' ? 'No results found — fill in manually.' : `Error: ${e.message}`,
-      'err'
-    );
+    setImportStatus(e.message, 'err');
   } finally {
     btn.disabled = false;
   }
