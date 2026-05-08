@@ -501,6 +501,13 @@ for (let c = 0; c <= cols; c++) {
   draw();
 })();
 
+// ── Service worker (PWA install) ──────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/keijis-corner/sw.js');
+  });
+}
+
 // ── Tab switching ──────────────────────────────────────────────────
 function showTab(name, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
