@@ -447,31 +447,28 @@
     z-index: 199;
   }
 
-  @media (max-width: 768px) {
-    #sidebar-toggle { display: block; }
+  /* JS adds .mobile-layout to body when narrow */
+  body.mobile-layout #sidebar-toggle { display: block; }
 
-    #sidebar {
-      position: fixed;
-      left: 0; top: 0;
-      height: 100vh;
-      z-index: 200;
-      transform: translateX(-100%);
-      transition: transform 0.25s ease;
-      box-shadow: 4px 0 24px rgba(0,0,0,0.35);
-    }
-
-    body.sidebar-open #sidebar        { transform: translateX(0); }
-    body.sidebar-open #sidebar-scrim  { display: block; }
-
-    #main { width: 100%; }
-
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
-
-    #topbar  { padding: 10px 14px; }
-    #content { padding: 14px 14px; }
-
-    .search-input { width: 120px; }
+  body.mobile-layout #sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    height: 100%;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.35);
+    overflow-y: auto;
   }
+
+  body.mobile-layout.sidebar-open #sidebar       { transform: translateX(0); }
+  body.mobile-layout.sidebar-open #sidebar-scrim { display: block; }
+
+  body.mobile-layout #main         { width: 100%; }
+  body.mobile-layout .stats-row    { grid-template-columns: repeat(2, 1fr); }
+  body.mobile-layout #topbar       { padding: 10px 14px; }
+  body.mobile-layout #content      { padding: 14px; }
+  body.mobile-layout .search-input { width: 120px; }
 
   /* ── Notes area ── */
   #notes-area {
@@ -595,8 +592,15 @@ let filterPriority = null;
 let searchQuery = '';
 
 // ── Sidebar toggle (mobile) ────────────────────────────
+function checkMobile() {
+  const narrow = window.innerWidth < 860;
+  document.body.classList.toggle('mobile-layout', narrow);
+  if (!narrow) document.body.classList.remove('sidebar-open');
+}
 function toggleSidebar() { document.body.classList.toggle('sidebar-open'); }
 function closeSidebar()  { document.body.classList.remove('sidebar-open'); }
+window.addEventListener('resize', checkMobile);
+checkMobile();
 
 // ── Routing ────────────────────────────────────────────
 function setView(view, projectId = null) {
