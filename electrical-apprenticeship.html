@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electrical Apprenticeship Prep Guide</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #b8bec6;
+  color: #1a2430;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+/* ── Page header ─────────────────────────────────── */
+.page-header {
+  background: #2a3a50;
+  border-bottom: 3px solid #e06500;
+  padding: 22px 28px 18px;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 14px 14px;
+  pointer-events: none;
+}
+.page-header-inner { position: relative; z-index: 1; }
+.page-title {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #f0f2f4;
+  text-shadow: 2px 2px 0 #0a1a2a;
+  line-height: 1.2;
+}
+.page-title .bolt { color: #e06500; }
+.page-subtitle {
+  color: #5599cc;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+.program-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.tag {
+  background: rgba(229,101,0,0.18);
+  border: 1px solid #e06500;
+  color: #f0a060;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 3px;
+}
+.tag.blue {
+  background: rgba(85,153,204,0.15);
+  border-color: #5599cc;
+  color: #88bbdd;
+}
+
+/* ── Intro blurb ─────────────────────────────────── */
+.intro {
+  background: #cdd2d8;
+  border-bottom: 2px solid #a8b0b8;
+  padding: 16px 28px;
+  font-size: 12px;
+  color: #3a4a5a;
+  line-height: 1.7;
+}
+
+/* ── Main layout ─────────────────────────────────── */
+.content {
+  padding: 20px 24px 32px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ── Phase section ───────────────────────────────── */
+.phase {
+  background: #cdd2d8;
+  border: 1px solid #9aa2aa;
+  border-radius: 6px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  box-shadow: 2px 2px 0 #9aa2aa;
+}
+
+.phase-header {
+  background: #2a3a50;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 2px solid #e06500;
+  position: relative;
+  overflow: hidden;
+}
+.phase-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 10px 10px;
+  pointer-events: none;
+}
+.phase-num {
+  background: #e06500;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  width: 26px;
+  height: 26px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 1px 1px 0 #8a3c00;
+  position: relative;
+  z-index: 1;
+}
+.phase-title {
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #f0f2f4;
+  text-shadow: 1px 1px 0 #0a1a2a;
+  position: relative;
+  z-index: 1;
+}
+
+.phase-body {
+  padding: 16px 18px;
+}
+.phase-intro {
+  font-size: 12px;
+  color: #3a4a5a;
+  line-height: 1.7;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #b0b8c0;
+}
+
+/* ── Item within a phase ─────────────────────────── */
+.item {
+  margin-bottom: 14px;
+}
+.item:last-child { margin-bottom: 0; }
+
+.item-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: #e06500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.item-title::before {
+  content: '▸';
+  color: #5599cc;
+  font-size: 10px;
+}
+.item-body {
+  font-size: 12px;
+  color: #2a3a4a;
+  line-height: 1.75;
+  padding-left: 16px;
+}
+.item-body strong { color: #1a2430; }
+
+/* ── Bullet list ─────────────────────────────────── */
+.bullet-list {
+  list-style: none;
+  padding-left: 16px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bullet-list li {
+  font-size: 12px;
+  color: #2a3a4a;
+  line-height: 1.7;
+  padding-left: 14px;
+  position: relative;
+}
+.bullet-list li::before {
+  content: '■';
+  position: absolute;
+  left: 0;
+  color: #5599cc;
+  font-size: 7px;
+  top: 4px;
+}
+.bullet-list li strong { color: #e06500; }
+
+/* ── Callout box ─────────────────────────────────── */
+.callout {
+  background: #e2e6ea;
+  border-left: 3px solid #5599cc;
+  border-radius: 0 4px 4px 0;
+  padding: 12px 14px;
+  margin: 10px 0 14px;
+}
+.callout-title {
+  font-size: 11px;
+  font-weight: bold;
+  color: #5599cc;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.callout-body {
+  font-size: 12px;
+  color: #2a3a4a;
+  line-height: 1.75;
+}
+.callout-body em { color: #e06500; font-style: normal; font-weight: bold; }
+
+/* ── Cert cards ──────────────────────────────────── */
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 4px;
+}
+.cert-card {
+  background: #e2e6ea;
+  border: 1px solid #9aa2aa;
+  border-radius: 4px;
+  padding: 12px 14px;
+  box-shadow: 1px 1px 0 #9aa2aa;
+}
+.cert-name {
+  font-size: 11px;
+  font-weight: bold;
+  color: #e06500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.cert-desc {
+  font-size: 11px;
+  color: #3a4a5a;
+  line-height: 1.65;
+}
+
+/* ── Footer ──────────────────────────────────────── */
+.page-footer {
+  background: #707880;
+  border-top: 2px solid #505860;
+  padding: 8px 24px;
+  font-size: 9px;
+  color: #c8d0d8;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="page-title">⚡ <span class="bolt">Electrical</span> Apprenticeship Prep Guide</div>
+    <div class="page-subtitle">ETI &nbsp;·&nbsp; ABC Merit Shop &nbsp;·&nbsp; Entry Roadmap</div>
+    <div class="program-tags">
+      <span class="tag">4 Phases</span>
+      <span class="tag blue">ETI Union</span>
+      <span class="tag blue">ABC Merit Shop</span>
+      <span class="tag">Zero Experience Friendly</span>
+    </div>
+  </div>
+</div>
+
+<div class="intro">
+  Gaining entry into highly competitive electrical training programs requires proactive preparation. Whether aiming for ETI's union dispatch or seeking a direct hire through an ABC merit shop, this guide covers the essential steps to stand out as a top-tier candidate — even with zero prior on-the-job experience.
+</div>
+
+<div class="content">
+
+  <!-- Phase 1 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">1</div>
+      <div class="phase-title">The Administrative Arsenal</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-intro">
+        Administrative delays are the most common reason applicants miss enrollment windows. Both programs have strict documentation requirements that take time to fulfill.
+      </div>
+
+      <div class="item">
+        <div class="item-title">Official Sealed Transcripts</div>
+        <div class="item-body">
+          Both ETI and ABC require proof of a full year of high school algebra or one semester of college-level algebra. Request official, sealed transcripts from your institution. <strong>Do not open the envelope</strong> — breaking the seal renders the document unofficial. Order two copies, one for each program's portal.
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-title">High School Diploma or GED Verification</div>
+        <div class="item-body">
+          Have the original document or an official copy ready to scan for online portals and present in person. If you cannot locate your original diploma, request a replacement concurrently with your transcripts.
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-title">DMV K4 Printout (Driving Record)</div>
+        <div class="item-body">
+          A clean driving record is a major asset — contractors frequently require apprentices to drive company vehicles. The ABC program requires a K4 driving record upfront. <strong>This must be requested in person at a California DMV office</strong>; the online printout is generally not accepted for official applications.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">2</div>
+      <div class="phase-title">Aptitude Test Preparation</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-intro">
+        The aptitude tests serve as the primary gatekeepers for both programs. You are competing against every other applicant for a limited number of spots — your score dictates your rank on the eligibility list.
+      </div>
+
+      <div class="item">
+        <div class="item-title">Mathematical Foundations</div>
+        <div class="item-body">
+          Calculus is not required, but rock-solid foundational math is non-negotiable. Focus heavily on:
+          <ul class="bullet-list">
+            <li><strong>Algebraic principles:</strong> Solving for variables, order of operations, and basic equations.</li>
+            <li><strong>Fractions and Decimals:</strong> Add, subtract, multiply, and divide fractions quickly and accurately. This translates directly to reading a tape measure and calculating conduit bends on the job site.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-title">Mechanical and Spatial Comprehension</div>
+        <div class="item-body">
+          Since you are entering the trade without direct experience, demonstrating an inherent mechanical aptitude is vital. Familiarize yourself with basic physics — how gears, pulleys, levers, and fluid dynamics operate. The ETI GAN test heavily features <strong>3D spatial visualization</strong> (e.g., mentally folding a 2D cardboard cutout into a 3D shape). Practice these specific spatial reasoning puzzles online.
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-title">Reading Comprehension</div>
+        <div class="item-body">
+          Electricians must interpret complex building codes, schematics, and technical manuals. Practice reading dense, technical instructional articles and summarizing the main points to prepare for this section of the exams.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">3</div>
+      <div class="phase-title">Building a "No Experience" Portfolio</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-intro">
+        The oral interview is where you separate yourself from the crowd. Interviewers don't expect you to know how to wire a commercial panel yet, but they want to see a genuine drive to learn and a natural inclination for working with your hands.
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">⚙ Document Your Manual Toolkit</div>
+        <div class="callout-body">
+          As you assemble a manual toolkit from scratch, keep a detailed log or photographic record of the process. Be prepared to explain to the interview committee <em>why</em> you selected specific tools — such as the reasoning behind your choice of lineman's pliers, wire strippers, or your tape measure. This demonstrates that you are already investing in your future and researching the daily realities of the trade.
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-title">Log Mechanical Projects</div>
+        <div class="item-body">
+          Create a physical, printed portfolio showcasing your hands-on problem-solving. Include before-and-after photos of anything you have built, repaired, or assembled — changing brakes on a vehicle, assembling complex furniture, basic home repairs, or building a workbench. This proves your mechanical intuition is active, not just theoretical.
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-title">Craft Your "Why"</div>
+        <div class="item-body">
+          Anticipate the question: <strong>"Why do you want to be an electrician?"</strong> Avoid superficial answers about salary. Focus on your desire to build a career based on continuous learning, your enjoyment of tactile hands-on problem solving, and the satisfaction of mastering a highly technical craft.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase">
+    <div class="phase-header">
+      <div class="phase-num">4</div>
+      <div class="phase-title">Stand-Out Certifications</div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-intro">
+        If you have time before the next application window opens, acquiring entry-level certifications will put you ahead of the vast majority of zero-experience applicants.
+      </div>
+
+      <div class="cert-grid">
+        <div class="cert-card">
+          <div class="cert-name">⚠ OSHA 10-Hour</div>
+          <div class="cert-desc">Completable online for a small fee. Walking in with an OSHA 10 card signals you take workplace safety seriously and are legally ready to step onto a job site immediately.</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-name">♥ CPR &amp; First Aid</div>
+          <div class="cert-desc">Many contractors require this for their crews. Having it completed beforehand is an excellent resume booster and shows foresight.</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-name">★ ET Registration</div>
+          <div class="cert-desc">Electrician Trainee (ET) registration with the state. Presenting this completed paperwork to the interview committee demonstrates extreme proactivity while waiting for an apprenticeship slot.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="page-footer">★ Electrical Apprenticeship Prep Guide &nbsp;·&nbsp; ETI &amp; ABC Programs</div>
+
+</body>
+</html>
