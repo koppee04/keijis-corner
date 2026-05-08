@@ -236,7 +236,7 @@
   .site-footer {
     background: #707880;
     border-top: 2px solid #505860;
-    padding: 3px 20px;
+    padding: 4px 20px;
     font-size: 8px;
     color: #c8d0d8;
     letter-spacing: 3px;
@@ -245,7 +245,28 @@
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
+    gap: 8px;
   }
+
+  .footer-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: #c8d0d8;
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .footer-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+  .footer-btn.restore:hover { background: rgba(224,101,0,0.5); border-color: #e06500; color: #fff; }
+
+  .footer-backup { display: flex; align-items: center; gap: 6px; }
 
   .footer-blink {
     color: #5599cc;
@@ -320,7 +341,10 @@
 <div class="site-footer">
   <span>★ Keiji's Corner</span>
   <span class="footer-blink">■</span>
-  <span>INSERT COIN TO CONTINUE</span>
+  <div class="footer-backup">
+    <button class="footer-btn" onclick="exportData()" title="Download all your data as a JSON backup file">💾 Backup</button>
+    <button class="footer-btn restore" onclick="importData()" title="Restore data from a backup file">📂 Restore</button>
+  </div>
 </div>
 
 <script>
@@ -519,6 +543,54 @@ function showTab(name, btn) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   btn.classList.add('active');
+}
+
+// ── Data backup / restore ──────────────────────────────────────────
+const DATA_KEYS = ['cf-completions', 'tm_data', 'bt_data', 'curriculum_start', 'elec_checklist'];
+
+function exportData() {
+  const snapshot = { _version: 1, _date: new Date().toISOString(), data: {} };
+  DATA_KEYS.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v !== null) snapshot.data[k] = v;
+  });
+  const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `keijis-corner-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importData() {
+  const input    = document.createElement('input');
+  input.type     = 'file';
+  input.accept   = 'application/json,.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        // Support both wrapped {data:{}} format and bare {key:value} format
+        const src = parsed._version ? parsed.data : parsed;
+        let count = 0;
+        DATA_KEYS.forEach(k => {
+          if (src[k] !== undefined) { localStorage.setItem(k, src[k]); count++; }
+        });
+        if (count === 0) { alert('No recognisable data found in this file.'); return; }
+        alert(`✓ Restored ${count} data store(s). Reloading tabs…`);
+        // Refresh all iframes so they pick up the restored data
+        document.querySelectorAll('iframe').forEach(f => { f.src = f.src; });
+      } catch { alert('Could not read the file — make sure it is a valid Keiji\'s Corner backup.'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
 }
 </script>
 </body>
