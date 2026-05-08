@@ -1,0 +1,17 @@
+{
+  "name": "Keiji's Corner",
+  "short_name": "Keiji's Corner",
+  "description": "Personal Productivity Hub",
+  "start_url": "/keijis-corner/",
+  "display": "standalone",
+  "background_color": "#2a3a50",
+  "theme_color": "#e06500",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
