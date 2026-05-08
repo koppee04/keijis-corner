@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #b8bec6;
+  color: #1a2430;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+/* ── Top bar ──────────────────────────────────────── */
+.dash-topbar {
+  background: #2a3a50;
+  border-bottom: 3px solid #e06500;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.dash-topbar::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 14px 14px;
+  pointer-events: none;
+}
+.topbar-left { position: relative; z-index: 1; }
+.topbar-date {
+  font-size: 13px; font-weight: bold;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: #f0f2f4; text-shadow: 1px 1px 0 #0a1a2a;
+  line-height: 1;
+}
+.topbar-sub {
+  font-size: 10px; color: #5599cc;
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-top: 4px;
+}
+.btn-refresh {
+  position: relative; z-index: 1;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 4px; color: #c8d0d8;
+  font-family: inherit; font-size: 11px;
+  padding: 5px 11px; cursor: pointer;
+  letter-spacing: 1px; transition: background 0.15s;
+}
+.btn-refresh:hover { background: rgba(255,255,255,0.15); }
+
+/* ── Grid ─────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+  padding: 14px 16px 28px;
+}
+.grid-full { grid-column: 1 / -1; }
+
+/* ── Widget shell ─────────────────────────────────── */
+.widget {
+  background: #cdd2d8;
+  border: 1px solid #9aa2aa;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 2px 2px 0 #9aa2aa;
+  display: flex;
+  flex-direction: column;
+}
+.widget-head {
+  background: #2a3a50;
+  border-bottom: 2px solid #e06500;
+  padding: 8px 13px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.widget-title {
+  font-size: 10px; font-weight: bold;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: #f0f2f4;
+}
+.widget-title .icon { margin-right: 5px; }
+.widget-jump {
+  background: none; border: none;
+  color: #5599cc; font-family: inherit;
+  font-size: 10px; letter-spacing: 1px;
+  cursor: pointer; padding: 0;
+  transition: color 0.15s;
+}
+.widget-jump:hover { color: #88bbdd; }
+.widget-body { padding: 12px 13px; flex: 1; }
+
+/* ── Pill helpers ─────────────────────────────────── */
+.pill {
+  display: inline-block;
+  font-size: 10px; font-weight: bold;
+  padding: 2px 7px; border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+.pill-orange { background: rgba(212,95,0,0.13); border: 1px solid rgba(212,95,0,0.35); color: #e06500; }
+.pill-blue   { background: rgba(77,136,204,0.13); border: 1px solid rgba(77,136,204,0.35); color: #4d88cc; }
+.pill-green  { background: rgba(30,128,80,0.12);  border: 1px solid rgba(30,128,80,0.35);  color: #1e8050; }
+.pill-red    { background: rgba(204,34,51,0.12);  border: 1px solid rgba(204,34,51,0.35);  color: #cc2233; }
+.pill-muted  { background: rgba(78,93,108,0.12);  border: 1px solid rgba(78,93,108,0.3);   color: #4e5d6c; }
+
+/* ── Workout widget ───────────────────────────────── */
+.wo-label { font-size: 10px; color: #4e5d6c; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+.wo-name  { font-size: 15px; font-weight: bold; color: #1a2430; line-height: 1.2; margin-bottom: 2px; }
+.wo-emph  { font-size: 11px; color: #4e5d6c; margin-bottom: 9px; }
+.wo-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.wo-log {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: bold;
+  padding: 7px 10px; border-radius: 4px;
+  border: 1px solid;
+}
+.wo-log.done    { background: rgba(30,128,80,0.1);   border-color: rgba(30,128,80,0.35);  color: #1e8050; }
+.wo-log.pending { background: rgba(212,95,0,0.07);   border-color: rgba(212,95,0,0.25);   color: #b05200; }
+.wo-rest { font-size: 12px; color: #4e5d6c; line-height: 1.6; }
+
+/* ── Tasks widget ─────────────────────────────────── */
+.task-counts { display: flex; gap: 8px; margin-bottom: 10px; }
+.count-box {
+  flex: 1; background: #e2e6ea;
+  border: 1px solid #9aa2aa; border-radius: 4px;
+  padding: 7px 10px; text-align: center;
+}
+.count-num  { font-size: 20px; font-weight: bold; line-height: 1; }
+.count-lbl  { font-size: 9px; color: #4e5d6c; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.count-num.red    { color: #cc2233; }
+.count-num.orange { color: #a85e00; }
+.count-num.green  { color: #1e8050; }
+.task-list-inner { display: flex; flex-direction: column; gap: 0; }
+.task-row {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px 0; border-bottom: 1px solid #b8c0c8;
+  font-size: 12px;
+}
+.task-row:last-child { border-bottom: none; }
+.task-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+.task-name { flex: 1; color: #1a2430; line-height: 1.35; }
+.task-date { font-size: 10px; white-space: nowrap; }
+.task-date.overdue { color: #cc2233; font-weight: bold; }
+.task-date.today   { color: #a85e00; font-weight: bold; }
+.section-label { font-size: 10px; font-weight: bold; color: #4e5d6c; letter-spacing: 1.5px; text-transform: uppercase; margin: 8px 0 4px; }
+.widget-empty { font-size: 12px; color: #4e5d6c; text-align: center; padding: 10px 0; line-height: 1.6; }
+
+/* ── Reading widget ───────────────────────────────── */
+.book-row {
+  display: flex; gap: 10px; align-items: center;
+  padding: 7px 0; border-bottom: 1px solid #b8c0c8;
+}
+.book-row:last-child { border-bottom: none; }
+.book-thumb-sm {
+  width: 36px; height: 50px; flex-shrink: 0;
+  border-radius: 2px; border: 1px solid #9aa2aa;
+  background: #e2e6ea; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.book-thumb-sm img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.book-spine-sm { width: 4px; height: 50px; border-radius: 1px; flex-shrink: 0; }
+.book-meta { flex: 1; min-width: 0; }
+.book-meta-title  { font-size: 12px; font-weight: bold; color: #1a2430; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.book-meta-author { font-size: 10px; color: #4e5d6c; margin-bottom: 5px; }
+.prog-bg   { background: #b8c0c8; border-radius: 2px; height: 5px; overflow: hidden; }
+.prog-fill { height: 100%; background: #4d88cc; border-radius: 2px; }
+.prog-lbl  { font-size: 10px; color: #4e5d6c; margin-top: 2px; }
+
+/* ── Study widget ─────────────────────────────────── */
+.study-set-row { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; }
+.study-lbl { font-size: 10px; color: #4e5d6c; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+.study-date-in {
+  flex: 1; background: #e2e6ea; border: 1px solid #9aa2aa;
+  border-radius: 4px; color: #1a2430; font-family: inherit;
+  font-size: 11px; padding: 5px 8px; outline: none;
+}
+.study-date-in:focus { border-color: #5599cc; }
+.btn-set {
+  background: #5599cc; border: none; border-radius: 4px;
+  color: #fff; font-family: inherit; font-size: 10px;
+  font-weight: bold; padding: 5px 10px; cursor: pointer;
+  letter-spacing: 1px; transition: background 0.15s;
+}
+.btn-set:hover { background: #3a77bb; }
+.study-center { text-align: center; padding: 4px 0 8px; }
+.study-big { font-size: 34px; font-weight: bold; color: #e06500; line-height: 1; }
+.study-of  { font-size: 11px; color: #4e5d6c; margin-top: 2px; }
+.study-phase-badge { display: inline-block; margin-top: 6px; }
+.prog-bg.blue .prog-fill { background: #5599cc; }
+
+/* ── Apprenticeship widget ────────────────────────── */
+.elec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(195px, 1fr)); gap: 10px; }
+.elec-phase-box {
+  background: #e2e6ea; border: 1px solid #9aa2aa;
+  border-radius: 4px; padding: 10px 12px;
+}
+.elec-ph-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+.elec-ph-name { font-size: 10px; font-weight: bold; color: #e06500; letter-spacing: 1.5px; text-transform: uppercase; }
+.elec-ph-prog { font-size: 10px; color: #4e5d6c; }
+.elec-prog-bar { background: #c8d0d8; border-radius: 2px; height: 3px; margin-bottom: 8px; overflow: hidden; }
+.elec-prog-fill { height: 100%; border-radius: 2px; background: #1e8050; transition: width 0.3s; }
+.elec-item { display: flex; align-items: flex-start; gap: 7px; margin-bottom: 5px; }
+.elec-item:last-child { margin-bottom: 0; }
+.elec-cb {
+  appearance: none; width: 14px; height: 14px;
+  border-radius: 3px; border: 1px solid #9aa2aa;
+  background: #cdd2d8; cursor: pointer; flex-shrink: 0;
+  margin-top: 1px; position: relative; transition: all 0.12s;
+}
+.elec-cb:checked { background: #1e8050; border-color: #1e8050; }
+.elec-cb:checked::after {
+  content: '✓'; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  color: #fff; font-size: 9px; font-weight: bold;
+}
+.elec-item-lbl { font-size: 11px; color: #2a3a4a; line-height: 1.4; cursor: pointer; user-select: none; }
+.elec-item.done .elec-item-lbl { color: #8a9aaa; text-decoration: line-through; }
+</style>
+</head>
+<body>
+
+<div class="dash-topbar">
+  <div class="topbar-left">
+    <div class="topbar-date" id="hdr-date">—</div>
+    <div class="topbar-sub" id="hdr-sub">KEIJI'S CORNER &nbsp;·&nbsp; DAILY OVERVIEW</div>
+  </div>
+  <button class="btn-refresh" onclick="buildAll()">↻ Refresh</button>
+</div>
+
+<div class="grid">
+  <div class="widget" id="w-workout"></div>
+  <div class="widget" id="w-tasks"></div>
+  <div class="widget" id="w-reading"></div>
+  <div class="widget" id="w-study"></div>
+  <div class="widget grid-full" id="w-elec"></div>
+</div>
+
+<script>
+// ── Helpers ────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function tryParse(key, fallback) {
+  try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; }
+}
+function sameDay(a, b) {
+  return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  const today = new Date(); today.setHours(0,0,0,0);
+  if (sameDay(d, today)) return 'Today';
+  const yest = new Date(today); yest.setDate(yest.getDate()-1);
+  if (sameDay(d, yest)) return 'Yesterday';
+  return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+// ── Date header ────────────────────────────────────────────
+function buildHeader() {
+  const now = new Date();
+  const days  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('hdr-date').textContent =
+    `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+}
+
+// ── Workout widget ─────────────────────────────────────────
+const PROG_START  = new Date(2026, 4, 1);
+const WK_MAP = { 0:null, 1:'lower-a', 2:'upper-a', 3:'lower-b', 4:'upper-b', 5:'lower-a', 6:'upper-a' };
+const WK_INFO = {
+  'lower-a': { title:'Lower + Core A',  emph:'Quad & Ankle Dominant' },
+  'lower-b': { title:'Lower + Core B',  emph:'Posterior Chain & Foot Strength' },
+  'upper-a': { title:'Upper A',          emph:'Delt & Push Dominant' },
+  'upper-b': { title:'Upper B',          emph:'Delt & Pull Dominant' },
+};
+
+function getProgramWeek(date) {
+  const d = new Date(date); d.setHours(0,0,0,0);
+  const s = new Date(PROG_START); s.setHours(0,0,0,0);
+  if (d < s) return null;
+  return Math.floor((d - s) / (7*24*60*60*1000)) + 1;
+}
+function getPhase(week) {
+  if (!week) return null;
+  if (week <= 4)  return { name:'Learning',  cls:'pill-green' };
+  if (week <= 8)  return { name:'Building',  cls:'pill-blue'  };
+  if (week <= 12) return { name:'Intensity', cls:'pill-red'   };
+  return { name:'Beyond 12 Wks', cls:'pill-muted' };
+}
+function calcStreak(comp) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  let check = new Date(today);
+  const todayStr = today.toISOString().split('T')[0];
+  if (WK_MAP[today.getDay()] && !comp[todayStr]) check.setDate(check.getDate()-1);
+  let streak = 0;
+  for (let i=0; i<365; i++) {
+    if (check < PROG_START) break;
+    const dStr = check.toISOString().split('T')[0];
+    const sched = WK_MAP[check.getDay()];
+    if (!sched) { check.setDate(check.getDate()-1); continue; }
+    if (comp[dStr]) { streak++; check.setDate(check.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+
+function buildWorkout() {
+  const el     = document.getElementById('w-workout');
+  const comp   = tryParse('cf-completions', {});
+  const today  = new Date(); today.setHours(0,0,0,0);
+  const dStr   = today.toISOString().split('T')[0];
+  const wkKey  = WK_MAP[today.getDay()];
+  const week   = getProgramWeek(today);
+  const phase  = getPhase(week);
+  const streak = calcStreak(comp);
+  const logged = !!comp[dStr];
+
+  let body;
+  if (!wkKey) {
+    body = `<div class="wo-rest">
+      Today is <strong>Sunday — Rest Day.</strong><br>
+      Light walk, stretch, or mobility work only.<br>
+      Don't forget your 5-min ankle rehab!
+    </div>`;
+  } else {
+    const info = WK_INFO[wkKey];
+    const logHtml = logged
+      ? `<div class="wo-log done">✓ &nbsp;Today's session logged</div>`
+      : `<div class="wo-log pending">○ &nbsp;Session not yet logged</div>`;
+    body = `
+      <div class="wo-label">Today's Training</div>
+      <div class="wo-name">${esc(info.title)}</div>
+      <div class="wo-emph">${esc(info.emph)}</div>
+      <div class="wo-pills">
+        ${week  ? `<span class="pill pill-orange">Week ${week}</span>` : ''}
+        ${phase ? `<span class="pill ${phase.cls}">${phase.name}</span>` : ''}
+        ${streak > 0 ? `<span class="pill pill-green">🔥 ${streak} streak</span>` : ''}
+      </div>
+      ${logHtml}`;
+  }
+
+  el.innerHTML = `
+    <div class="widget-head">
+      <span class="widget-title"><span class="icon">💪</span>Calisthenics</span>
+      <button class="widget-jump" onclick="parent.showTab('calisthenics',document.getElementById('tab-calisthenics'))">Open →</button>
+    </div>
+    <div class="widget-body">${body}</div>`;
+}
+
+// ── Tasks widget ───────────────────────────────────────────
+function buildTasks() {
+  const el    = document.getElementById('w-tasks');
+  const state = tryParse('tm_data', { tasks:[], projects:[] });
+  const now   = new Date(); now.setHours(0,0,0,0);
+  const open  = state.tasks.filter(t => !t.done);
+  const overdue  = open.filter(t => t.dueDate && new Date(t.dueDate+'T00:00:00') < now);
+  const dueToday = open.filter(t => t.dueDate && sameDay(new Date(t.dueDate+'T00:00:00'), now));
+  const highPri  = open.filter(t => t.priority==='high' && !dueToday.includes(t) && !overdue.includes(t));
+
+  const projColor = id => {
+    const p = (state.projects||[]).find(p => p.id===id);
+    return p ? p.color : '#8e98a2';
+  };
+
+  const renderRow = (t, dateCls='') => {
+    const d = t.dueDate ? fmtDate(t.dueDate) : '';
+    const isOv = t.dueDate && new Date(t.dueDate+'T00:00:00') < now;
+    const dateCls2 = isOv ? 'overdue' : (sameDay(new Date((t.dueDate||'')+'T00:00:00'), now) ? 'today' : '');
+    return `<div class="task-row">
+      <div class="task-dot" style="background:${projColor(t.projectId)}"></div>
+      <span class="task-name">${esc(t.name)}</span>
+      ${d ? `<span class="task-date ${dateCls2}">${esc(d)}</span>` : ''}
+    </div>`;
+  };
+
+  const countSection = `
+    <div class="task-counts">
+      <div class="count-box">
+        <div class="count-num ${overdue.length>0?'red':'green'}">${overdue.length}</div>
+        <div class="count-lbl">Overdue</div>
+      </div>
+      <div class="count-box">
+        <div class="count-num ${dueToday.length>0?'orange':'green'}">${dueToday.length}</div>
+        <div class="count-lbl">Due Today</div>
+      </div>
+      <div class="count-box">
+        <div class="count-num" style="color:#4d88cc;">${open.length}</div>
+        <div class="count-lbl">Open</div>
+      </div>
+    </div>`;
+
+  let listHtml = '';
+  if (overdue.length) {
+    listHtml += `<div class="section-label">Overdue</div><div class="task-list-inner">${overdue.slice(0,4).map(t=>renderRow(t)).join('')}</div>`;
+  }
+  if (dueToday.length) {
+    listHtml += `<div class="section-label">Due Today</div><div class="task-list-inner">${dueToday.slice(0,4).map(t=>renderRow(t)).join('')}</div>`;
+  }
+  if (!overdue.length && !dueToday.length) {
+    if (highPri.length) {
+      listHtml += `<div class="section-label">High Priority</div><div class="task-list-inner">${highPri.slice(0,5).map(t=>renderRow(t)).join('')}</div>`;
+    } else {
+      listHtml = `<div class="widget-empty">No overdue or due-today tasks.<br>You're on top of it ✓</div>`;
+    }
+  }
+
+  el.innerHTML = `
+    <div class="widget-head">
+      <span class="widget-title"><span class="icon">⏱</span>Time Manager</span>
+      <button class="widget-jump" onclick="parent.showTab('timemgr',document.getElementById('tab-timemgr'))">Open →</button>
+    </div>
+    <div class="widget-body">${countSection}${listHtml}</div>`;
+}
+
+// ── Reading widget ─────────────────────────────────────────
+function buildReading() {
+  const el    = document.getElementById('w-reading');
+  const books = tryParse('bt_data', []);
+  const reading = books.filter(b => b.status === 'reading');
+
+  let body;
+  if (!reading.length) {
+    body = `<div class="widget-empty">No books currently in progress.<br>Add one in the Books tab!</div>`;
+  } else {
+    body = reading.slice(0, 4).map(b => {
+      const pct = (b.pages && b.pagesRead) ? Math.min(100, Math.round(b.pagesRead / b.pages * 100)) : 0;
+      const thumbHtml = b.coverImage
+        ? `<div class="book-thumb-sm"><img src="${esc(b.coverImage)}" alt="cover"></div>`
+        : `<div class="book-thumb-sm" style="font-size:18px;">📖</div>`;
+      return `<div class="book-row">
+        <div class="book-spine-sm" style="background:${esc(b.spineColor||'#d45f00')}"></div>
+        ${thumbHtml}
+        <div class="book-meta">
+          <div class="book-meta-title">${esc(b.title)}</div>
+          <div class="book-meta-author">${esc(b.author||'Unknown')}</div>
+          <div class="prog-bg"><div class="prog-fill" style="width:${pct}%"></div></div>
+          <div class="prog-lbl">${b.pagesRead||0}${b.pages ? ' / '+b.pages+' pages' : ' pages read'} &nbsp;(${pct}%)</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  el.innerHTML = `
+    <div class="widget-head">
+      <span class="widget-title"><span class="icon">📚</span>Currently Reading</span>
+      <button class="widget-jump" onclick="parent.showTab('books',document.getElementById('tab-books'))">Open →</button>
+    </div>
+    <div class="widget-body">${body}</div>`;
+}
+
+// ── Study widget ───────────────────────────────────────────
+const TOTAL_WEEKS = 113;
+const CURRICULUM_PHASES = [
+  { name:'Phase 1 — Foundations',  end:20  },
+  { name:'Phase 2 — Core Calc',    end:45  },
+  { name:'Phase 3 — Linear Alg & Stats', end:70  },
+  { name:'Phase 4 — Physics & Sci',end:91  },
+  { name:'Phase 5 — Mastery',      end:113 },
+];
+function getCurriculumPhase(week) {
+  return CURRICULUM_PHASES.find(p => week <= p.end) || CURRICULUM_PHASES[CURRICULUM_PHASES.length-1];
+}
+
+function buildStudy() {
+  const el      = document.getElementById('w-study');
+  const stored  = localStorage.getItem('curriculum_start') || '';
+  const pct_prog = stored
+    ? (() => {
+        const start = new Date(stored+'T00:00:00');
+        const today = new Date(); today.setHours(0,0,0,0);
+        const week  = Math.max(1, Math.floor((today - start) / (7*24*60*60*1000)) + 1);
+        return Math.min(week, TOTAL_WEEKS);
+      })() : null;
+
+  const weekNum = pct_prog;
+  const phase   = weekNum ? getCurriculumPhase(weekNum) : null;
+  const pct     = weekNum ? Math.round(weekNum / TOTAL_WEEKS * 100) : 0;
+
+  const setRow = `
+    <div class="study-set-row">
+      <span class="study-lbl">Start:</span>
+      <input class="study-date-in" id="study-start-in" type="date" value="${esc(stored)}" title="Set curriculum start date">
+      <button class="btn-set" onclick="saveStudyStart()">Set</button>
+    </div>`;
+
+  let main;
+  if (!weekNum || weekNum < 1) {
+    main = `<div class="widget-empty" style="padding-top:4px;">Set a start date to track<br>your current study week.</div>`;
+  } else {
+    main = `
+      <div style="text-align:center;padding:6px 0 10px;">
+        <div class="study-big">Week ${Math.min(weekNum, TOTAL_WEEKS)}</div>
+        <div class="study-of">of ${TOTAL_WEEKS} total weeks</div>
+        <div class="study-phase-badge">
+          <span class="pill pill-blue" style="margin-top:6px;display:inline-block;">${esc(phase.name)}</span>
+        </div>
+      </div>
+      <div class="prog-bg blue">
+        <div class="prog-fill" style="background:#5599cc;width:${pct}%"></div>
+      </div>
+      <div class="prog-lbl" style="text-align:right;margin-top:3px;">${pct}% complete</div>`;
+  }
+
+  el.innerHTML = `
+    <div class="widget-head">
+      <span class="widget-title"><span class="icon">🔬</span>Math / Sciences Study</span>
+      <button class="widget-jump" onclick="parent.showTab('curriculum',document.getElementById('tab-curriculum'))">Open →</button>
+    </div>
+    <div class="widget-body">${setRow}${main}</div>`;
+}
+
+function saveStudyStart() {
+  const val = document.getElementById('study-start-in').value;
+  if (val) { localStorage.setItem('curriculum_start', val); buildStudy(); }
+}
+
+// ── Apprenticeship widget ──────────────────────────────────
+const ELEC_PHASES = [
+  {
+    name: 'Phase 1 — Admin',
+    items: [
+      'Official sealed transcripts ordered',
+      'High school diploma / GED ready',
+      'DMV K4 printout obtained (in person)',
+    ]
+  },
+  {
+    name: 'Phase 2 — Aptitude Prep',
+    items: [
+      'Algebra & fractions practice started',
+      'Spatial reasoning puzzles (3D)',
+      'Reading comprehension practice',
+    ]
+  },
+  {
+    name: 'Phase 3 — Portfolio',
+    items: [
+      'Tool log / photos documented',
+      'Mechanical project portfolio built',
+      '"Why electrician" answer prepared',
+    ]
+  },
+  {
+    name: 'Phase 4 — Certifications',
+    items: [
+      'OSHA 10-Hour completed',
+      'CPR & First Aid certified',
+      'ET (Electrician Trainee) registered',
+    ]
+  },
+];
+
+function getElecChecklist() { return tryParse('elec_checklist', {}); }
+function saveElecChecklist(c) { localStorage.setItem('elec_checklist', JSON.stringify(c)); }
+
+function buildElec() {
+  const el    = document.getElementById('w-elec');
+  const check = getElecChecklist();
+  const total = ELEC_PHASES.reduce((s, p) => s + p.items.length, 0);
+  const done  = Object.values(check).filter(Boolean).length;
+
+  const phasesHtml = ELEC_PHASES.map((phase, pi) => {
+    const pDone = phase.items.filter((_, ii) => check[`${pi}-${ii}`]).length;
+    const pPct  = Math.round(pDone / phase.items.length * 100);
+    const itemsHtml = phase.items.map((item, ii) => {
+      const id  = `elec-${pi}-${ii}`;
+      const key = `${pi}-${ii}`;
+      const isDone = !!check[key];
+      return `<div class="elec-item${isDone?' done':''}" id="ei-${pi}-${ii}">
+        <input type="checkbox" class="elec-cb" id="${id}" ${isDone?'checked':''} onchange="toggleElec(${pi},${ii},this.checked)">
+        <label class="elec-item-lbl" for="${id}">${esc(item)}</label>
+      </div>`;
+    }).join('');
+    return `<div class="elec-phase-box">
+      <div class="elec-ph-head">
+        <span class="elec-ph-name">${esc(phase.name)}</span>
+        <span class="elec-ph-prog">${pDone}/${phase.items.length}</span>
+      </div>
+      <div class="elec-prog-bar"><div class="elec-prog-fill" style="width:${pPct}%"></div></div>
+      ${itemsHtml}
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="widget-head">
+      <span class="widget-title"><span class="icon">⚡</span>Electrical Apprenticeship Checklist</span>
+      <span style="font-size:10px;color:#5599cc;position:relative;z-index:1;">${done} / ${total} complete</span>
+    </div>
+    <div class="widget-body">
+      <div class="elec-grid">${phasesHtml}</div>
+    </div>`;
+}
+
+function toggleElec(pi, ii, val) {
+  const c = getElecChecklist();
+  c[`${pi}-${ii}`] = val;
+  saveElecChecklist(c);
+  // Update the item's done class without full rebuild
+  const item = document.getElementById(`ei-${pi}-${ii}`);
+  if (item) item.classList.toggle('done', val);
+  // Rebuild to update phase progress bars
+  buildElec();
+}
+
+// ── Wire up parent tab nav ─────────────────────────────────
+// The dashboard lives in an iframe; clicking "Open →" tells the parent
+// keijis-corner to switch to that tab.
+function openTab(tabId) {
+  try {
+    const btn = window.parent.document.getElementById(tabId);
+    if (btn) btn.click();
+  } catch(e) {}
+}
+// Re-wire buttons after each rebuild since innerHTML is replaced
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.widget-jump');
+  if (!btn) return;
+  const onclick = btn.getAttribute('onclick') || '';
+  // Extract tab name from the onclick string: showTab('xxx', ...)
+  const m = onclick.match(/showTab\('(\w+)'/);
+  if (m) {
+    e.preventDefault();
+    openTab('tab-' + m[1]);
+  }
+});
+
+// ── Build all ──────────────────────────────────────────────
+function buildAll() {
+  buildHeader();
+  buildWorkout();
+  buildTasks();
+  buildReading();
+  buildStudy();
+  buildElec();
+}
+
+buildAll();
+
+// Auto-refresh every 60s to stay fresh without requiring interaction
+setInterval(buildAll, 60000);
+</script>
+</body>
+</html>
