@@ -158,7 +158,11 @@
     align-items: stretch;
     flex-shrink: 0;
     padding: 0 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .nav-bar::-webkit-scrollbar { display: none; }
 
   .nav-tab {
     padding: 8px 22px;
@@ -175,6 +179,7 @@
     transition: background 0.1s, color 0.1s;
     position: relative;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .nav-tab:first-child { border-left: 1px solid #808890; margin-left: 4px; }
