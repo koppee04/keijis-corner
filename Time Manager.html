@@ -424,6 +424,55 @@
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
+  /* ── Mobile sidebar toggle ── */
+  #sidebar-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+  }
+  #sidebar-toggle:hover { background: var(--surface2); }
+
+  #sidebar-scrim {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 199;
+  }
+
+  @media (max-width: 768px) {
+    #sidebar-toggle { display: block; }
+
+    #sidebar {
+      position: fixed;
+      left: 0; top: 0;
+      height: 100vh;
+      z-index: 200;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.35);
+    }
+
+    body.sidebar-open #sidebar        { transform: translateX(0); }
+    body.sidebar-open #sidebar-scrim  { display: block; }
+
+    #main { width: 100%; }
+
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+
+    #topbar  { padding: 10px 14px; }
+    #content { padding: 14px 14px; }
+
+    .search-input { width: 120px; }
+  }
+
   /* ── Notes area ── */
   #notes-area {
     width: 100%;
@@ -456,6 +505,7 @@
 </head>
 <body>
 
+<div id="sidebar-scrim" onclick="closeSidebar()"></div>
 <nav id="sidebar">
   <h1>⏱ TimeManager</h1>
 
@@ -481,6 +531,7 @@
 
 <div id="main">
   <div id="topbar">
+    <button id="sidebar-toggle" onclick="toggleSidebar()">☰</button>
     <span id="view-title">Dashboard</span>
     <button class="btn btn-primary" id="topbar-action" onclick="openTaskModal()" style="">+ Add Task</button>
   </div>
@@ -543,8 +594,13 @@ let filterStatus = 'open';
 let filterPriority = null;
 let searchQuery = '';
 
+// ── Sidebar toggle (mobile) ────────────────────────────
+function toggleSidebar() { document.body.classList.toggle('sidebar-open'); }
+function closeSidebar()  { document.body.classList.remove('sidebar-open'); }
+
 // ── Routing ────────────────────────────────────────────
 function setView(view, projectId = null) {
+  closeSidebar();
   currentView = view;
   filterProject = projectId;
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
