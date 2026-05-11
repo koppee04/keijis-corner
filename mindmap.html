@@ -6,124 +6,143 @@
 <title>Who Is Keiji?</title>
 <style>
 :root {
-  --bg:       #b8bec6;
-  --surface:  #d4d9de;
-  --surface2: #e0e4e8;
-  --border:   #8e98a2;
-  --accent:   #d45f00;
-  --text:     #18202a;
-  --muted:    #5a6878;
-  --faint:    #9aa4ae;
+  --bg:      #b8bec6;
+  --surface: #d4d9de;
+  --border:  #8e98a2;
+  --accent:  #d45f00;
+  --text:    #18202a;
+  --muted:   #5a6878;
+  --faint:   #9aa4ae;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
   background: var(--bg);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   font-family: 'Consolas', 'Courier New', monospace;
-  padding: 20px 12px 32px;
   user-select: none;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 12px;
+/* SVG fills the entire viewport */
+#svg-wrap {
+  position: fixed;
+  inset: 0;
+  cursor: grab;
 }
-.header-sub {
-  font-size: 9px;
+#svg-wrap svg {
+  width: 100%; height: 100%;
+  display: block;
+}
+
+/* Zoom group has the smooth CSS transition */
+#zoom-group {
+  transform: translate(0px,0px) scale(1);
+  transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+  transform-origin: 0px 0px;
+}
+
+/* Header — floating overlay, top center */
+.hdr {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: rgba(212,217,222,0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 18px 5px;
+  text-align: center;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.hdr-sub {
+  font-size: 8px;
   letter-spacing: 0.4em;
   color: var(--accent);
   text-transform: uppercase;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
-.header-title {
+.hdr-title {
   color: var(--text);
-  font-size: 22px;
-  letter-spacing: 0.08em;
+  font-size: 15px;
   font-weight: bold;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-#header-subtitle {
-  margin-top: 5px;
-  font-size: 9px;
+#hdr-active {
+  margin-top: 3px;
+  font-size: 8px;
   color: var(--faint);
   letter-spacing: 2px;
   text-transform: uppercase;
   transition: color 0.3s;
-  min-height: 14px;
+  min-height: 11px;
 }
 
-.svg-container {
-  width: 100%;
-  max-width: 860px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  overflow: hidden;
-  background: var(--surface);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-}
-.svg-container svg { width: 100%; height: auto; display: block; }
-
-#zoom-group {
-  transform: translate(0px, 0px) scale(1);
-  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: 0px 0px;
-}
-
-.legend {
+/* Legend — floating overlay, bottom center */
+#legend {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 10px;
+  gap: 5px 7px;
   justify-content: center;
-  margin-top: 14px;
-  max-width: 740px;
+  max-width: 92vw;
 }
-.legend-pill {
+.pill {
   display: flex;
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  padding: 4px 11px;
+  padding: 3px 9px;
   border-radius: 4px;
   border: 1px solid;
-  transition: all 0.2s;
   font-family: inherit;
+  transition: all 0.2s;
+  background: rgba(212,217,222,0.86);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-.footer {
-  margin-top: 12px;
+/* Hint line above legend */
+#hint {
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
   color: var(--faint);
-  font-size: 9px;
+  font-size: 8px;
   letter-spacing: 1.2px;
   text-transform: uppercase;
-  text-align: center;
-  line-height: 1.8;
+  white-space: nowrap;
+  pointer-events: none;
 }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-sub">Portrait of a Mind</div>
-  <div class="header-title">★ Who Is Keiji? ★</div>
-  <div id="header-subtitle">tap a branch to zoom in</div>
+<div id="svg-wrap"></div>
+
+<div class="hdr">
+  <div class="hdr-sub">Portrait of a Mind</div>
+  <div class="hdr-title">★ Who Is Keiji? ★</div>
+  <div id="hdr-active">tap a branch to zoom · drag to pan</div>
 </div>
 
-<div class="svg-container" id="svg-container"></div>
-<div class="legend" id="legend"></div>
-
-<div class="footer">
-  Tap branch or pill to zoom · Tap background to zoom out
-  <br>⚡ Craft feeds ◬ The Dream via off-grid electrical work
-</div>
+<div id="legend"></div>
+<div id="hint">⚡ craft feeds ◬ the dream via off-grid electrical work</div>
 
 <script>
-// Branch colors are darkened vs. the original dark-bg version
-// so they contrast clearly against the light gray surface (#d4d9de)
+// Branch colors darkened for the light gray (#d4d9de) surface
 const DATA = [
   { id:"faith",      label:"Faith",          angle:-90,  color:"#9e7418", icon:"✦",
     children:["Antiochian Orthodox","Prayer & Liturgy","Apologetics","Comparative Religion","Christian Martyrdom","WMSCOG Discernment"] },
@@ -147,271 +166,307 @@ const DATA = [
 
 const CX = 470, CY = 470, BR = 175, LR = 315, SPREAD = 30;
 const ZOOM_FOCUS_R = 235, ZOOM_SCALE = 2.15;
+const SURF = '#d4d9de', PAGE_BG = '#c8cfd6', RING = 'rgba(0,0,0,0.07)';
+const T_DARK = '#18202a', T_MID = '#5a6878', T_DIM = '#9aa4ae', ORG = '#d45f00';
 
-// Site palette refs used inside SVG
-const BG_SURFACE  = '#d4d9de';   // branch circle fill (inactive)
-const BG_PAGE     = '#c8cfd6';   // center circle fill
-const RING_COLOR  = 'rgba(0,0,0,0.06)';
-const TEXT_DARK   = '#18202a';
-const TEXT_MID    = '#5a6878';
-const TEXT_DIM    = '#9aa4ae';
-const ACCENT_ORG  = '#d45f00';
-
-let activeId = null;
+let activeId  = null;
+let panX = 0, panY = 0;
+let isDragging = false, hasMoved = false;
+let dragStart = {x:0,y:0}, panStart = {x:0,y:0};
 
 function polar(deg, r) {
-  const rad = deg * Math.PI / 180;
-  return { x: Math.cos(rad) * r, y: Math.sin(rad) * r };
+  const a = deg * Math.PI / 180;
+  return { x: Math.cos(a) * r, y: Math.sin(a) * r };
 }
 
-const SVG_NS = 'http://www.w3.org/2000/svg';
-function svgEl(tag, attrs = {}) {
-  const el = document.createElementNS(SVG_NS, tag);
-  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
-  return el;
+const NS = 'http://www.w3.org/2000/svg';
+function mkEl(tag, attrs = {}) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k,v] of Object.entries(attrs)) e.setAttribute(k, v);
+  return e;
 }
 
+let svgNode; // filled by buildSVG
+
+// ── Build SVG structure once ────────────────────────────────────────
 function buildSVG() {
-  const svg = svgEl('svg', { viewBox:'0 0 940 940' });
+  const svg = mkEl('svg', { viewBox:'0 0 940 940', preserveAspectRatio:'xMidYMid meet' });
+  svgNode = svg;
 
-  // ── defs ──────────────────────────────────────────────────────────
-  const defs = svgEl('defs');
+  /* defs */
+  const defs = mkEl('defs');
   DATA.forEach(b => {
-    const g = svgEl('radialGradient', { id:`g-${b.id}`, cx:'50%', cy:'50%', r:'50%' });
+    const g = mkEl('radialGradient', { id:`rg-${b.id}`, cx:'50%', cy:'50%', r:'50%' });
     g.append(
-      svgEl('stop', { offset:'0%',   'stop-color':b.color, 'stop-opacity':'0.22' }),
-      svgEl('stop', { offset:'100%', 'stop-color':b.color, 'stop-opacity':'0'  })
+      mkEl('stop', { offset:'0%',   'stop-color':b.color, 'stop-opacity':'0.22' }),
+      mkEl('stop', { offset:'100%', 'stop-color':b.color, 'stop-opacity':'0'   })
     );
     defs.appendChild(g);
   });
-
-  // center glow: orange
-  const cg = svgEl('radialGradient', { id:'cg', cx:'50%', cy:'50%', r:'50%' });
+  const cg = mkEl('radialGradient', { id:'cg', cx:'50%', cy:'50%', r:'50%' });
   cg.append(
-    svgEl('stop', { offset:'0%',   'stop-color':ACCENT_ORG, 'stop-opacity':'0.18' }),
-    svgEl('stop', { offset:'100%', 'stop-color':ACCENT_ORG, 'stop-opacity':'0'  })
+    mkEl('stop', { offset:'0%',   'stop-color':ORG, 'stop-opacity':'0.18' }),
+    mkEl('stop', { offset:'100%', 'stop-color':ORG, 'stop-opacity':'0'   })
   );
   defs.appendChild(cg);
-
-  const filt = svgEl('filter', { id:'sg', x:'-40%', y:'-40%', width:'180%', height:'180%' });
-  const blur = svgEl('feGaussianBlur', { stdDeviation:'3', result:'b' });
-  const merge = svgEl('feMerge');
-  merge.append(svgEl('feMergeNode', { in:'b' }), svgEl('feMergeNode', { in:'SourceGraphic' }));
-  filt.append(blur, merge);
-  defs.appendChild(filt);
+  const flt = mkEl('filter', { id:'sg', x:'-40%', y:'-40%', width:'180%', height:'180%' });
+  const fb  = mkEl('feGaussianBlur', { stdDeviation:'3', result:'b' });
+  const fm  = mkEl('feMerge');
+  fm.append(mkEl('feMergeNode', { in:'b' }), mkEl('feMergeNode', { in:'SourceGraphic' }));
+  flt.append(fb, fm); defs.appendChild(flt);
   svg.appendChild(defs);
 
-  // bg rect (click to deselect)
-  const bgRect = svgEl('rect', { id:'bg-rect', x:'0', y:'0', width:'940', height:'940', fill:'transparent' });
-  bgRect.style.cursor = 'default';
-  bgRect.addEventListener('click', () => toggle(null));
-  svg.appendChild(bgRect);
+  /* bg rect — outside pan-group, covers full viewBox, catches deselect clicks */
+  const bgr = mkEl('rect', { id:'bg-rect', x:'0', y:'0', width:'940', height:'940', fill:'transparent' });
+  bgr.addEventListener('click', () => { if (!hasMoved) toggle(null); });
+  svg.appendChild(bgr);
 
-  // zoom group
-  const zg = svgEl('g', { id:'zoom-group' });
-  svg.appendChild(zg);
+  /* pan-group — translated on drag (no CSS transition, immediate) */
+  const pg = mkEl('g', { id:'pan-group' });
+  svg.appendChild(pg);
 
-  // background rings
-  [78, 152, 232, 316].forEach(r =>
-    zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r, fill:'none', stroke:RING_COLOR, 'stroke-width':'1' }))
+  /* zoom-group — animated CSS transform (transition defined in CSS) */
+  const zg = mkEl('g', { id:'zoom-group' });
+  pg.appendChild(zg);
+
+  /* bg rings */
+  [78,152,232,316].forEach(r =>
+    zg.appendChild(mkEl('circle', { cx:CX, cy:CY, r, fill:'none', stroke:RING, 'stroke-width':'1' }))
   );
 
-  // ── lines layer ─────────────────────────────────────────────────
+  /* lines layer */
   DATA.forEach(b => {
     const bp = polar(b.angle, BR);
-    const bx = CX + bp.x, by = CY + bp.y;
-    const grp = svgEl('g', { id:`lines-${b.id}` });
-
-    grp.appendChild(svgEl('circle', { id:`glow-${b.id}`, cx:bx, cy:by, r:80,
-      fill:`url(#g-${b.id})`, opacity:'0' }));
-    grp.appendChild(svgEl('line', { id:`line-${b.id}`, x1:CX, y1:CY, x2:bx, y2:by,
+    const bx = CX+bp.x, by = CY+bp.y;
+    const grp = mkEl('g', { id:`L-${b.id}` });
+    grp.appendChild(mkEl('circle', { id:`GL-${b.id}`, cx:bx, cy:by, r:80,
+      fill:`url(#rg-${b.id})`, opacity:'0' }));
+    grp.appendChild(mkEl('line', { id:`ML-${b.id}`, x1:CX, y1:CY, x2:bx, y2:by,
       stroke:b.color, 'stroke-width':'1.5', 'stroke-opacity':'0.40' }));
-
-    const llg = svgEl('g', { id:`lleaf-${b.id}` });
-    b.children.forEach((_, i) => {
-      const sa = b.angle - (SPREAD * (b.children.length - 1)) / 2;
-      const lp = polar(sa + i * SPREAD, LR);
-      llg.appendChild(svgEl('line', { x1:bx, y1:by, x2:CX+lp.x, y2:CY+lp.y,
+    const llg = mkEl('g', { id:`LL-${b.id}` });
+    b.children.forEach((_,i) => {
+      const sa = b.angle - SPREAD*(b.children.length-1)/2;
+      const lp = polar(sa+i*SPREAD, LR);
+      llg.appendChild(mkEl('line', { x1:bx, y1:by, x2:CX+lp.x, y2:CY+lp.y,
         stroke:b.color, 'stroke-width':'1.2', 'stroke-opacity':'0.20' }));
     });
     grp.appendChild(llg);
     zg.appendChild(grp);
   });
 
-  // craft-dream arc
-  const dream = DATA.find(b => b.id==='dream'), craft = DATA.find(b => b.id==='craft');
-  const dp = polar(dream.angle, BR), cp = polar(craft.angle, BR);
-  const dx = CX+dp.x, dy = CY+dp.y, cx2 = CX+cp.x, cy2 = CY+cp.y;
-  const mx = (dx+cx2)/2*0.82 + CX*0.18, my = (dy+cy2)/2*0.82 + CY*0.18;
-  zg.appendChild(svgEl('path', { id:'arc-dc',
-    d:`M ${dx} ${dy} Q ${mx} ${my} ${cx2} ${cy2}`,
-    stroke:'#1a7840', 'stroke-width':'1', fill:'none',
-    'stroke-opacity':'0.30', 'stroke-dasharray':'5 4' }));
+  /* craft-dream dashed arc */
+  const dr = DATA.find(b=>b.id==='dream'), cr = DATA.find(b=>b.id==='craft');
+  const dp = polar(dr.angle,BR), cp2 = polar(cr.angle,BR);
+  const dax=CX+dp.x, day=CY+dp.y, cax=CX+cp2.x, cay=CY+cp2.y;
+  zg.appendChild(mkEl('path', { id:'arc',
+    d:`M ${dax} ${day} Q ${(dax+cax)/2*0.82+CX*0.18} ${(day+cay)/2*0.82+CY*0.18} ${cax} ${cay}`,
+    stroke:'#1a7840','stroke-width':'1', fill:'none','stroke-opacity':'0.30','stroke-dasharray':'5 4' }));
 
-  // center node
-  zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:76, fill:'url(#cg)' }));
-  zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:54, fill:BG_PAGE,
-    stroke:ACCENT_ORG, 'stroke-width':'2', 'stroke-opacity':'0.9' }));
-  zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:46, fill:'none',
-    stroke:ACCENT_ORG, 'stroke-width':'0.6', 'stroke-opacity':'0.3' }));
-  const ct1 = svgEl('text', { x:CX, y:CY-6, 'text-anchor':'middle', fill:TEXT_DARK,
-    'font-size':'18', 'font-family':"'Consolas','Courier New',monospace", 'font-weight':'bold', 'letter-spacing':'2' });
-  ct1.textContent = 'KEIJI';
-  zg.appendChild(ct1);
-  const ct2 = svgEl('text', { x:CX, y:CY+13, 'text-anchor':'middle', fill:ACCENT_ORG,
+  /* center */
+  zg.appendChild(mkEl('circle', { cx:CX, cy:CY, r:76, fill:'url(#cg)' }));
+  zg.appendChild(mkEl('circle', { cx:CX, cy:CY, r:54, fill:PAGE_BG,
+    stroke:ORG, 'stroke-width':'2', 'stroke-opacity':'0.9' }));
+  zg.appendChild(mkEl('circle', { cx:CX, cy:CY, r:46, fill:'none',
+    stroke:ORG, 'stroke-width':'0.6', 'stroke-opacity':'0.3' }));
+  const ct1 = mkEl('text', { x:CX, y:CY-6, 'text-anchor':'middle', fill:T_DARK,
+    'font-size':'18', 'font-family':"Consolas,'Courier New',monospace",
+    'font-weight':'bold', 'letter-spacing':'2' });
+  ct1.textContent = 'KEIJI'; zg.appendChild(ct1);
+  const ct2 = mkEl('text', { x:CX, y:CY+13, 'text-anchor':'middle', fill:ORG,
     'font-size':'9', 'letter-spacing':'3' });
-  ct2.textContent = '✦ ✦ ✦';
-  zg.appendChild(ct2);
+  ct2.textContent = '✦ ✦ ✦'; zg.appendChild(ct2);
 
-  // ── branch + leaf nodes ─────────────────────────────────────────
+  /* branch nodes + leaves */
   DATA.forEach(b => {
     const bp = polar(b.angle, BR);
-    const bx = CX + bp.x, by = CY + bp.y;
-    const bg = svgEl('g', { id:`branch-${b.id}` });
+    const bx = CX+bp.x, by = CY+bp.y;
+    const bg = mkEl('g', { id:`B-${b.id}` });
     bg.style.cursor = 'pointer';
-    bg.addEventListener('click', e => { e.stopPropagation(); toggle(b.id); });
+    bg.addEventListener('click', e => { if (hasMoved) return; e.stopPropagation(); toggle(b.id); });
 
-    bg.appendChild(svgEl('circle', { id:`bcircle-${b.id}`, cx:bx, cy:by, r:30,
-      fill:BG_SURFACE, stroke:b.color, 'stroke-width':'1.8', 'stroke-opacity':'0.7' }));
+    bg.appendChild(mkEl('circle', { id:`BC-${b.id}`, cx:bx, cy:by, r:30,
+      fill:SURF, stroke:b.color, 'stroke-width':'1.8', 'stroke-opacity':'0.70' }));
+    const ic = mkEl('text', { id:`BI-${b.id}`, x:bx, y:by-6, 'text-anchor':'middle',
+      fill:b.color, 'font-size':'13', 'pointer-events':'none' });
+    ic.textContent = b.icon; bg.appendChild(ic);
 
-    const icon = svgEl('text', { id:`bicon-${b.id}`, x:bx, y:by-6,
-      'text-anchor':'middle', fill:b.color, 'font-size':'13', 'pointer-events':'none' });
-    icon.textContent = b.icon;
-    bg.appendChild(icon);
-
-    // label (split to two lines if multi-word)
     if (b.label.includes(' ')) {
-      const words = b.label.split(' ');
-      const mid = Math.ceil(words.length / 2);
-      [[words.slice(0,mid).join(' '), by+7], [words.slice(mid).join(' '), by+16]].forEach(([txt, y]) => {
-        const t = svgEl('text', { 'class':'blabel', 'data-bid':b.id, x:bx, y,
-          'text-anchor':'middle', fill:TEXT_MID,
-          'font-size':'7', 'font-family':"'Consolas','Courier New',monospace", 'letter-spacing':'0.3',
-          'pointer-events':'none' });
-        t.textContent = txt;
-        bg.appendChild(t);
+      const ws = b.label.split(' '), mid = Math.ceil(ws.length/2);
+      [[ws.slice(0,mid).join(' '), by+7],[ws.slice(mid).join(' '), by+16]].forEach(([txt,y]) => {
+        const t = mkEl('text', { class:'BL', 'data-bid':b.id, x:bx, y,
+          'text-anchor':'middle', fill:T_MID, 'font-size':'7',
+          'font-family':"Consolas,'Courier New',monospace",
+          'letter-spacing':'0.3', 'pointer-events':'none' });
+        t.textContent = txt; bg.appendChild(t);
       });
     } else {
-      const t = svgEl('text', { 'class':'blabel', 'data-bid':b.id, x:bx, y:by+10,
-        'text-anchor':'middle', fill:TEXT_MID,
-        'font-size':'7.5', 'font-family':"'Consolas','Courier New',monospace", 'letter-spacing':'0.3',
-        'pointer-events':'none' });
-      t.textContent = b.label;
-      bg.appendChild(t);
+      const t = mkEl('text', { class:'BL', 'data-bid':b.id, x:bx, y:by+10,
+        'text-anchor':'middle', fill:T_MID, 'font-size':'7.5',
+        'font-family':"Consolas,'Courier New',monospace",
+        'letter-spacing':'0.3', 'pointer-events':'none' });
+      t.textContent = b.label; bg.appendChild(t);
     }
 
-    // leaves
-    const lg = svgEl('g', { id:`bleaves-${b.id}`, opacity:'0.35' });
+    const lg = mkEl('g', { id:`BLV-${b.id}`, opacity:'0.35' });
     lg.style.transition = 'opacity 0.35s';
-
-    b.children.forEach((child, i) => {
-      const sa = b.angle - (SPREAD * (b.children.length - 1)) / 2;
-      const lp = polar(sa + i * SPREAD, LR);
-      const lx = CX + lp.x, ly = CY + lp.y;
-      const anchor = lp.x > 10 ? 'start' : lp.x < -10 ? 'end' : 'middle';
-      const ox = lp.x > 10 ? 10 : lp.x < -10 ? -10 : 0;
-      const oy = lp.y > 10 ? 10 : lp.y < -10 ? -5 : 4;
-
-      const leaf = svgEl('g');
-      leaf.appendChild(svgEl('circle', { cx:lx, cy:ly, r:4, fill:b.color, opacity:'0.85' }));
-      const lt = svgEl('text', { x:lx+ox, y:ly+oy, 'text-anchor':anchor,
-        fill:TEXT_MID, 'font-size':'8',
-        'font-family':"'Consolas','Courier New',monospace", 'letter-spacing':'0.2' });
-      lt.textContent = child;
-      leaf.appendChild(lt);
-      lg.appendChild(leaf);
+    b.children.forEach((ch,i) => {
+      const sa = b.angle - SPREAD*(b.children.length-1)/2;
+      const lp = polar(sa+i*SPREAD, LR);
+      const lx=CX+lp.x, ly=CY+lp.y;
+      const anc = lp.x>10?'start':lp.x<-10?'end':'middle';
+      const ox  = lp.x>10?10:lp.x<-10?-10:0;
+      const oy  = lp.y>10?10:lp.y<-10?-5:4;
+      const lf = mkEl('g');
+      lf.appendChild(mkEl('circle', { cx:lx, cy:ly, r:4, fill:b.color, opacity:'0.85' }));
+      const lt = mkEl('text', { x:lx+ox, y:ly+oy, 'text-anchor':anc, fill:T_MID,
+        'font-size':'8', 'font-family':"Consolas,'Courier New',monospace", 'letter-spacing':'0.2' });
+      lt.textContent = ch; lf.appendChild(lt); lg.appendChild(lf);
     });
-
-    bg.appendChild(lg);
-    zg.appendChild(bg);
+    bg.appendChild(lg); zg.appendChild(bg);
   });
 
-  document.getElementById('svg-container').appendChild(svg);
+  document.getElementById('svg-wrap').appendChild(svg);
 }
 
+// ── Drag / Pan setup ────────────────────────────────────────────────
+function svgScale() {
+  const ctm = svgNode && svgNode.getScreenCTM();
+  return ctm ? ctm.a : (svgNode ? svgNode.clientWidth/940 : 1);
+}
+
+function applyPan() {
+  document.getElementById('pan-group').style.transform = `translate(${panX}px,${panY}px)`;
+}
+
+function setCursor(c) {
+  document.getElementById('svg-wrap').style.cursor = c;
+}
+
+function onDragStart(cx, cy) {
+  isDragging = true; hasMoved = false;
+  dragStart = {x:cx, y:cy}; panStart = {x:panX, y:panY};
+  setCursor('grabbing');
+}
+function onDragMove(cx, cy) {
+  if (!isDragging) return;
+  const dx = cx-dragStart.x, dy = cy-dragStart.y;
+  if (Math.abs(dx)>4 || Math.abs(dy)>4) hasMoved = true;
+  const s = svgScale();
+  panX = panStart.x + dx/s;
+  panY = panStart.y + dy/s;
+  applyPan();
+}
+function onDragEnd() {
+  if (!isDragging) return;
+  isDragging = false;
+  setCursor(activeId ? 'zoom-out' : 'grab');
+}
+
+// Mouse
+document.getElementById('svg-wrap').addEventListener('mousedown', e => {
+  if (e.button === 0) onDragStart(e.clientX, e.clientY);
+});
+window.addEventListener('mousemove', e => onDragMove(e.clientX, e.clientY));
+window.addEventListener('mouseup',   onDragEnd);
+
+// Touch
+document.getElementById('svg-wrap').addEventListener('touchstart', e => {
+  if (e.touches.length === 1) onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+}, {passive:true});
+document.getElementById('svg-wrap').addEventListener('touchmove', e => {
+  if (e.touches.length === 1) onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+}, {passive:true});
+document.getElementById('svg-wrap').addEventListener('touchend', onDragEnd);
+
+// ── Update visual state ─────────────────────────────────────────────
 function updateState() {
+  /* zoom transform */
   const zg = document.getElementById('zoom-group');
   if (activeId) {
-    const b = DATA.find(x => x.id === activeId);
+    const b = DATA.find(x=>x.id===activeId);
     const pt = polar(b.angle, ZOOM_FOCUS_R);
-    zg.style.transform = `translate(${CX}px,${CY}px) scale(${ZOOM_SCALE}) translate(${-(CX+pt.x)}px,${-(CY+pt.y)}px)`;
+    const fx = CX+pt.x, fy = CY+pt.y;
+    zg.style.transform = `translate(${CX}px,${CY}px) scale(${ZOOM_SCALE}) translate(${-fx}px,${-fy}px)`;
   } else {
     zg.style.transform = 'translate(0px,0px) scale(1)';
   }
 
-  document.getElementById('bg-rect').style.cursor = activeId ? 'zoom-out' : 'default';
-
-  const sub = document.getElementById('header-subtitle');
+  /* header subtitle */
+  const sub = document.getElementById('hdr-active');
   if (activeId) {
-    const b = DATA.find(x => x.id === activeId);
+    const b = DATA.find(x=>x.id===activeId);
     sub.textContent = `${b.icon}  ${b.label.toUpperCase()}  ${b.icon}`;
     sub.style.color = b.color;
   } else {
-    sub.textContent = 'tap a branch to zoom in';
-    sub.style.color = '';  // falls back to CSS var(--faint)
+    sub.textContent = 'tap a branch to zoom · drag to pan';
+    sub.style.color = '';
   }
 
-  document.getElementById('arc-dc').setAttribute('stroke-opacity', activeId ? '0.12' : '0.30');
+  /* arc */
+  document.getElementById('arc').setAttribute('stroke-opacity', activeId ? '0.10' : '0.30');
 
+  /* per-branch */
   DATA.forEach(b => {
-    const isActive = activeId === b.id;
-    const isDimmed = activeId !== null && !isActive;
+    const on  = activeId === b.id;
+    const dim = activeId !== null && !on;
 
-    document.getElementById(`glow-${b.id}`).setAttribute('opacity', isActive ? '1' : '0');
+    document.getElementById(`GL-${b.id}`).setAttribute('opacity', on ? '1' : '0');
 
-    const line = document.getElementById(`line-${b.id}`);
-    line.setAttribute('stroke-width',   isActive ? '2.2' : '1.5');
-    line.setAttribute('stroke-opacity', isActive ? '0.95' : activeId ? '0.10' : '0.40');
+    const ml = document.getElementById(`ML-${b.id}`);
+    ml.setAttribute('stroke-width',   on ? '2.2' : '1.5');
+    ml.setAttribute('stroke-opacity', on ? '0.95' : activeId ? '0.10' : '0.40');
 
-    document.getElementById(`lleaf-${b.id}`).querySelectorAll('line').forEach(l =>
-      l.setAttribute('stroke-opacity', isActive ? '0.55' : activeId ? '0.04' : '0.20')
+    document.getElementById(`LL-${b.id}`).querySelectorAll('line').forEach(l =>
+      l.setAttribute('stroke-opacity', on ? '0.55' : activeId ? '0.04' : '0.20')
     );
 
-    const bc = document.getElementById(`bcircle-${b.id}`);
-    bc.setAttribute('r',             isActive ? '35' : '30');
-    bc.setAttribute('fill',          isActive ? b.color + '22' : BG_SURFACE);
-    bc.setAttribute('stroke-opacity', isDimmed ? '0.18' : isActive ? '1' : '0.70');
-    bc.setAttribute('stroke-width',  isActive ? '2.2' : '1.8');
-    bc.setAttribute('filter',        isActive ? 'url(#sg)' : '');
+    const bc = document.getElementById(`BC-${b.id}`);
+    bc.setAttribute('r',              on ? '35' : '30');
+    bc.setAttribute('fill',           on ? b.color+'22' : SURF);
+    bc.setAttribute('stroke-opacity', dim ? '0.18' : on ? '1' : '0.70');
+    bc.setAttribute('stroke-width',   on ? '2.2' : '1.8');
+    bc.setAttribute('filter',         on ? 'url(#sg)' : '');
 
-    document.getElementById(`bicon-${b.id}`)
-      .setAttribute('fill', isDimmed ? b.color + '55' : b.color);
+    document.getElementById(`BI-${b.id}`)
+      .setAttribute('fill', dim ? b.color+'55' : b.color);
 
-    document.querySelectorAll(`.blabel[data-bid="${b.id}"]`).forEach(t =>
-      t.setAttribute('fill', isDimmed ? TEXT_DIM : isActive ? TEXT_DARK : TEXT_MID)
+    document.querySelectorAll(`.BL[data-bid="${b.id}"]`).forEach(t =>
+      t.setAttribute('fill', dim ? T_DIM : on ? T_DARK : T_MID)
     );
 
-    const lg = document.getElementById(`bleaves-${b.id}`);
-    lg.setAttribute('opacity', isActive ? '1' : activeId ? '0.08' : '0.35');
-    lg.querySelectorAll('text').forEach(t =>
-      t.setAttribute('fill', isActive ? TEXT_DARK : TEXT_MID)
+    const lv = document.getElementById(`BLV-${b.id}`);
+    lv.setAttribute('opacity', on ? '1' : activeId ? '0.08' : '0.35');
+    lv.querySelectorAll('text').forEach(t =>
+      t.setAttribute('fill', on ? T_DARK : T_MID)
     );
   });
 
+  setCursor(activeId ? 'zoom-out' : 'grab');
   renderLegend();
 }
 
 function renderLegend() {
-  const legend = document.getElementById('legend');
-  legend.innerHTML = '';
+  const leg = document.getElementById('legend');
+  leg.innerHTML = '';
   DATA.forEach(b => {
-    const isActive = activeId === b.id;
-    const isDimmed = activeId !== null && !isActive;
-    const pill = document.createElement('div');
-    pill.className = 'legend-pill';
-    pill.style.borderColor = isActive ? b.color : activeId ? b.color + '40' : b.color + '70';
-    pill.style.background  = isActive ? b.color + '18' : 'transparent';
-    pill.style.opacity     = isDimmed ? '0.4' : '1';
-    pill.innerHTML = `
-      <span style="color:${b.color};font-size:11px">${b.icon}</span>
-      <span style="color:${isActive ? '#18202a' : '#5a6878'};font-size:9px;letter-spacing:0.5px">${b.label}</span>`;
-    pill.addEventListener('click', () => toggle(b.id));
-    legend.appendChild(pill);
+    const on  = activeId === b.id;
+    const dim = activeId !== null && !on;
+    const p = document.createElement('div');
+    p.className = 'pill';
+    p.style.borderColor = on ? b.color : activeId ? b.color+'40' : b.color+'70';
+    p.style.background  = on ? b.color+'20' : 'rgba(212,217,222,0.88)';
+    p.style.opacity     = dim ? '0.4' : '1';
+    p.innerHTML = `<span style="color:${b.color};font-size:11px">${b.icon}</span>`
+                + `<span style="color:${on?T_DARK:T_MID};font-size:9px;letter-spacing:0.5px">${b.label}</span>`;
+    p.addEventListener('click', () => toggle(b.id));
+    leg.appendChild(p);
   });
 }
 
 function toggle(id) {
-  activeId = (id === null || activeId === id) ? null : id;
+  activeId = (id===null || activeId===id) ? null : id;
+  // reset pan so zoom-centering is correct
+  panX = 0; panY = 0; applyPan();
   updateState();
 }
 
