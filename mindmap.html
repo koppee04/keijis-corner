@@ -5,48 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Who Is Keiji?</title>
 <style>
+:root {
+  --bg:       #b8bec6;
+  --surface:  #d4d9de;
+  --surface2: #e0e4e8;
+  --border:   #8e98a2;
+  --accent:   #d45f00;
+  --text:     #18202a;
+  --muted:    #5a6878;
+  --faint:    #9aa4ae;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #0B0D16;
+  background: var(--bg);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: Georgia, 'Times New Roman', serif;
-  padding: 28px 12px 36px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  padding: 20px 12px 32px;
   user-select: none;
 }
 
-.header { text-align: center; margin-bottom: 10px; }
-.header-sub {
-  font-size: 10px;
-  letter-spacing: 0.4em;
-  color: #C9A84C;
-  text-transform: uppercase;
-  margin-bottom: 5px;
+.header {
+  text-align: center;
+  margin-bottom: 12px;
 }
-.header-title { color: #EAE6DA; font-size: 26px; letter-spacing: 0.06em; }
-#header-subtitle {
-  margin-top: 6px;
+.header-sub {
   font-size: 9px;
-  color: #383530;
+  letter-spacing: 0.4em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.header-title {
+  color: var(--text);
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#header-subtitle {
+  margin-top: 5px;
+  font-size: 9px;
+  color: var(--faint);
   letter-spacing: 2px;
   text-transform: uppercase;
   transition: color 0.3s;
-  min-height: 16px;
+  min-height: 14px;
 }
 
 .svg-container {
   width: 100%;
   max-width: 860px;
-  border-radius: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
   overflow: hidden;
-  position: relative;
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
 .svg-container svg { width: 100%; height: auto; display: block; }
 
-/* The zoom group uses CSS transition; must stay in DOM */
 #zoom-group {
   transform: translate(0px, 0px) scale(1);
   transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
@@ -56,39 +77,39 @@ body {
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 12px;
+  gap: 6px 10px;
   justify-content: center;
-  margin-top: 16px;
-  max-width: 720px;
+  margin-top: 14px;
+  max-width: 740px;
 }
 .legend-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   cursor: pointer;
-  padding: 5px 12px;
-  border-radius: 20px;
+  padding: 4px 11px;
+  border-radius: 4px;
   border: 1px solid;
-  transition: all 0.25s;
+  transition: all 0.2s;
+  font-family: inherit;
 }
 
 .footer {
-  margin-top: 14px;
-  color: #2E2C28;
+  margin-top: 12px;
+  color: var(--faint);
   font-size: 9px;
-  letter-spacing: 1.4px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   text-align: center;
   line-height: 1.8;
 }
-.footer-sub { color: #3E3C36; }
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-sub">Portrait of a Mind</div>
-  <div class="header-title">Who Is Keiji?</div>
+  <div class="header-title">★ Who Is Keiji? ★</div>
   <div id="header-subtitle">tap a branch to zoom in</div>
 </div>
 
@@ -97,34 +118,44 @@ body {
 
 <div class="footer">
   Tap branch or pill to zoom · Tap background to zoom out
-  <br>
-  <span class="footer-sub">- - -  ⚡ Craft feeds ◬ The Dream via off-grid electrical work  - - -</span>
+  <br>⚡ Craft feeds ◬ The Dream via off-grid electrical work
 </div>
 
 <script>
+// Branch colors are darkened vs. the original dark-bg version
+// so they contrast clearly against the light gray surface (#d4d9de)
 const DATA = [
-  { id:"faith",      label:"Faith",         angle:-90,  color:"#C9A84C", icon:"✦",
+  { id:"faith",      label:"Faith",          angle:-90,  color:"#9e7418", icon:"✦",
     children:["Antiochian Orthodox","Prayer & Liturgy","Apologetics","Comparative Religion","Christian Martyrdom","WMSCOG Discernment"] },
-  { id:"philosophy", label:"Philosophy",    angle:-50,  color:"#7EB8D4", icon:"◈",
+  { id:"philosophy", label:"Philosophy",     angle:-50,  color:"#2e6ea0", icon:"◈",
     children:["Philosophy of Religion","Moral Arguments","Epistemology","Kierkegaard","Barth & Tillich","William James"] },
-  { id:"history",    label:"History",       angle:-10,  color:"#B07CC6", icon:"⊕",
+  { id:"history",    label:"History",        angle:-10,  color:"#6a38a8", icon:"⊕",
     children:["Early Church Geography","Christmas & Easter Origins","Cognitive Science of Religion","Civilizational History","Endō — Silence","Depth Psychology"] },
-  { id:"arts",       label:"Arts & Language",angle:30,  color:"#E8836A", icon:"◉",
+  { id:"arts",       label:"Arts & Language", angle:30,  color:"#c04010", icon:"◉",
     children:["Music","Art","Literature","Film","Spanish → Fluency","Deep Reading"] },
-  { id:"family",     label:"Family & Love", angle:70,   color:"#E87CA0", icon:"♡",
+  { id:"family",     label:"Family & Love",  angle:70,   color:"#aa2858", icon:"♡",
     children:["Rianna — Partner","Family","Community","Parish Life","Loyalty","Rootedness"] },
-  { id:"dream",      label:"The Dream",     angle:110,  color:"#6DBF8A", icon:"◬",
+  { id:"dream",      label:"The Dream",      angle:110,  color:"#1a7840", icon:"◬",
     children:["Off-Grid Homestead","Self-Sufficiency","Land & Nature","Building Things","Intentional Living","Freedom from Systems"] },
-  { id:"fitness",    label:"Fitness",       angle:150,  color:"#8FC9A0", icon:"◎",
+  { id:"fitness",    label:"Fitness",        angle:150,  color:"#207848", icon:"◎",
     children:["Home Calisthenics","Muscle & Weight Gain","Upper / Lower Split","Upper Delt Focus","Ankle Stability","6-Day Training Week"] },
-  { id:"craft",      label:"Craft & Trade", angle:190,  color:"#D4A96A", icon:"⚡",
+  { id:"craft",      label:"Craft & Trade",  angle:190,  color:"#b06810", icon:"⚡",
     children:["Electrician Career","Skilled Craftsmanship","Hands-On Work","Electrical Systems","Off-Grid Power ↗","Building w/ Purpose"] },
-  { id:"values",     label:"Values & Mind", angle:230,  color:"#A8B8D4", icon:"◇",
+  { id:"values",     label:"Values & Mind",  angle:230,  color:"#3a5898", icon:"◇",
     children:["Intellectual Rigor","Source Integrity","Critical Thinking","Faith ↔ Reason","Scholarly Depth","Lifelong Learning"] },
 ];
 
 const CX = 470, CY = 470, BR = 175, LR = 315, SPREAD = 30;
 const ZOOM_FOCUS_R = 235, ZOOM_SCALE = 2.15;
+
+// Site palette refs used inside SVG
+const BG_SURFACE  = '#d4d9de';   // branch circle fill (inactive)
+const BG_PAGE     = '#c8cfd6';   // center circle fill
+const RING_COLOR  = 'rgba(0,0,0,0.06)';
+const TEXT_DARK   = '#18202a';
+const TEXT_MID    = '#5a6878';
+const TEXT_DIM    = '#9aa4ae';
+const ACCENT_ORG  = '#d45f00';
 
 let activeId = null;
 
@@ -133,7 +164,6 @@ function polar(deg, r) {
   return { x: Math.cos(rad) * r, y: Math.sin(rad) * r };
 }
 
-// ── SVG namespace helper ────────────────────────────────────────────
 const SVG_NS = 'http://www.w3.org/2000/svg';
 function svgEl(tag, attrs = {}) {
   const el = document.createElementNS(SVG_NS, tag);
@@ -141,25 +171,25 @@ function svgEl(tag, attrs = {}) {
   return el;
 }
 
-// ── Build the entire SVG once ───────────────────────────────────────
 function buildSVG() {
-  const svg = svgEl('svg', { viewBox: '0 0 940 940' });
+  const svg = svgEl('svg', { viewBox:'0 0 940 940' });
 
   // ── defs ──────────────────────────────────────────────────────────
   const defs = svgEl('defs');
-
   DATA.forEach(b => {
-    const grad = svgEl('radialGradient', { id: `g-${b.id}`, cx:'50%', cy:'50%', r:'50%' });
-    const s0 = svgEl('stop', { offset:'0%', 'stop-color': b.color, 'stop-opacity':'0.32' });
-    const s1 = svgEl('stop', { offset:'100%', 'stop-color': b.color, 'stop-opacity':'0' });
-    grad.append(s0, s1);
-    defs.appendChild(grad);
+    const g = svgEl('radialGradient', { id:`g-${b.id}`, cx:'50%', cy:'50%', r:'50%' });
+    g.append(
+      svgEl('stop', { offset:'0%',   'stop-color':b.color, 'stop-opacity':'0.22' }),
+      svgEl('stop', { offset:'100%', 'stop-color':b.color, 'stop-opacity':'0'  })
+    );
+    defs.appendChild(g);
   });
 
+  // center glow: orange
   const cg = svgEl('radialGradient', { id:'cg', cx:'50%', cy:'50%', r:'50%' });
   cg.append(
-    svgEl('stop', { offset:'0%', 'stop-color':'#C9A84C', 'stop-opacity':'0.38' }),
-    svgEl('stop', { offset:'100%', 'stop-color':'#C9A84C', 'stop-opacity':'0' })
+    svgEl('stop', { offset:'0%',   'stop-color':ACCENT_ORG, 'stop-opacity':'0.18' }),
+    svgEl('stop', { offset:'100%', 'stop-color':ACCENT_ORG, 'stop-opacity':'0'  })
   );
   defs.appendChild(cg);
 
@@ -171,43 +201,38 @@ function buildSVG() {
   defs.appendChild(filt);
   svg.appendChild(defs);
 
-  // ── bg click rect (outside zoom group so it stays put) ─────────────
+  // bg rect (click to deselect)
   const bgRect = svgEl('rect', { id:'bg-rect', x:'0', y:'0', width:'940', height:'940', fill:'transparent' });
   bgRect.style.cursor = 'default';
   bgRect.addEventListener('click', () => toggle(null));
   svg.appendChild(bgRect);
 
-  // ── zoom group ─────────────────────────────────────────────────────
+  // zoom group
   const zg = svgEl('g', { id:'zoom-group' });
   svg.appendChild(zg);
 
   // background rings
-  [78, 152, 232, 316].forEach(r => {
-    zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r, fill:'none', stroke:'#ffffff06', 'stroke-width':'1' }));
-  });
+  [78, 152, 232, 316].forEach(r =>
+    zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r, fill:'none', stroke:RING_COLOR, 'stroke-width':'1' }))
+  );
 
-  // ── lines layer ────────────────────────────────────────────────────
+  // ── lines layer ─────────────────────────────────────────────────
   DATA.forEach(b => {
     const bp = polar(b.angle, BR);
     const bx = CX + bp.x, by = CY + bp.y;
-
     const grp = svgEl('g', { id:`lines-${b.id}` });
 
-    // glow circle (starts hidden)
     grp.appendChild(svgEl('circle', { id:`glow-${b.id}`, cx:bx, cy:by, r:80,
       fill:`url(#g-${b.id})`, opacity:'0' }));
-
-    // main line
     grp.appendChild(svgEl('line', { id:`line-${b.id}`, x1:CX, y1:CY, x2:bx, y2:by,
-      stroke:b.color, 'stroke-width':'1.5', 'stroke-opacity':'0.35' }));
+      stroke:b.color, 'stroke-width':'1.5', 'stroke-opacity':'0.40' }));
 
-    // leaf lines
     const llg = svgEl('g', { id:`lleaf-${b.id}` });
     b.children.forEach((_, i) => {
       const sa = b.angle - (SPREAD * (b.children.length - 1)) / 2;
       const lp = polar(sa + i * SPREAD, LR);
       llg.appendChild(svgEl('line', { x1:bx, y1:by, x2:CX+lp.x, y2:CY+lp.y,
-        stroke:b.color, 'stroke-width':'1.2', 'stroke-opacity':'0.14' }));
+        stroke:b.color, 'stroke-width':'1.2', 'stroke-opacity':'0.20' }));
     });
     grp.appendChild(llg);
     zg.appendChild(grp);
@@ -220,68 +245,63 @@ function buildSVG() {
   const mx = (dx+cx2)/2*0.82 + CX*0.18, my = (dy+cy2)/2*0.82 + CY*0.18;
   zg.appendChild(svgEl('path', { id:'arc-dc',
     d:`M ${dx} ${dy} Q ${mx} ${my} ${cx2} ${cy2}`,
-    stroke:'#A0C8B0', 'stroke-width':'1', fill:'none',
-    'stroke-opacity':'0.22', 'stroke-dasharray':'5 4' }));
+    stroke:'#1a7840', 'stroke-width':'1', fill:'none',
+    'stroke-opacity':'0.30', 'stroke-dasharray':'5 4' }));
 
   // center node
   zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:76, fill:'url(#cg)' }));
-  zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:54, fill:'#0B0D16',
-    stroke:'#C9A84C', 'stroke-width':'1.8', 'stroke-opacity':'0.9' }));
+  zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:54, fill:BG_PAGE,
+    stroke:ACCENT_ORG, 'stroke-width':'2', 'stroke-opacity':'0.9' }));
   zg.appendChild(svgEl('circle', { cx:CX, cy:CY, r:46, fill:'none',
-    stroke:'#C9A84C', 'stroke-width':'0.6', 'stroke-opacity':'0.3' }));
-  const ct1 = svgEl('text', { x:CX, y:CY-8, 'text-anchor':'middle', fill:'#EAE6DA',
-    'font-size':'21', 'font-family':'Georgia,serif', 'letter-spacing':'1' });
-  ct1.textContent = 'Keiji';
+    stroke:ACCENT_ORG, 'stroke-width':'0.6', 'stroke-opacity':'0.3' }));
+  const ct1 = svgEl('text', { x:CX, y:CY-6, 'text-anchor':'middle', fill:TEXT_DARK,
+    'font-size':'18', 'font-family':"'Consolas','Courier New',monospace", 'font-weight':'bold', 'letter-spacing':'2' });
+  ct1.textContent = 'KEIJI';
   zg.appendChild(ct1);
-  const ct2 = svgEl('text', { x:CX, y:CY+14, 'text-anchor':'middle', fill:'#C9A84C',
-    'font-size':'10', 'letter-spacing':'3.5' });
+  const ct2 = svgEl('text', { x:CX, y:CY+13, 'text-anchor':'middle', fill:ACCENT_ORG,
+    'font-size':'9', 'letter-spacing':'3' });
   ct2.textContent = '✦ ✦ ✦';
   zg.appendChild(ct2);
 
-  // ── branch + leaf nodes ────────────────────────────────────────────
+  // ── branch + leaf nodes ─────────────────────────────────────────
   DATA.forEach(b => {
     const bp = polar(b.angle, BR);
     const bx = CX + bp.x, by = CY + bp.y;
-
     const bg = svgEl('g', { id:`branch-${b.id}` });
     bg.style.cursor = 'pointer';
     bg.addEventListener('click', e => { e.stopPropagation(); toggle(b.id); });
 
-    // branch circle
     bg.appendChild(svgEl('circle', { id:`bcircle-${b.id}`, cx:bx, cy:by, r:30,
-      fill:'#0F1120', stroke:b.color, 'stroke-width':'1.5', 'stroke-opacity':'0.65' }));
-    document.getElementById(`bcircle-${b.id}`); // just reference
+      fill:BG_SURFACE, stroke:b.color, 'stroke-width':'1.8', 'stroke-opacity':'0.7' }));
 
-    // icon
-    const icon = svgEl('text', { id:`bicon-${b.id}`, x:bx, y:by-7,
-      'text-anchor':'middle', fill:b.color, 'font-size':'13',
-      'pointer-events':'none' });
+    const icon = svgEl('text', { id:`bicon-${b.id}`, x:bx, y:by-6,
+      'text-anchor':'middle', fill:b.color, 'font-size':'13', 'pointer-events':'none' });
     icon.textContent = b.icon;
     bg.appendChild(icon);
 
-    // label (split if multi-word)
+    // label (split to two lines if multi-word)
     if (b.label.includes(' ')) {
       const words = b.label.split(' ');
       const mid = Math.ceil(words.length / 2);
       [[words.slice(0,mid).join(' '), by+7], [words.slice(mid).join(' '), by+16]].forEach(([txt, y]) => {
         const t = svgEl('text', { 'class':'blabel', 'data-bid':b.id, x:bx, y,
-          'text-anchor':'middle', fill:'#9A9790',
-          'font-size':'7', 'font-family':'Georgia,serif', 'letter-spacing':'0.4',
+          'text-anchor':'middle', fill:TEXT_MID,
+          'font-size':'7', 'font-family':"'Consolas','Courier New',monospace", 'letter-spacing':'0.3',
           'pointer-events':'none' });
         t.textContent = txt;
         bg.appendChild(t);
       });
     } else {
       const t = svgEl('text', { 'class':'blabel', 'data-bid':b.id, x:bx, y:by+10,
-        'text-anchor':'middle', fill:'#9A9790',
-        'font-size':'7.5', 'font-family':'Georgia,serif', 'letter-spacing':'0.4',
+        'text-anchor':'middle', fill:TEXT_MID,
+        'font-size':'7.5', 'font-family':"'Consolas','Courier New',monospace", 'letter-spacing':'0.3',
         'pointer-events':'none' });
       t.textContent = b.label;
       bg.appendChild(t);
     }
 
-    // leaves group
-    const lg = svgEl('g', { id:`bleaves-${b.id}`, opacity:'0.28' });
+    // leaves
+    const lg = svgEl('g', { id:`bleaves-${b.id}`, opacity:'0.35' });
     lg.style.transition = 'opacity 0.35s';
 
     b.children.forEach((child, i) => {
@@ -293,9 +313,10 @@ function buildSVG() {
       const oy = lp.y > 10 ? 10 : lp.y < -10 ? -5 : 4;
 
       const leaf = svgEl('g');
-      leaf.appendChild(svgEl('circle', { cx:lx, cy:ly, r:4, fill:b.color, opacity:'0.9' }));
+      leaf.appendChild(svgEl('circle', { cx:lx, cy:ly, r:4, fill:b.color, opacity:'0.85' }));
       const lt = svgEl('text', { x:lx+ox, y:ly+oy, 'text-anchor':anchor,
-        fill:'#5A5850', 'font-size':'8', 'font-family':'Georgia,serif', 'letter-spacing':'0.3' });
+        fill:TEXT_MID, 'font-size':'8',
+        'font-family':"'Consolas','Courier New',monospace", 'letter-spacing':'0.2' });
       lt.textContent = child;
       leaf.appendChild(lt);
       lg.appendChild(leaf);
@@ -308,23 +329,18 @@ function buildSVG() {
   document.getElementById('svg-container').appendChild(svg);
 }
 
-// ── Update visual state (zoom + colors) without recreating elements ──
 function updateState() {
-  // Zoom transform on group
   const zg = document.getElementById('zoom-group');
   if (activeId) {
     const b = DATA.find(x => x.id === activeId);
     const pt = polar(b.angle, ZOOM_FOCUS_R);
-    const fx = CX + pt.x, fy = CY + pt.y;
-    zg.style.transform = `translate(${CX}px,${CY}px) scale(${ZOOM_SCALE}) translate(${-fx}px,${-fy}px)`;
+    zg.style.transform = `translate(${CX}px,${CY}px) scale(${ZOOM_SCALE}) translate(${-(CX+pt.x)}px,${-(CY+pt.y)}px)`;
   } else {
     zg.style.transform = 'translate(0px,0px) scale(1)';
   }
 
-  // Background rect cursor
   document.getElementById('bg-rect').style.cursor = activeId ? 'zoom-out' : 'default';
 
-  // Header subtitle
   const sub = document.getElementById('header-subtitle');
   if (activeId) {
     const b = DATA.find(x => x.id === activeId);
@@ -332,57 +348,49 @@ function updateState() {
     sub.style.color = b.color;
   } else {
     sub.textContent = 'tap a branch to zoom in';
-    sub.style.color = '#383530';
+    sub.style.color = '';  // falls back to CSS var(--faint)
   }
 
-  // Arc opacity
-  document.getElementById('arc-dc').setAttribute('stroke-opacity', activeId ? '0.12' : '0.22');
+  document.getElementById('arc-dc').setAttribute('stroke-opacity', activeId ? '0.12' : '0.30');
 
-  // Per-branch updates
   DATA.forEach(b => {
     const isActive = activeId === b.id;
     const isDimmed = activeId !== null && !isActive;
 
-    // Glow circle
     document.getElementById(`glow-${b.id}`).setAttribute('opacity', isActive ? '1' : '0');
 
-    // Main line
     const line = document.getElementById(`line-${b.id}`);
-    line.setAttribute('stroke-width', isActive ? '2.2' : '1.5');
-    line.setAttribute('stroke-opacity', isActive ? '0.95' : activeId ? '0.15' : '0.35');
+    line.setAttribute('stroke-width',   isActive ? '2.2' : '1.5');
+    line.setAttribute('stroke-opacity', isActive ? '0.95' : activeId ? '0.10' : '0.40');
 
-    // Leaf lines
-    document.getElementById(`lleaf-${b.id}`).querySelectorAll('line').forEach(l => {
-      l.setAttribute('stroke-opacity', isActive ? '0.55' : activeId ? '0.05' : '0.14');
-    });
+    document.getElementById(`lleaf-${b.id}`).querySelectorAll('line').forEach(l =>
+      l.setAttribute('stroke-opacity', isActive ? '0.55' : activeId ? '0.04' : '0.20')
+    );
 
-    // Branch circle
     const bc = document.getElementById(`bcircle-${b.id}`);
-    bc.setAttribute('r', isActive ? '35' : '30');
-    bc.setAttribute('fill', isActive ? b.color + '28' : '#0F1120');
-    bc.setAttribute('stroke-opacity', isDimmed ? '0.2' : isActive ? '1' : '0.65');
-    bc.setAttribute('filter', isActive ? 'url(#sg)' : '');
+    bc.setAttribute('r',             isActive ? '35' : '30');
+    bc.setAttribute('fill',          isActive ? b.color + '22' : BG_SURFACE);
+    bc.setAttribute('stroke-opacity', isDimmed ? '0.18' : isActive ? '1' : '0.70');
+    bc.setAttribute('stroke-width',  isActive ? '2.2' : '1.8');
+    bc.setAttribute('filter',        isActive ? 'url(#sg)' : '');
 
-    // Icon
-    document.getElementById(`bicon-${b.id}`).setAttribute('fill', isDimmed ? b.color + '44' : b.color);
+    document.getElementById(`bicon-${b.id}`)
+      .setAttribute('fill', isDimmed ? b.color + '55' : b.color);
 
-    // Labels
-    document.querySelectorAll(`.blabel[data-bid="${b.id}"]`).forEach(t => {
-      t.setAttribute('fill', isDimmed ? '#444' : isActive ? '#EAE6DA' : '#9A9790');
-    });
+    document.querySelectorAll(`.blabel[data-bid="${b.id}"]`).forEach(t =>
+      t.setAttribute('fill', isDimmed ? TEXT_DIM : isActive ? TEXT_DARK : TEXT_MID)
+    );
 
-    // Leaves group + leaf text color
-    const leavesGrp = document.getElementById(`bleaves-${b.id}`);
-    leavesGrp.setAttribute('opacity', isActive ? '1' : activeId ? '0.08' : '0.28');
-    leavesGrp.querySelectorAll('text').forEach(t => {
-      t.setAttribute('fill', isActive ? '#D0CCC0' : '#5A5850');
-    });
+    const lg = document.getElementById(`bleaves-${b.id}`);
+    lg.setAttribute('opacity', isActive ? '1' : activeId ? '0.08' : '0.35');
+    lg.querySelectorAll('text').forEach(t =>
+      t.setAttribute('fill', isActive ? TEXT_DARK : TEXT_MID)
+    );
   });
 
   renderLegend();
 }
 
-// ── Legend ───────────────────────────────────────────────────────────
 function renderLegend() {
   const legend = document.getElementById('legend');
   legend.innerHTML = '';
@@ -391,12 +399,12 @@ function renderLegend() {
     const isDimmed = activeId !== null && !isActive;
     const pill = document.createElement('div');
     pill.className = 'legend-pill';
-    pill.style.borderColor  = isActive ? b.color : activeId ? b.color + '20' : b.color + '40';
-    pill.style.background   = isActive ? b.color + '18' : 'transparent';
-    pill.style.opacity      = isDimmed ? '0.45' : '1';
+    pill.style.borderColor = isActive ? b.color : activeId ? b.color + '40' : b.color + '70';
+    pill.style.background  = isActive ? b.color + '18' : 'transparent';
+    pill.style.opacity     = isDimmed ? '0.4' : '1';
     pill.innerHTML = `
       <span style="color:${b.color};font-size:11px">${b.icon}</span>
-      <span style="color:${isActive ? '#EAE6DA' : '#706E66'};font-size:9px;font-family:Georgia,serif;letter-spacing:0.4px">${b.label}</span>`;
+      <span style="color:${isActive ? '#18202a' : '#5a6878'};font-size:9px;letter-spacing:0.5px">${b.label}</span>`;
     pill.addEventListener('click', () => toggle(b.id));
     legend.appendChild(pill);
   });
