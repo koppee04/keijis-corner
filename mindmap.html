@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Who Is Keiji?</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0B0D16;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  padding: 28px 12px 36px;
+  user-select: none;
+}
+
+.header { text-align: center; margin-bottom: 10px; }
+.header-sub {
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: #C9A84C;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.header-title { color: #EAE6DA; font-size: 26px; letter-spacing: 0.06em; }
+
+.svg-wrap { width: 100%; max-width: 940px; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  justify-content: center;
+  margin-top: 6px;
+  max-width: 740px;
+}
+
+.legend-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1px solid;
+  transition: all 0.2s;
+}
+
+.footer {
+  margin-top: 16px;
+  color: #30302A;
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.8;
+}
+.footer-sub { color: #48463E; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-sub">Portrait of a Mind</div>
+  <div class="header-title">Who Is Keiji?</div>
+</div>
+
+<div class="svg-wrap" id="svg-wrap"></div>
+<div class="legend"   id="legend"></div>
+
+<div class="footer">
+  Tap a branch to illuminate · Tap again to collapse
+  <br>
+  <span class="footer-sub">- - -  ⚡ Craft feeds ◬ The Dream via off-grid electrical work  - - -</span>
+</div>
+
+<script>
+const DATA = {
+  branches: [
+    {
+      id: "faith", label: "Faith", angle: -90, color: "#C9A84C", icon: "✦",
+      children: [
+        { label: "Antiochian Orthodox" }, { label: "Prayer & Liturgy" },
+        { label: "Apologetics" },         { label: "Comparative Religion" },
+        { label: "Christian Martyrdom" }, { label: "WMSCOG Discernment" },
+      ],
+    },
+    {
+      id: "philosophy", label: "Philosophy", angle: -50, color: "#7EB8D4", icon: "◈",
+      children: [
+        { label: "Philosophy of Religion" }, { label: "Moral Arguments" },
+        { label: "Epistemology" },            { label: "Kierkegaard" },
+        { label: "Barth & Tillich" },         { label: "William James" },
+      ],
+    },
+    {
+      id: "history", label: "History", angle: 10, color: "#B07CC6", icon: "⊕",
+      children: [
+        { label: "Early Church Geography" },     { label: "Christmas & Easter Origins" },
+        { label: "Cognitive Science of Religion" }, { label: "Civilizational History" },
+        { label: "Endō — Silence" },              { label: "Depth Psychology" },
+      ],
+    },
+    {
+      id: "arts", label: "Arts & Language", angle: 60, color: "#E8836A", icon: "◉",
+      children: [
+        { label: "Music" },   { label: "Art" },
+        { label: "Literature" }, { label: "Film" },
+        { label: "Spanish → Fluency" }, { label: "Deep Reading" },
+      ],
+    },
+    {
+      id: "family", label: "Family & Love", angle: 115, color: "#E87CA0", icon: "♡",
+      children: [
+        { label: "Rianna — Partner" }, { label: "Family" },
+        { label: "Community" },        { label: "Parish Life" },
+        { label: "Loyalty" },          { label: "Rootedness" },
+      ],
+    },
+    {
+      id: "dream", label: "The Dream", angle: 165, color: "#6DBF8A", icon: "◬",
+      children: [
+        { label: "Off-Grid Homestead" }, { label: "Self-Sufficiency" },
+        { label: "Land & Nature" },      { label: "Building Things" },
+        { label: "Intentional Living" }, { label: "Freedom from Systems" },
+      ],
+    },
+    {
+      id: "fitness", label: "Fitness", angle: 220, color: "#8FC9A0", icon: "◎",
+      children: [
+        { label: "Home Calisthenics" },  { label: "Muscle & Weight Gain" },
+        { label: "Upper / Lower Split" },{ label: "Upper Delt Focus" },
+        { label: "Ankle Stability" },    { label: "6-Day Training Week" },
+      ],
+    },
+    {
+      id: "craft", label: "Craft & Trade", angle: 265, color: "#D4A96A", icon: "⚡",
+      children: [
+        { label: "Electrician Career" },  { label: "Skilled Craftsmanship" },
+        { label: "Hands-On Work" },       { label: "Electrical Systems" },
+        { label: "Off-Grid Power ↗" },    { label: "Building w/ Purpose" },
+      ],
+    },
+    {
+      id: "values", label: "Values & Mind", angle: -140, color: "#A8B8D4", icon: "◇",
+      children: [
+        { label: "Intellectual Rigor" }, { label: "Source Integrity" },
+        { label: "Critical Thinking" },  { label: "Faith ↔ Reason" },
+        { label: "Scholarly Depth" },    { label: "Lifelong Learning" },
+      ],
+    },
+  ],
+};
+
+let activeId = null;
+
+function polarToXY(angleDeg, r) {
+  const rad = (angleDeg * Math.PI) / 180;
+  return { x: Math.cos(rad) * r, y: Math.sin(rad) * r };
+}
+
+function toggle(id) {
+  activeId = (activeId === id) ? null : id;
+  renderSVG();
+  renderLegend();
+}
+window.toggle = toggle;
+
+function renderSVG() {
+  const CX = 470, CY = 470, BR = 170, LR = 305;
+  const SPREAD = 30;
+
+  // ── defs ────────────────────────────────────────────
+  const gradients = DATA.branches.map(b => `
+    <radialGradient id="g-${b.id}" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="${b.color}" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="${b.color}" stop-opacity="0"/>
+    </radialGradient>`).join('');
+
+  const defs = `<defs>
+    ${gradients}
+    <radialGradient id="cg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#C9A84C" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="sg" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>`;
+
+  // ── background rings ─────────────────────────────────
+  const rings = [78, 150, 230, 312].map(r =>
+    `<circle cx="${CX}" cy="${CY}" r="${r}" fill="none" stroke="#ffffff06" stroke-width="1"/>`
+  ).join('');
+
+  // ── lines layer (drawn first, below nodes) ───────────
+  const linesLayer = DATA.branches.map(b => {
+    const bp = polarToXY(b.angle, BR);
+    const bx = CX + bp.x, by = CY + bp.y;
+    const on = activeId === b.id;
+
+    const leafLines = b.children.map((_, i) => {
+      const startA = b.angle - (SPREAD * (b.children.length - 1)) / 2;
+      const lp = polarToXY(startA + i * SPREAD, LR);
+      return `<line x1="${bx}" y1="${by}" x2="${CX + lp.x}" y2="${CY + lp.y}"
+        stroke="${b.color}" stroke-width="1" stroke-opacity="${on ? 0.5 : 0.12}"/>`;
+    }).join('');
+
+    return `<g>
+      ${on ? `<circle cx="${bx}" cy="${by}" r="75" fill="url(#g-${b.id})"/>` : ''}
+      <line x1="${CX}" y1="${CY}" x2="${bx}" y2="${by}"
+        stroke="${b.color}" stroke-width="${on ? 2 : 1.5}"
+        stroke-opacity="${on ? 0.9 : 0.32}"/>
+      ${leafLines}
+    </g>`;
+  }).join('');
+
+  // ── center node ──────────────────────────────────────
+  const center = `
+    <circle cx="${CX}" cy="${CY}" r="72" fill="url(#cg)"/>
+    <circle cx="${CX}" cy="${CY}" r="52" fill="#0B0D16" stroke="#C9A84C" stroke-width="1.5" stroke-opacity="0.9"/>
+    <circle cx="${CX}" cy="${CY}" r="44" fill="none" stroke="#C9A84C" stroke-width="0.5" stroke-opacity="0.3"/>
+    <text x="${CX}" y="${CY - 7}" text-anchor="middle" fill="#EAE6DA" font-size="20" font-family="Georgia,serif" letter-spacing="1">Keiji</text>
+    <text x="${CX}" y="${CY + 13}" text-anchor="middle" fill="#C9A84C" font-size="10" letter-spacing="3">✦ ✦ ✦</text>`;
+
+  // ── branch + leaf nodes ──────────────────────────────
+  const nodes = DATA.branches.map(b => {
+    const bp = polarToXY(b.angle, BR);
+    const bx = CX + bp.x, by = CY + bp.y;
+    const on = activeId === b.id;
+
+    const leaves = b.children.map((child, i) => {
+      const startA = b.angle - (SPREAD * (b.children.length - 1)) / 2;
+      const lp = polarToXY(startA + i * SPREAD, LR);
+      const lx = CX + lp.x, ly = CY + lp.y;
+      const anchor = lp.x > 10 ? 'start' : lp.x < -10 ? 'end' : 'middle';
+      const ox = lp.x > 10 ? 10 : lp.x < -10 ? -10 : 0;
+      const oy = lp.y > 10 ? 10 : lp.y < -10 ? -5 : 4;
+      return `
+        <g opacity="${on ? 1 : 0.25}" style="transition:opacity 0.3s">
+          <circle cx="${lx}" cy="${ly}" r="3.5" fill="${b.color}" opacity="0.85"/>
+          <text x="${lx + ox}" y="${ly + oy}" text-anchor="${anchor}"
+            fill="${on ? '#D0CCC0' : '#5A5850'}"
+            font-size="7.5" font-family="Georgia,serif" letter-spacing="0.3">${child.label}</text>
+        </g>`;
+    }).join('');
+
+    return `
+      <g onclick="toggle('${b.id}')" style="cursor:pointer">
+        <circle cx="${bx}" cy="${by}" r="${on ? 33 : 29}"
+          fill="${on ? b.color + '25' : '#0F1120'}"
+          stroke="${b.color}" stroke-width="${on ? 2 : 1.5}"
+          stroke-opacity="${on ? 1 : 0.6}"
+          ${on ? 'filter="url(#sg)"' : ''}
+          style="transition:all 0.25s"/>
+        <text x="${bx}" y="${by - 6}" text-anchor="middle"
+          fill="${b.color}" font-size="13" pointer-events="none">${b.icon}</text>
+        <text x="${bx}" y="${by + 9}" text-anchor="middle"
+          fill="${on ? '#EAE6DA' : '#9A9790'}"
+          font-size="7.5" font-family="Georgia,serif" letter-spacing="0.4"
+          pointer-events="none">${b.label}</text>
+        ${leaves}
+      </g>`;
+  }).join('');
+
+  // ── Craft ↔ Dream arc ────────────────────────────────
+  const dream = DATA.branches.find(b => b.id === 'dream');
+  const craft = DATA.branches.find(b => b.id === 'craft');
+  const dp = polarToXY(dream.angle, BR), cp = polarToXY(craft.angle, BR);
+  const dx = CX + dp.x, dy = CY + dp.y;
+  const cxp = CX + cp.x, cyp = CY + cp.y;
+  const mx = (dx + cxp) / 2 * 0.88 + CX * 0.12;
+  const my = (dy + cyp) / 2 * 0.88 + CY * 0.12;
+  const arc = `<path d="M ${dx} ${dy} Q ${mx} ${my} ${cxp} ${cyp}"
+    stroke="#A0D4B0" stroke-width="1" fill="none"
+    stroke-opacity="0.25" stroke-dasharray="4 4"/>`;
+
+  document.getElementById('svg-wrap').innerHTML =
+    `<svg viewBox="0 0 940 940" style="width:100%;height:auto;">
+      ${defs}
+      ${rings}
+      ${linesLayer}
+      ${center}
+      ${arc}
+      ${nodes}
+    </svg>`;
+}
+
+function renderLegend() {
+  document.getElementById('legend').innerHTML = DATA.branches.map(b => {
+    const on = activeId === b.id;
+    return `
+      <div class="legend-pill"
+           style="border-color:${on ? b.color : b.color + '38'};background:${on ? b.color + '16' : 'transparent'}"
+           onclick="toggle('${b.id}')">
+        <span style="color:${b.color};font-size:11px">${b.icon}</span>
+        <span style="color:${on ? '#EAE6DA' : '#706E66'};font-size:9px;font-family:Georgia,serif;letter-spacing:0.4px">${b.label}</span>
+      </div>`;
+  }).join('');
+}
+
+renderSVG();
+renderLegend();
+</script>
+</body>
+</html>
