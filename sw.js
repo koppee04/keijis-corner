@@ -1,4 +1,4 @@
-const CACHE = 'keijis-corner-v3';
+const CACHE = 'keijis-corner-v4';
 
 // Only cache static assets that never change (icons)
 const STATIC = [
