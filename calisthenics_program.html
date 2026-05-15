@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calisthenics Foundation Program</title>
+<title>Complete Calisthenics Program</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#6c63ff">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -34,22 +34,18 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Consolas', 'Courier New', monospace; min-height: 100vh; overflow-y: auto; }
 
-  /* Layout */
   .app { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
   h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 4px; }
   .subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 24px; }
 
-  /* Nav tabs */
   .tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
   .tab { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all 0.15s; }
   .tab:hover { border-color: var(--accent); color: var(--text); }
   .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  /* Panels */
   .panel { display: none; }
   .panel.active { display: block; }
 
-  /* Weekly grid */
   .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 24px; }
   @media (max-width: 600px) { .week-grid { grid-template-columns: repeat(4, 1fr); } }
   .day-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 8px; cursor: pointer; transition: all 0.15s; text-align: center; }
@@ -63,8 +59,8 @@
   .badge-lower { background: rgba(30,128,80,0.14); color: var(--green); }
   .badge-upper { background: rgba(77,136,204,0.14); color: var(--accent2); }
   .badge-rest { background: rgba(78,93,108,0.14); color: var(--muted); }
+  .badge-morning { background: rgba(212,95,0,0.14); color: var(--accent); }
 
-  /* Workout section */
   .workout-header { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 16px; }
   .workout-title { font-size: 1.15rem; font-weight: 700; }
   .workout-emphasis { color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
@@ -74,7 +70,8 @@
   .warmup-steps li { font-size: 0.82rem; color: #ccc; padding: 3px 0; }
   .warmup-steps li::before { content: "→ "; color: var(--yellow); }
 
-  /* Exercise cards */
+  .block-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent2); margin: 18px 0 8px; padding: 4px 10px; background: rgba(77,136,204,0.08); border-left: 3px solid var(--accent2); border-radius: 0 6px 6px 0; }
+
   .exercise-list { display: flex; flex-direction: column; gap: 10px; }
   .exercise-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.15s; }
   .exercise-card.completed { border-color: var(--green); }
@@ -91,7 +88,6 @@
   .ex-expand-icon { transition: transform 0.22s cubic-bezier(0.4,0,0.2,1); }
   .ex-expand-icon.open { transform: rotate(180deg); }
 
-  /* Tempo display */
   .tempo-row { display: flex; gap: 6px; margin-bottom: 14px; align-items: center; }
   .tempo-label { font-size: 0.72rem; color: var(--muted); margin-right: 4px; }
   .tempo-phase { text-align: center; }
@@ -99,10 +95,8 @@
   .tempo-phase-name { font-size: 0.58rem; color: var(--muted); text-align: center; margin-top: 3px; text-transform: uppercase; }
   .tempo-sep { color: var(--muted); font-size: 0.8rem; padding-top: 4px; }
 
-  /* Notes */
   .ex-notes { font-size: 0.8rem; color: #bbb; line-height: 1.55; margin-bottom: 14px; background: var(--surface2); border-radius: 8px; padding: 10px 12px; }
 
-  /* Set tracker */
   .set-tracker { display: flex; flex-direction: column; gap: 8px; }
   .set-row { display: flex; align-items: center; gap: 10px; }
   .set-label { font-size: 0.78rem; color: var(--muted); width: 44px; }
@@ -114,7 +108,6 @@
   .rest-btn:hover { background: rgba(255,209,102,0.2); }
   .rest-btn.hidden { visibility: hidden; }
 
-  /* Rest Timer */
   .timer-overlay { position: fixed; bottom: 20px; right: 20px; background: var(--surface); border: 1px solid var(--accent); border-radius: var(--radius); padding: 16px 20px; min-width: 180px; z-index: 1000; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
   .timer-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
   .timer-display { font-size: 2.2rem; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
@@ -127,7 +120,6 @@
   .timer-bar { height: 100%; background: var(--accent); transition: width 1s linear; }
   .timer-overlay.hidden { display: none; }
 
-  /* Ankle rehab */
   .rehab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
   .rehab-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
   .rehab-num { font-size: 0.65rem; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.07em; }
@@ -139,25 +131,17 @@
   .progression-week ul li { font-size: 0.82rem; color: #bbb; padding: 4px 0; padding-left: 16px; position: relative; line-height: 1.5; }
   .progression-week ul li::before { content: "–"; position: absolute; left: 0; color: var(--accent); }
 
-  /* Nutrition */
   .nutrition-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin: 14px 0; }
   .nutrition-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
   .nutrition-stat .val { font-size: 1.4rem; font-weight: 700; color: var(--green); }
   .nutrition-stat .label { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
   .section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin: 20px 0 10px; }
-  .food-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .food-tag { padding: 5px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); font-size: 0.78rem; }
-  .shake-box { background: rgba(30,128,80,0.07); border: 1px solid rgba(30,128,80,0.22); border-radius: var(--radius); padding: 14px 16px; margin-top: 14px; }
-  .shake-box .shake-label { font-size: 0.7rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
-  .shake-box .shake-desc { font-size: 0.82rem; color: #bbb; line-height: 1.55; }
 
-  /* Recovery */
   .recovery-list { display: flex; flex-direction: column; gap: 10px; }
   .recovery-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
   .recovery-item strong { display: block; font-size: 0.88rem; margin-bottom: 5px; }
   .recovery-item p { font-size: 0.8rem; color: #bbb; line-height: 1.55; }
 
-  /* Progress tracking */
   .progress-bar-wrap { background: var(--surface2); border-radius: 4px; height: 6px; margin-top: 4px; }
   .progress-bar { height: 100%; border-radius: 4px; background: var(--green); transition: width 0.4s; }
   .overall-progress { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
@@ -166,7 +150,6 @@
 
   .session-selector { display: none; }
 
-  /* Calendar */
   .cal-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 16px; }
   .cal-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
   .cal-stat .val { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
@@ -191,37 +174,35 @@
   .cal-day-num { font-size: 0.72rem; font-weight: 700; color: var(--muted); }
   .today-marker .cal-day-num { color: var(--accent); }
   .cal-workout-badge { font-size: 0.57rem; font-weight: 700; padding: 2px 5px; border-radius: 4px; margin-top: 4px; display: block; text-align: center; white-space: nowrap; }
-  .badge-la { background: rgba(30,128,80,0.18); color: #1e8050; }
-  .badge-lb { background: rgba(30,128,80,0.11); color: #1a6e44; }
-  .badge-ua { background: rgba(77,136,204,0.18); color: #4d88cc; }
-  .badge-ub { background: rgba(77,136,204,0.11); color: #3d78bc; }
+  .badge-d1 { background: rgba(30,128,80,0.18); color: #1e8050; }
+  .badge-d2 { background: rgba(30,128,80,0.11); color: #1a6e44; }
+  .badge-d3 { background: rgba(77,136,204,0.18); color: #4d88cc; }
+  .badge-d4 { background: rgba(77,136,204,0.11); color: #3d78bc; }
   .cal-complete-mark { position: absolute; top: 4px; right: 4px; width: 15px; height: 15px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.58rem; color: #0a1a10; font-weight: 900; }
   .phase-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
   .phase-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--muted); }
   .phase-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
   .log-session-btn { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: var(--radius); border: 1px solid rgba(30,128,80,0.35); background: rgba(30,128,80,0.07); margin-bottom: 14px; cursor: pointer; transition: all 0.15s; width: 100%; }
   .log-session-btn:hover { border-color: var(--green); background: rgba(67,217,139,0.12); }
-  /* ── Calendar responsive ─────────────────────── */
+  .log-session-btn.done { border-color: var(--green); background: rgba(30,128,80,0.14); }
+  .log-session-btn .lsb-icon { font-size: 1rem; }
+  .log-session-btn .lsb-text { font-size: 0.82rem; font-weight: 700; color: var(--green); }
+  .log-session-btn .lsb-sub { font-size: 0.7rem; color: var(--muted); margin-left: auto; }
+
   @media (max-width: 540px) {
-    /* Drop the phase-meta sidebar entirely — phase tint on cells still shows */
     .cal-dow-spacer, .cal-week-meta { display: none; }
     .cal-dow-header, .cal-week-row  { grid-template-columns: repeat(7, 1fr); gap: 2px; }
-    /* Compact day cells */
     .cal-day         { min-height: 48px; padding: 4px 3px; }
     .cal-day-num     { font-size: 0.6rem; }
     .cal-workout-badge { font-size: 0.48rem; padding: 1px 2px; margin-top: 3px; border-radius: 3px; }
     .cal-complete-mark { width: 12px; height: 12px; font-size: 0.5rem; top: 2px; right: 2px; }
-    /* Stats: 2 columns instead of 4 */
     .cal-stats       { grid-template-columns: repeat(2, 1fr); }
     .cal-stat .val   { font-size: 1.1rem; }
-    /* Tighten legend */
     .phase-legend    { gap: 8px; }
     .phase-legend-item { font-size: 0.65rem; }
     .phase-dot       { width: 8px; height: 8px; }
   }
-
   @media (min-width: 541px) and (max-width: 768px) {
-    /* Tablet portrait — shrink meta column, keep it visible */
     .cal-dow-header, .cal-week-row { grid-template-columns: 36px repeat(7, 1fr); gap: 3px; }
     .cal-week-meta  { padding-right: 4px; font-size: 0.52rem; }
     .cal-week-meta .wk-phase { display: none; }
@@ -229,7 +210,6 @@
     .cal-stats      { grid-template-columns: repeat(2, 1fr); }
   }
 
-  /* ── Motion ──────────────────────────────────── */
   @keyframes panelIn    { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   @keyframes cardIn     { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
   @keyframes calDayIn   { from{opacity:0;transform:scale(0.88)}      to{opacity:1;transform:scale(1)}    }
@@ -260,34 +240,28 @@
   .rehab-card:nth-child(3){ animation-delay: 0.16s; }
   .rehab-card:nth-child(4){ animation-delay: 0.22s; }
 
-  /* Supplementary dropdown */
   .tab-dropdown { position: relative; }
   .tab-dropdown-menu { display: none; position: absolute; top: calc(100% + 6px); left: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; z-index: 200; min-width: 148px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.45); }
   .tab-dropdown-menu.open { display: block; }
   .tab-dropdown-item { padding: 9px 14px; font-size: 0.82rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: background 0.1s, color 0.1s; white-space: nowrap; }
   .tab-dropdown-item:hover { background: var(--border); color: var(--text); }
   .tab-dropdown-item.active { color: #fff; background: var(--accent); }
-  .log-session-btn.done { border-color: var(--green); background: rgba(30,128,80,0.14); }
-  .log-session-btn .lsb-icon { font-size: 1rem; }
-  .log-session-btn .lsb-text { font-size: 0.82rem; font-weight: 700; color: var(--green); }
-  .log-session-btn .lsb-sub { font-size: 0.7rem; color: var(--muted); margin-left: auto; }
 </style>
 </head>
 <body>
 <div class="app">
-  <h1>Calisthenics Foundation Program</h1>
-  <p class="subtitle">Muscle growth & weight gain · Upper / Lower Split · Beginner · 6 days on, 1 rest · 45–60 min sessions</p>
+  <h1>Complete Calisthenics Program</h1>
+  <p class="subtitle">Lower Body · Core · Upper Body &nbsp;·&nbsp; 4–5 days/week · ~45 min/session · Low-impact ankle protocol</p>
 
   <div class="tabs">
     <button class="tab" onclick="showTab('calendar')">Calendar</button>
     <button class="tab active" onclick="showTab('schedule')">Schedule</button>
     <button class="tab" onclick="showTab('workout')">Workout</button>
-    <button class="tab" onclick="showTab('ankle')">Ankle Rehab</button>
+    <button class="tab" onclick="showTab('ankle')">Ankle & Morning</button>
     <div class="tab-dropdown" id="dropdown-supp">
       <button class="tab" id="tab-supp-btn" onclick="toggleSuppMenu(event)">Supplementary ▾</button>
       <div class="tab-dropdown-menu" id="supp-menu">
         <div class="tab-dropdown-item" onclick="showSubTab('progression', event)">Progression</div>
-        <div class="tab-dropdown-item" onclick="showSubTab('nutrition', event)">Nutrition</div>
         <div class="tab-dropdown-item" onclick="showSubTab('recovery', event)">Recovery</div>
       </div>
     </div>
@@ -296,43 +270,43 @@
   <!-- SCHEDULE TAB -->
   <div id="tab-schedule" class="panel active">
     <div class="week-grid">
-      <div class="day-card" onclick="openWorkout('lower-a')" id="card-mon">
+      <div class="day-card" onclick="openWorkout('day1')" id="card-mon">
         <div class="day-name">Mon</div>
-        <div class="day-focus">Lower + Core A</div>
-        <span class="day-badge badge-lower">Quad</span>
+        <div class="day-focus">Quad + Anterior Core</div>
+        <span class="day-badge badge-lower">Day 1</span>
       </div>
-      <div class="day-card" onclick="openWorkout('upper-a')" id="card-tue">
+      <div class="day-card" onclick="openWorkout('day2')" id="card-tue">
         <div class="day-name">Tue</div>
-        <div class="day-focus">Upper A</div>
-        <span class="day-badge badge-upper">Push</span>
+        <div class="day-focus">Posterior Chain + Spinal Core</div>
+        <span class="day-badge badge-lower">Day 2</span>
       </div>
-      <div class="day-card" onclick="openWorkout('lower-b')" id="card-wed">
+      <div class="day-card rest" id="card-wed">
         <div class="day-name">Wed</div>
-        <div class="day-focus">Lower + Core B</div>
-        <span class="day-badge badge-lower">Post.</span>
+        <div class="day-focus">Rest</div>
+        <span class="day-badge badge-rest">Off</span>
       </div>
-      <div class="day-card" onclick="openWorkout('upper-b')" id="card-thu">
+      <div class="day-card" onclick="openWorkout('day3')" id="card-thu">
         <div class="day-name">Thu</div>
-        <div class="day-focus">Upper B</div>
-        <span class="day-badge badge-upper">Pull</span>
+        <div class="day-focus">Calf / Foot + Abductors</div>
+        <span class="day-badge badge-upper">Day 3</span>
       </div>
-      <div class="day-card" onclick="openWorkout('lower-a')" id="card-fri">
+      <div class="day-card" onclick="openWorkout('day4')" id="card-fri">
         <div class="day-name">Fri</div>
-        <div class="day-focus">Lower + Core A</div>
-        <span class="day-badge badge-lower">Quad</span>
+        <div class="day-focus">Full Lower Integration</div>
+        <span class="day-badge badge-upper">Day 4</span>
       </div>
-      <div class="day-card" onclick="openWorkout('upper-a')" id="card-sat">
+      <div class="day-card rest" id="card-sat">
         <div class="day-name">Sat</div>
-        <div class="day-focus">Upper A</div>
-        <span class="day-badge badge-upper">Push</span>
+        <div class="day-focus">Active Mobility</div>
+        <span class="day-badge badge-morning">Optional</span>
       </div>
       <div class="day-card rest" id="card-sun">
         <div class="day-name">Sun</div>
         <div class="day-focus">Rest</div>
-        <span class="day-badge badge-rest">Easy</span>
+        <span class="day-badge badge-rest">Off</span>
       </div>
     </div>
-    <p style="font-size:0.8rem;color:var(--muted);line-height:1.6;">You hit each session type ~1.5× per week. Every other week the pattern shifts so both A and B days get equal volume over time. Click any day to open that workout.</p>
+    <p style="font-size:0.8rem;color:var(--muted);line-height:1.6;">Mon / Tue / Thu / Fri are training days. Similar muscle groups never stack on consecutive days. Morning routine (jump rope + horse stance) runs daily, separate from main sessions.</p>
 
     <div class="section-title" style="margin-top:24px;">Today's Highlight</div>
     <div id="today-card" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;"></div>
@@ -341,10 +315,10 @@
   <!-- WORKOUT TAB -->
   <div id="tab-workout" class="panel">
     <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-      <button class="tab" onclick="loadWorkout('lower-a')" id="btn-lower-a">Lower A</button>
-      <button class="tab" onclick="loadWorkout('lower-b')" id="btn-lower-b">Lower B</button>
-      <button class="tab" onclick="loadWorkout('upper-a')" id="btn-upper-a">Upper A</button>
-      <button class="tab" onclick="loadWorkout('upper-b')" id="btn-upper-b">Upper B</button>
+      <button class="tab" onclick="loadWorkout('day1')" id="btn-day1">Day 1</button>
+      <button class="tab" onclick="loadWorkout('day2')" id="btn-day2">Day 2</button>
+      <button class="tab" onclick="loadWorkout('day3')" id="btn-day3">Day 3</button>
+      <button class="tab" onclick="loadWorkout('day4')" id="btn-day4">Day 4</button>
     </div>
     <div id="overall-progress" class="overall-progress" style="display:none;">
       <div class="pct" id="progress-pct">0%</div>
@@ -354,119 +328,108 @@
     <div id="workout-area"></div>
   </div>
 
-  <!-- ANKLE REHAB TAB -->
+  <!-- ANKLE & MORNING ROUTINE TAB -->
   <div id="tab-ankle" class="panel">
-    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">Do this <strong style="color:var(--text);">daily</strong>, including rest days. Takes ~5 minutes. Consistency matters more than intensity.</p>
-    <div class="rehab-grid">
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">The <strong style="color:var(--text);">morning routine</strong> runs daily (or 5–6×/week), separate from your main session. Jump rope phases are gated by ankle clearance — do not skip ahead. The <strong style="color:var(--text);">ankle protocol</strong> is built into every session; Day 3 is the dedicated rehab day.</p>
+
+    <div class="section-title">Morning Routine — Jump Rope (Phase 1 · Current)</div>
+    <div class="rehab-grid" style="margin-bottom:16px;">
       <div class="rehab-card">
-        <div class="rehab-num">Step 1</div>
-        <div class="rehab-name">Ankle Alphabet</div>
-        <div class="rehab-desc">Trace A–Z with each foot in the air (seated). Builds mobility through full range.</div>
+        <div class="rehab-num">Activation · 2 min</div>
+        <div class="rehab-name">Warm-Up</div>
+        <div class="rehab-desc">Ankle circles 10 each direction · Hip circles 10 each · Wrist + shoulder rolls · 20 light marches in place</div>
       </div>
       <div class="rehab-card">
-        <div class="rehab-num">Step 2</div>
-        <div class="rehab-name">4-Way Isometrics</div>
-        <div class="rehab-desc">Push foot into wall or hand in all 4 directions (up, down, left, right). Hold 5–8s × 3 per direction, per foot.</div>
+        <div class="rehab-num">Round 1 &amp; 2 · 2 min each</div>
+        <div class="rehab-name">Both-Foot Bounce</div>
+        <div class="rehab-desc">Minimal height off the floor. Land softly through the ball of the foot — never flat-footed. Slow, rhythmic pace. Rest 60s between rounds.</div>
       </div>
       <div class="rehab-card">
-        <div class="rehab-num">Step 3</div>
-        <div class="rehab-name">Single-Leg Balance</div>
-        <div class="rehab-desc">
-          <strong style="color:var(--text);">Wk 1–2:</strong> Flat floor, eyes open, 30s/leg<br>
-          <strong style="color:var(--text);">Wk 3–4:</strong> Folded towel, eyes open, 30s/leg<br>
-          <strong style="color:var(--text);">Wk 5–6:</strong> Folded towel, eyes closed, 20s/leg<br>
-          <strong style="color:var(--text);">Wk 7+:</strong> SL calf raise on towel, eyes open
-        </div>
+        <div class="rehab-num">Round 3 · 2 min</div>
+        <div class="rehab-name">Build Rhythm</div>
+        <div class="rehab-desc">Same pace. If ankles feel solid, allow a very slight increase in pace in the final 30 seconds. This is tendon conditioning, not cardio.</div>
       </div>
       <div class="rehab-card">
-        <div class="rehab-num">Step 4</div>
-        <div class="rehab-name">Short-Foot Exercise</div>
-        <div class="rehab-desc">Seated, press arch up without curling toes. Hold 5s × 10 reps per foot. Activates intrinsic foot muscles.</div>
+        <div class="rehab-num">Cool-down · 2 min</div>
+        <div class="rehab-name">Stretch</div>
+        <div class="rehab-desc">Standing calf stretch 30s/side · Standing quad stretch 30s/side · Shake out the legs</div>
       </div>
     </div>
-    <div style="background:rgba(255,101,132,0.07);border:1px solid rgba(255,101,132,0.2);border-radius:var(--radius);padding:14px 16px;margin-top:16px;">
-      <div style="font-size:0.7rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;">Ankle Care</div>
-      <p style="font-size:0.82rem;color:#bbb;line-height:1.55;">Ice your right ankle for 10–15 min after any session where it feels aggravated. If sharp pain occurs during any exercise, stop that movement immediately.</p>
+
+    <div class="section-title">Horse Stance (Ma Bu)</div>
+    <div class="rehab-grid" style="margin-bottom:16px;">
+      <div class="rehab-card">
+        <div class="rehab-num">Weeks 1–2</div>
+        <div class="rehab-name">3 × 30s — High</div>
+        <div class="rehab-desc">Feet 2× shoulder width, toes slightly out. Thighs at ~45° to the floor. Back straight, chest up. Rest 30–45s between sets.</div>
+      </div>
+      <div class="rehab-card">
+        <div class="rehab-num">Weeks 3–4</div>
+        <div class="rehab-name">3 × 45s — Mid</div>
+        <div class="rehab-desc">Begin sinking lower — aim for thighs between 45° and parallel. Knees track over second toe. Do not let knees cave inward.</div>
+      </div>
+      <div class="rehab-card">
+        <div class="rehab-num">Weeks 5–8</div>
+        <div class="rehab-name">3 × 60–90s — Low</div>
+        <div class="rehab-desc">Thighs approaching parallel (classical depth). Quads and adductors will burn significantly — stay with it. Breathe: inhale 4 counts, exhale 4 counts.</div>
+      </div>
+      <div class="rehab-card">
+        <div class="rehab-num">Advanced</div>
+        <div class="rehab-name">3 × 90s+ — Deep</div>
+        <div class="rehab-desc">Below parallel if mobility allows. Add arm work: guard position, slow punches, or hold a light kettlebell at chest. Extend holds to 2–3 min over months.</div>
+      </div>
+    </div>
+
+    <div class="section-title">Ankle Protocol — Stage Gates</div>
+    <div style="background:rgba(255,101,132,0.07);border:1px solid rgba(255,101,132,0.2);border-radius:var(--radius);padding:14px 16px;margin-top:8px;">
+      <div style="font-size:0.7rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;">All exercises are bilateral and low-impact until cleared</div>
+      <p style="font-size:0.82rem;color:#bbb;line-height:1.6;margin-bottom:8px;"><strong style="color:var(--text);">Stage 1 (current):</strong> Bilateral only. No single-leg calf work or plyometrics. Tibialis raises and foot doming are rehabilitative — slow and precise.</p>
+      <p style="font-size:0.82rem;color:#bbb;line-height:1.6;margin-bottom:8px;"><strong style="color:var(--text);">Stage 2 (single-leg cleared):</strong> Progress to single-leg calf raises, remove bilateral-only restriction. Jump rope Phase 2 unlocks.</p>
+      <p style="font-size:0.82rem;color:#bbb;line-height:1.6;"><strong style="color:var(--text);">Stage 3 (plyometrics cleared):</strong> Add jump rope, pogo hops, bilateral jump squats. Jump rope Phase 3 unlocks. Reassess every 4–6 weeks.</p>
     </div>
   </div>
 
   <!-- PROGRESSION TAB -->
   <div id="tab-progression" class="panel">
     <div class="progression-week">
-      <h3>Weeks 1–4 — Learning Phase</h3>
+      <h3>Weeks 1–4 — Foundation</h3>
       <ul>
-        <li>Focus on nailing form and tempo. Don't chase failure.</li>
-        <li>Use the low end of all rep ranges.</li>
-        <li>Nordic curls: 3–4 negatives per set is fine.</li>
-        <li>If 100 lb sandbag is too heavy, partially fill it or use the KB instead.</li>
+        <li>Focus on movement quality and pattern grooming before adding load.</li>
+        <li>Stop 2 reps short of failure on every set. Rest 90–120s.</li>
+        <li>If anything hurts (not burns), drop reps immediately.</li>
+        <li>Calf and foot work: slow and precise. Full range of motion always.</li>
+        <li>Nordic curls: 4 negatives at 5s lower. Push up with hands to return.</li>
       </ul>
     </div>
     <div class="progression-week">
-      <h3>Weeks 5–8 — Building Phase</h3>
+      <h3>Weeks 5–8 — Development</h3>
       <ul>
-        <li>Push to the top of rep ranges before adding difficulty.</li>
-        <li>Add a rep or a set each week (not both).</li>
-        <li>Pike push-ups: elevate feet higher for more delt load.</li>
-        <li>Nordic curls: aim for 5–6 slow negatives, start catching yourself partway down.</li>
+        <li>Add weight or reps to key exercises (goblet squat, RDL, glute bridge).</li>
+        <li>Stop 1 rep short of failure. Rest 75–90s.</li>
+        <li>Push tempo on calf and core work — slower eccentrics.</li>
+        <li>Nordic curls: progress to 5–6 slower negatives, begin attempting partial concentric.</li>
+        <li>Horse stance: sink toward parallel depth. Quads and adductors will burn significantly.</li>
       </ul>
     </div>
     <div class="progression-week">
-      <h3>Weeks 9–12 — Intensity Phase</h3>
+      <h3>Weeks 9–12 — Strength</h3>
       <ul>
-        <li>Add a 4th set to your main compound lifts.</li>
-        <li>Start pausing at the bottom of squats and dips (2–3s holds).</li>
-        <li>Pull-ups: aim for unassisted full reps.</li>
-        <li>Consider filling the sandbag fully if you haven't already.</li>
+        <li>Heavier loads, harder variations, shorter rest (60–75s).</li>
+        <li>True max effort on upper body sets. Full Nordic curl concentric attempts.</li>
+        <li>Upper body: once any set consistently exceeds 15 reps, add a weighted vest, sandbag, or kettlebell.</li>
+        <li>Calf raises: 4-4 tempo, step edge for full stretch. ROM before load.</li>
+        <li>Horse stance: 3 × 90s+ at parallel or below. Add kettlebell hold at chest.</li>
       </ul>
     </div>
     <div class="progression-week" style="border-color:rgba(108,99,255,0.3);">
-      <h3 style="color:var(--muted);">When to Add Difficulty (not more exercises)</h3>
+      <h3 style="color:var(--muted);">Universal Progression Rules</h3>
       <ul>
-        <li>You can complete the top of the rep range with clean form for 2 sessions in a row → make it harder.</li>
-        <li>Harder = slower tempo, longer pause, elevated feet, less assistance, more load.</li>
+        <li>Add load or +2 reps when all sets feel consistently easy with good form.</li>
+        <li>Timed holds: add 10 seconds when you hit the top of the prescribed range.</li>
+        <li>Nordic negatives: make the lower slower (aim for 8 sec) before attempting concentric work.</li>
+        <li>Calf raises: full range of motion always. A full-range bodyweight rep beats a partial-range loaded rep.</li>
+        <li>Deload weeks (Wk 4, 8, 12): keep all exercises, drop 1 set per block, reduce load ~10%.</li>
       </ul>
-    </div>
-  </div>
-
-  <!-- NUTRITION TAB -->
-  <div id="tab-nutrition" class="panel">
-    <p style="font-size:0.82rem;color:#bbb;margin-bottom:16px;line-height:1.6;">Training without eating enough will leave you spinning your wheels. Aim for <strong style="color:var(--text);">0.5–1 lb of weight gain per week</strong>. If the scale isn't moving after 2 weeks, add 200–300 more calories per day.</p>
-    <div class="nutrition-grid">
-      <div class="nutrition-stat">
-        <div class="val">2,500–2,800</div>
-        <div class="label">Calories per day</div>
-      </div>
-      <div class="nutrition-stat">
-        <div class="val">100–130g</div>
-        <div class="label">Protein per day (~1g/lb)</div>
-      </div>
-      <div class="nutrition-stat">
-        <div class="val">4+</div>
-        <div class="label">Meals per day</div>
-      </div>
-      <div class="nutrition-stat">
-        <div class="val">0.5–1 lb</div>
-        <div class="label">Weekly weight gain target</div>
-      </div>
-    </div>
-    <div class="section-title">Calorie-Dense Foods</div>
-    <div class="food-tags">
-      <span class="food-tag">🥛 Whole milk</span>
-      <span class="food-tag">🥜 Peanut butter</span>
-      <span class="food-tag">🌾 Oats</span>
-      <span class="food-tag">🍚 Rice</span>
-      <span class="food-tag">🫒 Olive oil</span>
-      <span class="food-tag">🍌 Bananas</span>
-      <span class="food-tag">🥚 Eggs</span>
-      <span class="food-tag">🥩 Ground beef</span>
-      <span class="food-tag">🥾 Trail mix</span>
-      <span class="food-tag">🧀 Cheese</span>
-      <span class="food-tag">🥔 Potatoes</span>
-      <span class="food-tag">🍦 Full-fat yogurt</span>
-    </div>
-    <div class="shake-box">
-      <div class="shake-label">Weight Gain Shake — 700+ cal</div>
-      <div class="shake-desc">2 cups whole milk + 2 tbsp peanut butter + 1 banana + 1 cup oats + scoop protein powder (optional). Blend and drink between meals.</div>
     </div>
   </div>
 
@@ -474,26 +437,27 @@
   <div id="tab-recovery" class="panel">
     <div class="recovery-list">
       <div class="recovery-item">
-        <strong>😴 Sleep</strong>
-        <p>6 hours is a limiting factor. Growth hormone releases primarily during deep sleep. Even getting to 7 hours will meaningfully improve recovery and muscle growth. Consider it part of your training.</p>
+        <strong>Joint Pain vs. Muscle Fatigue</strong>
+        <p>Sharp, localized pain always means stop. Diffuse burning fatigue is expected. If soreness persists beyond 48 hours, reduce volume on the affected day.</p>
       </div>
       <div class="recovery-item">
-        <strong>🛑 Rest Days</strong>
-        <p>Rest days are not optional. At beginner level with 6 hours of sleep, one full rest day per week is the minimum. If you feel unusually sore or fatigued, take two.</p>
+        <strong>Rest Days</strong>
+        <p>Training days are Mon / Tue / Thu / Fri. Do not stack similar muscle groups. Wed and the weekend are recovery — the morning routine can still run on rest days.</p>
       </div>
       <div class="recovery-item">
-        <strong>📉 Deload Every 4th Week</strong>
-        <p>Drop to 2 sets per exercise instead of 3–4 and reduce intensity. This prevents overtraining and lets connective tissue catch up.</p>
+        <strong>Deload Every 4th Week</strong>
+        <p>Drop 1 set per block and reduce load by ~10%. Keep all exercises — the pattern work still matters. Weeks 4, 8, and 12 are natural deload checkpoints.</p>
       </div>
       <div class="recovery-item">
-        <strong>🦶 Ankle Care</strong>
-        <p>Ice your right ankle for 10–15 min after any session where it feels aggravated. If sharp pain occurs during any exercise, stop that movement immediately.</p>
+        <strong>Disrupted Sleep or Appetite</strong>
+        <p>These are signs of systemic fatigue. Take an extra rest day before the next session. Do not push through — connective tissue adapts more slowly than muscle and needs the recovery window.</p>
       </div>
       <div class="recovery-item" style="border-color:rgba(108,99,255,0.3);">
         <strong style="color:#a09cf7;">Session Flow — Quick Reference</strong>
-        <p style="margin-top:8px;"><strong style="color:var(--text);">Every lower day:</strong> Warm-up (5 min) → 2 compound leg exercises → Nordic curls → 1 ankle/foot exercise → 1–2 core exercises → loaded carry or hold. ~50 min total.</p>
-        <p style="margin-top:8px;"><strong style="color:var(--text);">Every upper day:</strong> Warm-up (5 min) → Pike push-up variation (delt priority) → 1 pull movement → 1 push movement → 1 delt isolation → 1 accessory. ~45 min total.</p>
-        <p style="margin-top:8px;">Always do the <strong style="color:var(--text);">ankle rehab protocol (5 min)</strong> either before your warm-up or at the end of your day.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--text);">Day 1 &amp; 2 (~45 min):</strong> Warm-up 5 min → main lower blocks → upper body finisher 10 min → mobility 5 min.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--text);">Day 3 (~45 min):</strong> Warm-up 5 min → calf/foot block (critical — slow and precise) → abductor + adductor blocks → mobility 5 min. No upper body.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--text);">Day 4 (~55 min):</strong> Warm-up 5 min → compound lower block → core block → upper body push emphasis → calf finisher 10 min → mobility 5 min. Heaviest loading day.</p>
+        <p style="margin-top:8px;"><strong style="color:var(--text);">Morning routine (~15–27 min):</strong> Runs independently — activation + jump rope + horse stance + cool-down. See Ankle &amp; Morning tab.</p>
       </div>
     </div>
   </div>
@@ -518,9 +482,9 @@
     </div>
     <div id="cal-body"></div>
     <div class="phase-legend">
-      <div class="phase-legend-item"><div class="phase-dot" style="background:rgba(30,128,80,0.6);"></div>Wks 1–4: Learning</div>
-      <div class="phase-legend-item"><div class="phase-dot" style="background:rgba(77,136,204,0.6);"></div>Wks 5–8: Building</div>
-      <div class="phase-legend-item"><div class="phase-dot" style="background:rgba(204,51,68,0.6);"></div>Wks 9–12: Intensity</div>
+      <div class="phase-legend-item"><div class="phase-dot" style="background:rgba(30,128,80,0.6);"></div>Wks 1–4: Foundation</div>
+      <div class="phase-legend-item"><div class="phase-dot" style="background:rgba(77,136,204,0.6);"></div>Wks 5–8: Development</div>
+      <div class="phase-legend-item"><div class="phase-dot" style="background:rgba(204,51,68,0.6);"></div>Wks 9–12: Strength</div>
       <div class="phase-legend-item"><div class="phase-dot" style="background:var(--border);"></div>Rest</div>
     </div>
     <p style="font-size:0.72rem;color:var(--muted);margin-top:10px;">Click a training day to toggle it complete. Use the Log button in the Workout tab to mark today's session.</p>
@@ -541,78 +505,101 @@
 
 <script>
 const WORKOUTS = {
-  'lower-a': {
-    title: 'Lower + Core A',
-    emphasis: 'Quad & Ankle Dominant',
+  'day1': {
+    title: 'Day 1 — Quad Dominant + Anterior Core',
+    emphasis: 'Suggested: Monday · Equipment: kettlebell, resistance band, pull-up bar',
     warmup: [
-      'Ankle circles × 10 each direction per foot',
-      'Bodyweight calf raises × 15',
-      'Bodyweight squats × 10',
-      'Short-foot activations × 10 per foot (press arch into floor without curling toes)'
+      'Seated ankle circles 2×10 each direction',
+      'Hip circles 10 each way',
+      'Leg swings 10 each direction',
+      'Banded clamshell activation 1×15 per side'
     ],
+    blocks: ['QUAD BLOCK','QUAD BLOCK','QUAD BLOCK','QUAD BLOCK','QUAD BLOCK','CORE BLOCK','CORE BLOCK','CORE BLOCK','UPPER — PULL EMPHASIS','UPPER — PULL EMPHASIS'],
     exercises: [
-      { name: 'Kettlebell Goblet Squat', sets: 3, reps: '10–12', tempo: '3-1-2-0', rest: 90, notes: 'Sit deep, heels flat. The 25 lb KB is perfect for learning depth.' },
-      { name: 'Sandbag Bulgarian Split Squat', sets: 3, reps: '8–10 / leg', tempo: '3-1-1-0', rest: 90, notes: 'Bear-hug the sandbag. Rear foot on a chair or low surface. Start with BW if 100 lb is too heavy.' },
-      { name: 'Nordic Curl Negative', sets: 3, reps: '4–6', tempo: '5s down, push up', rest: 120, notes: 'Lower as slowly as possible. Push off floor to return. You will gain reps over weeks.' },
-      { name: 'Single-Leg Calf Raise (on a step)', sets: 3, reps: '12–15 / leg', tempo: '2-2-1-0', rest: 60, notes: 'Full range — stretch at bottom, squeeze at top. Strengthens ankle complex.' },
-      { name: 'Towel Scrunches + Marble Pickup', sets: 2, reps: '45s / foot', tempo: '—', rest: 30, notes: 'Sit in chair, scrunch towel toward you with toes. Builds foot intrinsic muscles.' },
-      { name: 'Ab Roller Kneeling', sets: 3, reps: '8–10', tempo: 'controlled', rest: 90, notes: 'Roll out only as far as you can return from. Squeeze glutes and brace hard.' },
-      { name: 'Sandbag Front-Loaded Carry', sets: 2, reps: '30–40s', tempo: '—', rest: 60, notes: 'Bear-hug sandbag, walk slowly. Core brace + ankle stability under load. Use less sand if needed.' }
+      { name: 'Spanish Squat', sets: 3, reps: '10–12', tempo: '3-1-1-0', rest: 90, notes: 'Band around post at knee height. Deep squat, 3-sec pause at bottom. Knees track over toes.' },
+      { name: 'Goblet Squat', sets: 3, reps: '10', tempo: '3-2-1-0', rest: 90, notes: 'Kettlebell at chest, knees out. 2-sec pause at bottom, parallel or below.' },
+      { name: 'Wall Sit', sets: 3, reps: '45s', tempo: '—', rest: 60, notes: 'Thighs parallel to floor, back flat against wall. 60s rest between sets.' },
+      { name: 'Reverse Lunge', sets: 3, reps: '10 / side', tempo: '3-0-1-0', rest: 75, notes: 'Step back — easier on ankles than forward lunge. Drive through the front heel to stand.' },
+      { name: 'Sissy Squat', sets: 3, reps: '8', tempo: '2-1-1-0', rest: 75, notes: 'Hold band or post for balance. Knees forward, body straight, rise onto toes. Eccentric quad overload.' },
+      { name: 'Dead Bug', sets: 3, reps: '8 / side', tempo: '—', rest: 60, notes: 'Opposite arm + leg lower. Press lower back into the floor throughout. No breath holding.' },
+      { name: 'Ab Roller', sets: 3, reps: '8', tempo: 'controlled', rest: 90, notes: 'Roll out only to neutral spine. Pull back by drawing abs in — not by hinging at the hips.' },
+      { name: 'Hanging Knee Raise', sets: 3, reps: '10–12', tempo: '2-0-1-0', rest: 75, notes: 'Dead hang, draw knees to chest. 2–3 sec controlled lower. No swinging or kipping.' },
+      { name: 'Pull-ups', sets: 4, reps: 'max (–1–2)', tempo: '2-1-1-0', rest: 120, notes: 'Dead hang → chin over bar. Stop 1–2 reps before failure. Use band assist if max < 5 reps.' },
+      { name: 'Dips', sets: 2, reps: 'max (–1–2)', tempo: '3-1-1-0', rest: 90, notes: 'Slight forward lean for chest. Lock out fully at top. Stop if anterior shoulder is painful (not just burning).' }
     ]
   },
-  'lower-b': {
-    title: 'Lower + Core B',
-    emphasis: 'Posterior Chain & Foot Strength',
+  'day2': {
+    title: 'Day 2 — Posterior Chain + Hip Flexors + Spinal Core',
+    emphasis: 'Suggested: Tuesday · Equipment: Nordic curl tool, kettlebell, Roman chair, band',
     warmup: [
-      'Banded ankle dorsiflexion stretch × 30s/side (use a towel if no band)',
-      'Hip circles × 8 each',
-      'Single-leg glute bridge × 8/side',
-      'Toe yoga (lift big toe, press small toes, alternate) × 10 per foot'
+      'Cat/cow 10 reps',
+      'Hip hinge practice against wall 8 reps',
+      'Banded good morning 2×10',
+      'World\'s greatest stretch 3 per side'
     ],
+    blocks: ['HAMSTRING BLOCK','HAMSTRING BLOCK','HAMSTRING BLOCK','HAMSTRING BLOCK','HIP FLEXOR BLOCK','HIP FLEXOR BLOCK','SPINAL CORE BLOCK','SPINAL CORE BLOCK','SPINAL CORE BLOCK','UPPER — PULL + PUSH','UPPER — PULL + PUSH'],
     exercises: [
-      { name: 'Roman Chair Back Extension', sets: 3, reps: '12–15', tempo: '2-1-2-0', rest: 90, notes: 'Squeeze glutes at top. Hug KB to chest once BW is easy.' },
-      { name: 'Sandbag Sumo Deadlift', sets: 3, reps: '10–12', tempo: '2-0-1-1', rest: 90, notes: 'Wide stance, grab the bag between legs. Hinge at hips. Great posterior chain builder.' },
-      { name: 'Nordic Curl Negative', sets: 3, reps: '4–6', tempo: '5s down', rest: 120, notes: 'Same as Day A — frequency is king for this movement.' },
-      { name: 'Kettlebell Single-Leg Romanian Deadlift', sets: 3, reps: '8–10 / leg', tempo: '3-0-1-1', rest: 90, notes: 'Hold KB in opposite hand. Huge for ankle stability + hamstrings. Touch wall for balance if needed.' },
-      { name: 'Barefoot Single-Leg Balance', sets: 2, reps: '30–45s / leg', tempo: '—', rest: 30, notes: 'On a folded towel for instability. Eyes open → progress to eyes closed. Directly rehabs ankle proprioception.' },
-      { name: 'Hollow Body Hold', sets: 3, reps: '20–30s', tempo: '—', rest: 60, notes: 'Press lower back into floor. Arms overhead if possible, by sides if not.' },
-      { name: 'Pallof Press Iso Hold', sets: 2, reps: '20s / side', tempo: '—', rest: 60, notes: 'Anti-rotation core. Loop a towel around pull-up bar post or doorframe. Hold KB at chest level and press out to one side while resisting rotation.' }
+      { name: 'Nordic Curl Negative', sets: 3, reps: '5 (5-sec lower)', tempo: '—', rest: 120, notes: 'Lower as slowly as possible — aim for 5+ seconds. Push up with hands to return. Most effective hamstring exercise available.' },
+      { name: 'Kettlebell RDL', sets: 3, reps: '10', tempo: '3-0-1-1', rest: 90, notes: 'Push hips back until strong hamstring stretch. Spine neutral throughout — do not let lower back round.' },
+      { name: 'Weighted Glute Bridge', sets: 3, reps: '15', tempo: '2-2-1-0', rest: 75, notes: 'Sandbag or kettlebell across hips. Squeeze glutes hard at top for 1–2 sec. Drive through heels.' },
+      { name: 'Good Morning', sets: 3, reps: '12', tempo: '3-0-1-0', rest: 75, notes: 'Hands behind head, hinge forward to near-parallel. Builds the hinge pattern and hamstring length.' },
+      { name: 'Psoas March (banded)', sets: 3, reps: '10 / side', tempo: '—', rest: 60, notes: 'Band at foot, anchored low behind. Drive knee to chest. Pelvis stable — do not hike the hip or lean back.' },
+      { name: 'Standing Band Hip Flexion', sets: 3, reps: '12 / side', tempo: '—', rest: 60, notes: 'Band at ankle, anchored behind. Drive leg forward and up. Stay tall — no backward lean.' },
+      { name: 'Roman Chair Back Extension', sets: 3, reps: '12', tempo: '2-1-2-0', rest: 75, notes: 'Start rounded, extend to neutral (not hyperextended). 1-sec pause at top. Targets spinal erectors and glutes.' },
+      { name: 'Roman Chair Oblique Raise', sets: 3, reps: '10 / side', tempo: '—', rest: 75, notes: 'Body faces sideways. Lower laterally, raise to horizontal. Targets the lateral chain — obliques and QL.' },
+      { name: 'Bird Dog', sets: 3, reps: '8 / side', tempo: '—', rest: 60, notes: 'Opposite arm + leg extend simultaneously. Hold 2s at full extension. Lumbar must not rotate or dip.' },
+      { name: 'Pull-ups', sets: 3, reps: 'max (–1–2)', tempo: '2-1-1-0', rest: 120, notes: 'Same cues as Day 1. Dead hang bottom, chin over bar top.' },
+      { name: 'Push-ups', sets: 3, reps: 'max (–1–2)', tempo: '2-0-1-0', rest: 90, notes: 'Hands slightly wider than shoulders, elbows ~45°. Chest to floor. Rigid body throughout — no sagging hips.' }
     ]
   },
-  'upper-a': {
-    title: 'Upper A',
-    emphasis: 'Delt & Push Dominant',
+  'day3': {
+    title: 'Day 3 — Calf / Foot Complex + Abductors + Adductors',
+    emphasis: 'Suggested: Thursday · Equipment: resistance band, chair or step · No upper body today',
     warmup: [
-      'Arm circles × 10 each direction',
-      'Band pull-aparts or towel pull-aparts × 15',
-      'Scapular push-ups × 10',
-      'Wall slides × 8'
+      'Seated ankle alphabet (draw A–Z each foot)',
+      'Toe spreads + curls 2×10',
+      'Foot rolling on ball 60s per foot'
     ],
+    blocks: ['CALF / FOOT BLOCK','CALF / FOOT BLOCK','CALF / FOOT BLOCK','CALF / FOOT BLOCK','CALF / FOOT BLOCK','CALF / FOOT BLOCK','ABDUCTOR BLOCK','ABDUCTOR BLOCK','ADDUCTOR BLOCK','ADDUCTOR BLOCK'],
     exercises: [
-      { name: 'Pike Push-Up (feet elevated on chair)', sets: 4, reps: '6–10', tempo: '2-1-2-0', rest: 120, notes: 'PRIMARY DELT BUILDER. The steeper the angle, the more it hits upper delts. Walk hands closer to the chair over time.' },
-      { name: 'Dip Bar Dips', sets: 3, reps: '6–10', tempo: '3-1-1-0', rest: 120, notes: 'Lean slightly forward for chest, stay upright for triceps. Lower until upper arm is parallel.' },
-      { name: 'Kettlebell Lateral Raise', sets: 3, reps: '10–12', tempo: '2-1-2-0', rest: 60, notes: '25 lb may be heavy — cheat the last 2 reps or do partials. Targets lateral/upper delt directly.' },
-      { name: 'Push-Up (diamond or standard)', sets: 3, reps: '10–15', tempo: '2-0-1-0', rest: 60, notes: 'Protract shoulders at top for serratus activation.' },
-      { name: 'Kettlebell Overhead Press (standing, single arm)', sets: 3, reps: '8–10 / arm', tempo: '2-1-1-0', rest: 60, notes: 'Standing = core engagement. Press slightly in front of your head, not behind.' },
-      { name: 'Scapular Pull-Up', sets: 2, reps: '8–10', tempo: '2-1-1-0', rest: 60, notes: 'Hang from bar, retract scapulae without bending elbows. Builds shoulder health foundation.' }
+      { name: 'Seated Calf Raise', sets: 4, reps: '15–20', tempo: '1-0-3-0', rest: 75, notes: '90° knee angle isolates the soleus (deep calf). Full range — all the way down. 3-sec lower. Add thigh load if available.' },
+      { name: 'Standing Bilateral Calf Raise', sets: 4, reps: '15', tempo: '3-1-3-0', rest: 75, notes: '3 sec up, 1 sec pause at top, 3 sec down. On a step edge if possible for full stretch at bottom.' },
+      { name: 'Eccentric Bilateral Calf Lower', sets: 3, reps: '10 (5-sec lower)', tempo: '—', rest: 75, notes: 'Rise on both feet quickly, lower as slowly as possible. Eccentric load is the primary driver of tendon adaptation.' },
+      { name: 'Tibialis Anterior Raise', sets: 3, reps: '20', tempo: '—', rest: 60, notes: 'Seated, lift forefoot as high as possible, hold 1s at top, lower slowly. Critical for ankle stability — keep in every session.' },
+      { name: 'Foot Doming / Short Foot', sets: 3, reps: '10 (3s hold)', tempo: '—', rest: 45, notes: 'Pull the ball of the foot toward the heel without curling the toes. Activates intrinsic arch muscles most people neglect.' },
+      { name: 'Toe Spread + Curl', sets: 2, reps: '15', tempo: '—', rest: 30, notes: 'Spread toes wide and hold 5s, then curl under and hold 5s. Builds intrinsic foot motor control.' },
+      { name: 'Clamshell (banded)', sets: 3, reps: '15 / side', tempo: '—', rest: 60, notes: 'Band above knees. Hips at ~45°. Rotate top knee up without rolling the pelvis backward.' },
+      { name: 'Standing Band Abduction', sets: 3, reps: '15 / side', tempo: '—', rest: 60, notes: 'Band at ankle, anchored on the opposite side. Sweep leg out, keep pelvis level and stable.' },
+      { name: 'Copenhagen Plank (kneeling)', sets: 3, reps: '20s / side', tempo: '—', rest: 75, notes: 'Top knee on bench. Side plank position held by the top adductor alone. Progress to full straight leg over time.' },
+      { name: 'Banded Adductor Squeeze', sets: 3, reps: '15', tempo: '—', rest: 60, notes: 'Band looped around both knees. Squeeze knees together against resistance. Good complement to Copenhagen.' }
     ]
   },
-  'upper-b': {
-    title: 'Upper B',
-    emphasis: 'Delt & Pull Dominant',
+  'day4': {
+    title: 'Day 4 — Full Lower Integration + Rotational Core',
+    emphasis: 'Suggested: Friday · Heaviest loading day — go heavier than Day 1 on goblet squat',
     warmup: [
-      'Dead hangs × 20s',
-      'Cat-cow × 8',
-      'YTW raises lying face-down × 5 each',
-      'Wrist circles × 10'
+      'Seated ankle circles 2×10',
+      'Hip hinge against wall 8 reps',
+      'Banded lateral walk 10 each direction',
+      'Leg swings 10 each direction'
     ],
+    blocks: ['COMPOUND LOWER BLOCK','COMPOUND LOWER BLOCK','COMPOUND LOWER BLOCK','COMPOUND LOWER BLOCK','CORE BLOCK','CORE BLOCK','CORE BLOCK','CORE BLOCK','CORE BLOCK','UPPER — PUSH EMPHASIS','UPPER — PUSH EMPHASIS','UPPER — PUSH EMPHASIS','CALF FINISHER','CALF FINISHER','CALF FINISHER'],
     exercises: [
-      { name: 'Pull-Up (or band-assisted / negatives)', sets: 4, reps: '4–8', tempo: '2-1-1-0', rest: 120, notes: "If you can't do full pull-ups yet, do 5s negative-only reps (jump up, lower slowly)." },
-      { name: 'Pike Push-Up (floor level)', sets: 3, reps: '8–12', tempo: '2-1-2-0', rest: 90, notes: 'Slightly easier angle than Upper A to allow more volume while still loading delts.' },
-      { name: 'Kettlebell Upright Row', sets: 3, reps: '10–12', tempo: '2-0-1-1', rest: 60, notes: 'Pull to collarbone height. Targets upper traps and lateral delts. Stop if shoulders feel pinched.' },
-      { name: 'Inverted Row (under dip bar or pull-up bar set low)', sets: 3, reps: '8–12', tempo: '2-1-1-0', rest: 60, notes: 'Squeeze shoulder blades together. Walk feet forward to make harder.' },
-      { name: 'Sandbag Bear-Hug Hold', sets: 2, reps: '30–40s', tempo: '—', rest: 60, notes: 'Stand tall, crush the bag. Isometric full-body tension, especially upper back and core.' },
-      { name: 'Kettlebell Halo', sets: 2, reps: '8 each direction', tempo: 'controlled', rest: 60, notes: 'Circle KB around your head. Shoulder mobility + stability for delt health.' }
+      { name: 'Goblet Squat (heavy)', sets: 4, reps: '10', tempo: '3-2-1-0', rest: 120, notes: 'Heavier than Day 1. 3-sec descent, 1–2s pause at bottom. Drive the floor away on the way up.' },
+      { name: 'Kettlebell Sumo Deadlift', sets: 3, reps: '10', tempo: '2-0-2-1', rest: 90, notes: 'Wide stance, toes out 45°. Kettlebell between legs. Targets inner hamstrings and adductors specifically.' },
+      { name: 'Reverse Lunge (loaded)', sets: 3, reps: '10 / side', tempo: '3-0-1-0', rest: 90, notes: 'Kettlebell in ipsilateral hand for anti-lateral core challenge, or both hands loaded. Same ankle-safe mechanics as Day 1.' },
+      { name: 'Nordic Curl (working)', sets: 3, reps: '5–8', tempo: '—', rest: 120, notes: 'Attempt partial concentric pull after the negative. Use hands only for the final inches. Strength builds slowly — be patient.' },
+      { name: 'Plank', sets: 3, reps: '45–60s', tempo: '—', rest: 60, notes: 'RKC style: drive elbows toward toes, squeeze glutes and quads hard. Straight line from head to heel.' },
+      { name: 'Side Plank', sets: 3, reps: '35–45s / side', tempo: '—', rest: 60, notes: 'Top hip must not sag. Progress by adding hip dips (lower hip to floor and back up while holding position).' },
+      { name: 'Pallof Press (banded)', sets: 3, reps: '10 / side', tempo: '—', rest: 75, notes: 'Band at chest height. Press out, hold 2s at full extension, return. Resist the rotational pull throughout the movement.' },
+      { name: 'Roman Chair Extension (weighted)', sets: 3, reps: '10', tempo: '2-1-2-0', rest: 75, notes: 'Kettlebell at chest or behind head. Extend to neutral at top — do not hyperextend the lower back.' },
+      { name: 'Ab Roller', sets: 3, reps: '8–10', tempo: 'controlled', rest: 90, notes: 'Slightly more volume than Day 1. Full control throughout — no hip dipping or momentum.' },
+      { name: 'Push-ups', sets: 4, reps: 'max (–1–2)', tempo: '2-0-1-0', rest: 90, notes: 'Elevate feet once flat >15 reps. Elbows 45°, chest to floor, rigid body. Push emphasis day.' },
+      { name: 'Dips', sets: 3, reps: 'max (–1–2)', tempo: '3-1-1-0', rest: 90, notes: 'Full lock-out at top. Add sandbag on lap when max consistently >15 reps.' },
+      { name: 'Pull-ups', sets: 2, reps: 'max (–1–2)', tempo: '2-1-1-0', rest: 120, notes: 'Lower pull volume to balance the push-heavy day. Full range, controlled descent.' },
+      { name: 'Standing Bilateral Calf Raise (finisher)', sets: 3, reps: '15', tempo: '3-1-3-0', rest: 60, notes: 'Same slow tempo as Day 3. Second weekly calf exposure drives growth beyond maintenance threshold.' },
+      { name: 'Seated Calf Raise (finisher)', sets: 3, reps: '15', tempo: '1-0-3-0', rest: 60, notes: 'Full range. Add thigh load if available. Soleus responds well to the bent-knee position.' },
+      { name: 'Tibialis Anterior Raise (finisher)', sets: 2, reps: '20', tempo: '—', rest: 45, notes: 'Keep in every session during ankle rehab. Slow and deliberate — this is therapeutic, not just conditioning.' }
     ]
   }
 };
@@ -666,7 +653,7 @@ function openWorkout(key) {
 function loadWorkout(key) {
   currentWorkout = key;
   setStates = {};
-  document.querySelectorAll('[id^="btn-"]').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('[id^="btn-day"]').forEach(b => b.classList.remove('active'));
   const btn = document.getElementById('btn-' + key);
   if (btn) btn.classList.add('active');
   renderWorkout(key);
@@ -679,7 +666,15 @@ function renderWorkout(key) {
 
   const warmupHtml = w.warmup.map(s => `<li>${s}</li>`).join('');
 
+  let lastBlock = null;
   const exercisesHtml = w.exercises.map((ex, ei) => {
+    let blockHeader = '';
+    const blockName = w.blocks ? w.blocks[ei] : null;
+    if (blockName && blockName !== lastBlock) {
+      blockHeader = `<div class="block-label">${blockName}</div>`;
+      lastBlock = blockName;
+    }
+
     const tempoHtml = renderTempo(ex.tempo);
     const setsHtml = Array.from({length: ex.sets}, (_, si) =>
       `<div class="set-row">
@@ -690,7 +685,7 @@ function renderWorkout(key) {
       </div>`
     ).join('');
 
-    return `<div class="exercise-card" id="excard-${ei}">
+    return `${blockHeader}<div class="exercise-card" id="excard-${ei}">
       <div class="ex-header" onclick="toggleEx(${ei})">
         <div class="ex-num">${ei+1}</div>
         <div class="ex-name">${ex.name}</div>
@@ -724,7 +719,6 @@ function renderWorkout(key) {
     </div>
     <div class="exercise-list">${exercisesHtml}</div>
   `;
-  // stagger exercise cards and warmup items
   area.querySelectorAll('.exercise-card').forEach((card, i) => {
     card.style.animationDelay = `${i * 0.07}s`;
   });
@@ -876,23 +870,28 @@ function stopTimer() {
   document.getElementById('timer').classList.add('hidden');
 }
 
-// Today's card
+// Today's highlight card
 (function() {
   const days = ['sun','mon','tue','wed','thu','fri','sat'];
   const workoutMap = {
-    mon: { key: 'lower-a', label: 'Lower + Core A — Quad & Ankle Dominant' },
-    tue: { key: 'upper-a', label: 'Upper A — Delt & Push Dominant' },
-    wed: { key: 'lower-b', label: 'Lower + Core B — Posterior Chain & Foot Strength' },
-    thu: { key: 'upper-b', label: 'Upper B — Delt & Pull Dominant' },
-    fri: { key: 'lower-a', label: 'Lower + Core A — Quad & Ankle Dominant' },
-    sat: { key: 'upper-a', label: 'Upper A — Delt & Push Dominant' },
+    mon: { key: 'day1', label: 'Day 1 — Quad Dominant + Anterior Core' },
+    tue: { key: 'day2', label: 'Day 2 — Posterior Chain + Hip Flexors + Spinal Core' },
+    wed: null,
+    thu: { key: 'day3', label: 'Day 3 — Calf / Foot Complex + Abductors + Adductors' },
+    fri: { key: 'day4', label: 'Day 4 — Full Lower Integration + Rotational Core' },
+    sat: null,
     sun: null
   };
   const dayName = days[new Date().getDay()];
   const card = document.getElementById('today-card');
   const info = workoutMap[dayName];
   if (!info) {
-    card.innerHTML = `<div style="font-size:.9rem;color:var(--muted);">Today is <strong style="color:var(--text);">Sunday — Rest Day</strong>. Walk, stretch, light mobility only. Don't forget your ankle rehab protocol!</div>`;
+    const msgs = {
+      wed: 'Today is <strong style="color:var(--text);">Wednesday — Rest Day</strong>. Active recovery, morning routine, or complete rest.',
+      sat: 'Today is <strong style="color:var(--text);">Saturday — Optional Mobility Day</strong>. 30–40 min of hip, ankle, spinal, and posterior chain stretching if desired.',
+      sun: 'Today is <strong style="color:var(--text);">Sunday — Rest Day</strong>. Morning routine is still fair game. Let the body recover.'
+    };
+    card.innerHTML = `<div style="font-size:.9rem;color:var(--muted);">${msgs[dayName] || 'Rest day.'}</div>`;
   } else {
     card.innerHTML = `<div style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">Today (${dayName.charAt(0).toUpperCase()+dayName.slice(1)})</div>
     <div style="font-size:1rem;font-weight:700;margin-bottom:12px;">${info.label}</div>
@@ -902,9 +901,9 @@ function stopTimer() {
   if (dayCard) dayCard.classList.add('active');
 })();
 
-// Load a default workout
-loadWorkout('lower-a');
-document.getElementById('btn-lower-a').classList.add('active');
+// Load default workout
+loadWorkout('day1');
+document.getElementById('btn-day1').classList.add('active');
 
 // ── Calendar & Completion Tracking ──────────────────────────────────────────
 
@@ -933,9 +932,9 @@ function getProgramWeek(date) {
 
 function getPhaseInfo(week) {
   if (!week || week < 1) return null;
-  if (week <= 4)  return { name: 'Learning',  color: '#1e8050', bg: 'rgba(30,128,80,0.07)'   };
-  if (week <= 8)  return { name: 'Building',  color: '#4d88cc', bg: 'rgba(77,136,204,0.07)'  };
-  if (week <= 12) return { name: 'Intensity', color: '#cc3344', bg: 'rgba(204,51,68,0.07)'   };
+  if (week <= 4)  return { name: 'Foundation',  color: '#1e8050', bg: 'rgba(30,128,80,0.07)'   };
+  if (week <= 8)  return { name: 'Development', color: '#4d88cc', bg: 'rgba(77,136,204,0.07)'  };
+  if (week <= 12) return { name: 'Strength',    color: '#cc3344', bg: 'rgba(204,51,68,0.07)'   };
   return { name: 'Beyond', color: '#4e5d6c', bg: 'transparent' };
 }
 
@@ -943,7 +942,8 @@ function getWorkoutForDate(date) {
   const d = new Date(date); d.setHours(0,0,0,0);
   const s = new Date(PROGRAM_START); s.setHours(0,0,0,0);
   if (d < s) return null;
-  return {0:null,1:'lower-a',2:'upper-a',3:'lower-b',4:'upper-b',5:'lower-a',6:'upper-a'}[d.getDay()];
+  // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat
+  return {0:null,1:'day1',2:'day2',3:null,4:'day3',5:'day4',6:null}[d.getDay()];
 }
 
 let calYear = 2026, calMonth = 4;
@@ -966,8 +966,8 @@ function renderCalendar() {
   for (let d = 1; d <= daysInMonth; d++) allDays.push(new Date(calYear, calMonth, d));
   while (allDays.length % 7 !== 0) allDays.push(null);
 
-  const wLabels = { 'lower-a':'Lower A','lower-b':'Lower B','upper-a':'Upper A','upper-b':'Upper B' };
-  const wCls    = { 'lower-a':'badge-la','lower-b':'badge-lb','upper-a':'badge-ua','upper-b':'badge-ub' };
+  const wLabels = { 'day1':'Day 1','day2':'Day 2','day3':'Day 3','day4':'Day 4' };
+  const wCls    = { 'day1':'badge-d1','day2':'badge-d2','day3':'badge-d3','day4':'badge-d4' };
 
   let html = '';
   for (let w = 0; w < allDays.length / 7; w++) {
@@ -1046,9 +1046,6 @@ function updateCalStats() {
   document.getElementById('cal-stat-phase').textContent = ph ? ph.name : '—';
   document.getElementById('cal-stat-total').textContent = Object.keys(completions).length;
 
-  // streak: count consecutive completed training days, skipping rest days.
-  // If today is a training day that hasn't been logged yet, start from
-  // yesterday so an unfinished-but-still-open day never breaks the streak.
   let check = new Date(today);
   const todayStr = today.toISOString().split('T')[0];
   if (getWorkoutForDate(today) && !completions[todayStr]) {
@@ -1060,7 +1057,7 @@ function updateCalStats() {
     if (check < PROGRAM_START) break;
     const dStr = check.toISOString().split('T')[0];
     const sched = getWorkoutForDate(check);
-    if (!sched) { check.setDate(check.getDate() - 1); continue; } // skip rest days
+    if (!sched) { check.setDate(check.getDate() - 1); continue; }
     if (completions[dStr]) { streak++; check.setDate(check.getDate() - 1); }
     else break;
   }
