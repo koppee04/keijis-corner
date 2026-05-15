@@ -28,7 +28,7 @@
     --green: #1e8050;
     --yellow: #a85e00;
     --text: #18202a;
-    --muted: #4e5d6c;
+    --muted: #2e3d4f;
     --radius: 12px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -67,7 +67,7 @@
   .warmup-box { background: rgba(168,94,0,0.07); border: 1px solid rgba(168,94,0,0.22); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
   .warmup-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--yellow); margin-bottom: 6px; }
   .warmup-steps { list-style: none; }
-  .warmup-steps li { font-size: 0.82rem; color: #ccc; padding: 3px 0; }
+  .warmup-steps li { font-size: 0.82rem; color: #2a3a4a; padding: 3px 0; }
   .warmup-steps li::before { content: "→ "; color: var(--yellow); }
 
   .block-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent2); margin: 18px 0 8px; padding: 4px 10px; background: rgba(77,136,204,0.08); border-left: 3px solid var(--accent2); border-radius: 0 6px 6px 0; }
@@ -907,7 +907,7 @@ document.getElementById('btn-day1').classList.add('active');
 
 // ── Calendar & Completion Tracking ──────────────────────────────────────────
 
-const PROGRAM_START = new Date(2026, 4, 1); // May 1 2026
+const PROGRAM_START = new Date(2026, 4, 14); // May 14 2026
 
 function getCompletions() {
   try { return JSON.parse(localStorage.getItem('cf-completions') || '{}'); } catch { return {}; }
