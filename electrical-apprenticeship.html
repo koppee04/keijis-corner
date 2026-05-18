@@ -8,8 +8,8 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #040810;
-  color: #5599dd;
+  background: #f0f2f5;
+  color: #1144bb;
   font-family: 'Courier New', monospace;
   font-size: 13px;
   overflow-y: auto;
@@ -18,8 +18,8 @@ body {
 
 /* ── Page header ─────────────────────────────────── */
 .page-header {
-  background: #0a0c14;
-  border-bottom: 3px solid #5599dd;
+  background: #111111;
+  border-bottom: 3px solid #1144bb;
   padding: 22px 28px 18px;
   position: relative;
   overflow: hidden;
@@ -29,8 +29,8 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
   background-size: 14px 14px;
   pointer-events: none;
 }
@@ -44,9 +44,9 @@ body {
   text-shadow: 2px 2px 0 #0a1a2a;
   line-height: 1.2;
 }
-.page-title .bolt { color: #5599dd; }
+.page-title .bolt { color: #1144bb; }
 .page-subtitle {
-  color: #e06500;
+  color: #cc0000;
   font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -60,7 +60,7 @@ body {
 }
 .tag {
   background: rgba(229,101,0,0.18);
-  border: 1px solid #5599dd;
+  border: 1px solid #1144bb;
   color: #f0a060;
   font-size: 10px;
   font-weight: bold;
@@ -71,17 +71,17 @@ body {
 }
 .tag.blue {
   background: rgba(85,153,204,0.15);
-  border-color: #e06500;
+  border-color: #cc0000;
   color: #88bbdd;
 }
 
 /* ── Intro blurb ─────────────────────────────────── */
 .intro {
-  background: #080e1c;
-  border-bottom: 2px solid #a8b0b8;
+  background: #ffffff;
+  border-bottom: 2px solid #cccccc;
   padding: 16px 28px;
   font-size: 12px;
-  color: #3a4a5a;
+  color: #555555;
   line-height: 1.7;
 }
 
@@ -94,21 +94,21 @@ body {
 
 /* ── Phase section ───────────────────────────────── */
 .phase {
-  background: #080e1c;
-  border: 1px solid #1e2840;
+  background: #ffffff;
+  border: 1px solid #cccccc;
   border-radius: 6px;
   margin-bottom: 18px;
   overflow: hidden;
-  box-shadow: 2px 2px 0 #1e2840;
+  box-shadow: 2px 2px 0 #cccccc;
 }
 
 .phase-header {
-  background: #0a0c14;
+  background: #111111;
   padding: 12px 18px;
   display: flex;
   align-items: center;
   gap: 12px;
-  border-bottom: 2px solid #5599dd;
+  border-bottom: 2px solid #1144bb;
   position: relative;
   overflow: hidden;
 }
@@ -117,13 +117,13 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
   background-size: 10px 10px;
   pointer-events: none;
 }
 .phase-num {
-  background: #5599dd;
+  background: #1144bb;
   color: #fff;
   font-size: 11px;
   font-weight: bold;
@@ -134,7 +134,7 @@ body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 1px 1px 0 #8a3c00;
+  box-shadow: 1px 1px 0 #999999;
   position: relative;
   z-index: 1;
 }
@@ -154,11 +154,11 @@ body {
 }
 .phase-intro {
   font-size: 12px;
-  color: #3a4a5a;
+  color: #555555;
   line-height: 1.7;
   margin-bottom: 14px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #b0b8c0;
+  border-bottom: 1px solid #cccccc;
 }
 
 /* ── Item within a phase ─────────────────────────── */
@@ -170,7 +170,7 @@ body {
 .item-title {
   font-size: 12px;
   font-weight: bold;
-  color: #5599dd;
+  color: #1144bb;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 5px;
@@ -180,16 +180,16 @@ body {
 }
 .item-title::before {
   content: '▸';
-  color: #e06500;
+  color: #cc0000;
   font-size: 10px;
 }
 .item-body {
   font-size: 12px;
-  color: #2a3a4a;
+  color: #333333;
   line-height: 1.75;
   padding-left: 16px;
 }
-.item-body strong { color: #5599dd; }
+.item-body strong { color: #1144bb; }
 
 /* ── Bullet list ─────────────────────────────────── */
 .bullet-list {
@@ -202,7 +202,7 @@ body {
 }
 .bullet-list li {
   font-size: 12px;
-  color: #2a3a4a;
+  color: #333333;
   line-height: 1.7;
   padding-left: 14px;
   position: relative;
@@ -211,16 +211,16 @@ body {
   content: '■';
   position: absolute;
   left: 0;
-  color: #e06500;
+  color: #cc0000;
   font-size: 7px;
   top: 4px;
 }
-.bullet-list li strong { color: #5599dd; }
+.bullet-list li strong { color: #1144bb; }
 
 /* ── Callout box ─────────────────────────────────── */
 .callout {
-  background: #131820;
-  border-left: 3px solid #e06500;
+  background: #f5f5f5;
+  border-left: 3px solid #cc0000;
   border-radius: 0 4px 4px 0;
   padding: 12px 14px;
   margin: 10px 0 14px;
@@ -228,17 +228,17 @@ body {
 .callout-title {
   font-size: 11px;
   font-weight: bold;
-  color: #e06500;
+  color: #cc0000;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
 .callout-body {
   font-size: 12px;
-  color: #2a3a4a;
+  color: #333333;
   line-height: 1.75;
 }
-.callout-body em { color: #5599dd; font-style: normal; font-weight: bold; }
+.callout-body em { color: #1144bb; font-style: normal; font-weight: bold; }
 
 /* ── Cert cards ──────────────────────────────────── */
 .cert-grid {
@@ -248,30 +248,30 @@ body {
   margin-top: 4px;
 }
 .cert-card {
-  background: #131820;
-  border: 1px solid #1e2840;
+  background: #f5f5f5;
+  border: 1px solid #cccccc;
   border-radius: 4px;
   padding: 12px 14px;
-  box-shadow: 1px 1px 0 #1e2840;
+  box-shadow: 1px 1px 0 #cccccc;
 }
 .cert-name {
   font-size: 11px;
   font-weight: bold;
-  color: #5599dd;
+  color: #1144bb;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin-bottom: 5px;
 }
 .cert-desc {
   font-size: 11px;
-  color: #3a4a5a;
+  color: #555555;
   line-height: 1.65;
 }
 
 /* ── Footer ──────────────────────────────────────── */
 .page-footer {
-  background: #707880;
-  border-top: 2px solid #505860;
+  background: #111111;
+  border-top: 2px solid #333333;
   padding: 8px 24px;
   font-size: 9px;
   color: #c8d0d8;

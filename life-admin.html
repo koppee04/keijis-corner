@@ -8,9 +8,9 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: #040810;
+    background: #f0f2f5;
     font-family: 'Courier New', monospace;
-    color: #5599dd;
+    color: #1144bb;
     min-height: 100vh;
   }
 
@@ -22,9 +22,9 @@
 
   /* ── Hero ── */
   .hero {
-    background: #1c2740;
-    border: 2px solid #5599dd;
-    box-shadow: 4px 4px 0 #8a3c00;
+    background: #ffffff;
+    border: 2px solid #1144bb;
+    box-shadow: 4px 4px 0 #aaaaaa;
     padding: 24px 28px 20px;
     margin-bottom: 28px;
     position: relative;
@@ -35,8 +35,8 @@
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
     background-size: 14px 14px;
     pointer-events: none;
   }
@@ -45,14 +45,14 @@
     font-weight: bold;
     letter-spacing: 4px;
     text-transform: uppercase;
-    color: #f0f2f4;
+    color: #111111;
     text-shadow: 2px 2px 0 #3a4450;
     line-height: 1.1;
     position: relative;
   }
-  .hero-title .hl { color: #5599dd; }
+  .hero-title .hl { color: #1144bb; }
   .hero-sub {
-    color: #e06500;
+    color: #cc0000;
     font-size: 10px;
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -67,9 +67,9 @@
     position: relative;
   }
   .toc-chip {
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #c8d0d8;
+    background: rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.12);
+    color: #333333;
     font-size: 10px;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -79,17 +79,17 @@
     text-decoration: none;
   }
   .toc-chip:hover {
-    background: rgba(224,101,0,0.35);
-    border-color: #5599dd;
+    background: rgba(17,68,187,0.15);
+    border-color: #1144bb;
     color: #fff;
   }
 
   /* ── Section ── */
   .section {
     margin-bottom: 24px;
-    border: 2px solid #1e2840;
-    box-shadow: 3px 3px 0 #707880;
-    background: #080e1c;
+    border: 2px solid #cccccc;
+    box-shadow: 3px 3px 0 #aaaaaa;
+    background: #ffffff;
   }
 
   .section-header {
@@ -133,11 +133,11 @@
     display: flex;
     gap: 12px;
     padding: 12px 18px;
-    border-bottom: 1px solid #1e2840;
+    border-bottom: 1px solid #cccccc;
     transition: background 0.1s;
   }
   .item:last-child { border-bottom: none; }
-  .item:hover { background: #131820; }
+  .item:hover { background: #f5f5f5; }
 
   .item-num {
     font-size: 11px;
@@ -164,7 +164,7 @@
     font-weight: bold;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #5599dd;
+    color: #1144bb;
     margin-bottom: 5px;
   }
   .item-desc {
@@ -176,34 +176,34 @@
   /* ── Getting Started table ── */
   .started {
     margin-bottom: 24px;
-    border: 2px solid #1e2840;
-    box-shadow: 3px 3px 0 #707880;
-    background: #1c2740;
+    border: 2px solid #cccccc;
+    box-shadow: 3px 3px 0 #aaaaaa;
+    background: #ffffff;
   }
   .started .section-header {
-    background: #1c2740;
-    border-bottom: 2px solid #5599dd;
+    background: #ffffff;
+    border-bottom: 2px solid #1144bb;
   }
-  .started .section-title { color: #f0f2f4; text-shadow: 1px 1px 0 rgba(0,0,0,0.5); }
-  .started .section-num { background: #5599dd; }
+  .started .section-title { color: #111111; text-shadow: 1px 1px 0 rgba(0,0,0,0.5); }
+  .started .section-num { background: #1144bb; }
 
   .timeline { width: 100%; border-collapse: collapse; }
-  .timeline tr { border-bottom: 1px solid #2e3a50; }
+  .timeline tr { border-bottom: 1px solid #dddddd; }
   .timeline tr:last-child { border-bottom: none; }
-  .timeline td { padding: 11px 18px; font-size: 12px; line-height: 1.6; color: #c8d0d8; vertical-align: top; }
+  .timeline td { padding: 11px 18px; font-size: 12px; line-height: 1.6; color: #333333; vertical-align: top; }
   .timeline .tl-label {
     width: 90px;
     font-weight: bold;
-    color: #e06500;
+    color: #cc0000;
     letter-spacing: 1px;
     text-transform: uppercase;
     white-space: nowrap;
     font-size: 11px;
   }
-  .tl-ongoing .tl-label { color: #5599dd; }
+  .tl-ongoing .tl-label { color: #1144bb; }
 
   .motto {
-    color: #7a9ab8;
+    color: #777777;
     font-size: 11px;
     letter-spacing: 2px;
     text-align: center;
