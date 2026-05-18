@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Admin Guide</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #b8bec6;
+    font-family: 'Courier New', monospace;
+    color: #1a2430;
+    min-height: 100vh;
+  }
+
+  .page-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: #1c2740;
+    border: 2px solid #e06500;
+    box-shadow: 4px 4px 0 #8a3c00;
+    padding: 24px 28px 20px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 14px 14px;
+    pointer-events: none;
+  }
+  .hero-title {
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #f0f2f4;
+    text-shadow: 2px 2px 0 #3a4450;
+    line-height: 1.1;
+    position: relative;
+  }
+  .hero-title .hl { color: #e06500; }
+  .hero-sub {
+    color: #5599cc;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    position: relative;
+  }
+  .hero-toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+    position: relative;
+  }
+  .toc-chip {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #c8d0d8;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    text-decoration: none;
+  }
+  .toc-chip:hover {
+    background: rgba(224,101,0,0.35);
+    border-color: #e06500;
+    color: #fff;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 24px;
+    border: 2px solid #9aa2aa;
+    box-shadow: 3px 3px 0 #707880;
+    background: #cdd2d8;
+  }
+
+  .section-header {
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-num {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0,0,0,0.25);
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Courier New', monospace;
+  }
+  .section-title {
+    font-size: 17px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.35);
+  }
+
+  .s1 .section-header { background: #5566ee; border-bottom: 2px solid #3344bb; }
+  .s2 .section-header { background: #8844cc; border-bottom: 2px solid #662299; }
+  .s3 .section-header { background: #22aaaa; border-bottom: 2px solid #118888; }
+  .s4 .section-header { background: #33aa66; border-bottom: 2px solid #228844; }
+  .s5 .section-header { background: #cc8800; border-bottom: 2px solid #996600; }
+  .s6 .section-header { background: #cc3333; border-bottom: 2px solid #992222; }
+  .s7 .section-header { background: #cc3399; border-bottom: 2px solid #992266; }
+  .s8 .section-header { background: #66aa00; border-bottom: 2px solid #448800; }
+
+  /* ── Items ── */
+  .items { padding: 6px 0; }
+
+  .item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 18px;
+    border-bottom: 1px solid #b0b8c0;
+    transition: background 0.1s;
+  }
+  .item:last-child { border-bottom: none; }
+  .item:hover { background: #d8dde3; }
+
+  .item-num {
+    font-size: 11px;
+    font-weight: bold;
+    color: #fff;
+    background: #5566ee;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'Courier New', monospace;
+  }
+  .s2 .item-num { background: #8844cc; }
+  .s3 .item-num { background: #22aaaa; }
+  .s4 .item-num { background: #33aa66; }
+  .s5 .item-num { background: #cc8800; }
+  .s6 .item-num { background: #cc3333; }
+  .s7 .item-num { background: #cc3399; }
+  .s8 .item-num { background: #66aa00; }
+
+  .item-body {}
+  .item-title {
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #1a2430;
+    margin-bottom: 5px;
+  }
+  .item-desc {
+    font-size: 12px;
+    line-height: 1.65;
+    color: #3a4450;
+  }
+
+  /* ── Getting Started table ── */
+  .started {
+    margin-bottom: 24px;
+    border: 2px solid #9aa2aa;
+    box-shadow: 3px 3px 0 #707880;
+    background: #1c2740;
+  }
+  .started .section-header {
+    background: #1c2740;
+    border-bottom: 2px solid #e06500;
+  }
+  .started .section-title { color: #f0f2f4; text-shadow: 1px 1px 0 rgba(0,0,0,0.5); }
+  .started .section-num { background: #e06500; }
+
+  .timeline { width: 100%; border-collapse: collapse; }
+  .timeline tr { border-bottom: 1px solid #2e3a50; }
+  .timeline tr:last-child { border-bottom: none; }
+  .timeline td { padding: 11px 18px; font-size: 12px; line-height: 1.6; color: #c8d0d8; vertical-align: top; }
+  .timeline .tl-label {
+    width: 90px;
+    font-weight: bold;
+    color: #5599cc;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-size: 11px;
+  }
+  .tl-ongoing .tl-label { color: #e06500; }
+
+  .motto {
+    color: #7a9ab8;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-align: center;
+    padding: 18px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <div class="hero">
+    <div class="hero-title">★ LIFE <span class="hl">ADMIN</span> GUIDE ★</div>
+    <div class="hero-sub">A practical playbook for young adults · Get your house in order</div>
+    <div class="hero-toc">
+      <a class="toc-chip" href="#s1">1 · Financial</a>
+      <a class="toc-chip" href="#s2">2 · Insurance</a>
+      <a class="toc-chip" href="#s3">3 · Legal &amp; Identity</a>
+      <a class="toc-chip" href="#s4">4 · Health</a>
+      <a class="toc-chip" href="#s5">5 · Career &amp; Education</a>
+      <a class="toc-chip" href="#s6">6 · Housing</a>
+      <a class="toc-chip" href="#s7">7 · Digital Life</a>
+      <a class="toc-chip" href="#s8">8 · Relationships &amp; Estate</a>
+    </div>
+  </div>
+
+  <!-- 1 Financial -->
+  <div class="section s1" id="s1">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title">Financial</div>
+    </div>
+    <div class="items">
+      <div class="item">
+        <div class="item-num">1</div>
+        <div class="item-body">
+          <div class="item-title">Build a clear picture of your money</div>
+          <div class="item-desc">Open a spreadsheet or use a budgeting app (YNAB, Monarch Money, or a Google Sheet). List every source of income and every recurring expense. Categorize spending into fixed (rent, insurance, subscriptions) and variable (food, entertainment, gas). Do this once, then review monthly.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">2</div>
+        <div class="item-body">
+          <div class="item-title">Set up your accounts intentionally</div>
+          <div class="item-desc">You want at minimum: a checking account for daily spending, a high-yield savings account (HYSA) for your emergency fund, and a retirement account. If your employer offers a 401(k) with a match, contribute at least enough to get the full match — that's free money. Open a Roth IRA if you're eligible.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">3</div>
+        <div class="item-body">
+          <div class="item-title">Build your emergency fund</div>
+          <div class="item-desc">Target 3–6 months of essential expenses. Keep this money in your HYSA, separate from your checking account. Automate a transfer to it each payday, even if it's a small amount.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">4</div>
+        <div class="item-body">
+          <div class="item-title">Address debt strategically</div>
+          <div class="item-desc">List every debt with its balance, interest rate, and minimum payment. Prioritize high-interest debt (credit cards) using either the avalanche method (highest interest rate first) or snowball method (smallest balance first). Don't ignore low-interest debt, but don't panic about it either.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">5</div>
+        <div class="item-body">
+          <div class="item-title">Monitor your credit</div>
+          <div class="item-desc">Check your credit report for free at AnnualCreditReport.com — you're entitled to a free report from each of the three bureaus yearly. Sign up for a free credit monitoring service. Dispute any errors in writing.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">6</div>
+        <div class="item-body">
+          <div class="item-title">Set up for tax season before it arrives</div>
+          <div class="item-desc">Keep a folder for tax documents: W-2s, 1099s, receipts for deductible expenses, proof of student loan interest. If you have side income, track quarterly estimated tax payments. File by April 15 or request an extension.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 Insurance -->
+  <div class="section s2" id="s2">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title">Insurance</div>
+    </div>
+    <div class="items">
+      <div class="item">
+        <div class="item-num">1</div>
+        <div class="item-body">
+          <div class="item-title">Inventory what you have</div>
+          <div class="item-desc">Write down every insurance policy you hold: health, dental, vision, auto, renter's/homeowner's. For each one, note the provider, monthly premium, deductible, and coverage limits. Keep policy numbers somewhere accessible.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">2</div>
+        <div class="item-body">
+          <div class="item-title">Understand your health insurance</div>
+          <div class="item-desc">Know your deductible (what you pay before insurance kicks in), your out-of-pocket maximum (the most you'll pay in a year), and your copay/coinsurance. Know which doctors are in-network. Set a calendar reminder to review during open enrollment each fall.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">3</div>
+        <div class="item-body">
+          <div class="item-title">Get renter's insurance if you rent</div>
+          <div class="item-desc">Renter's insurance typically costs $10–$20/month and covers your belongings against theft, fire, and water damage. It also includes personal liability coverage. Many providers (Lemonade, State Farm) let you set it up online in under 10 minutes.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">4</div>
+        <div class="item-body">
+          <div class="item-title">Review coverage annually</div>
+          <div class="item-desc">Life changes — a new car, a new apartment, a new job — mean your insurance needs change too. Set a yearly reminder to review all policies. Compare quotes every couple of years; loyalty doesn't always pay with insurance companies.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 Legal & Identity -->
+  <div class="section s3" id="s3">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title">Legal &amp; Identity</div>
+    </div>
+    <div class="items">
+      <div class="item">
+        <div class="item-num">1</div>
+        <div class="item-body">
+          <div class="item-title">Gather your critical documents</div>
+          <div class="item-desc">Locate and consolidate your: birth certificate, Social Security card, passport, professional licenses, vehicle titles, lease agreements, and insurance policies. Store originals in a fireproof box. Scan digital copies and store them in an encrypted folder or secure cloud storage.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">2</div>
+        <div class="item-body">
+          <div class="item-title">Keep IDs current</div>
+          <div class="item-desc">Note expiration dates on your driver's license and passport. Set reminders 3 months before each expires — passport renewal can take 8–12 weeks. Many states allow online license renewals.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">3</div>
+        <div class="item-body">
+          <div class="item-title">Designate beneficiaries</div>
+          <div class="item-desc">On every financial account that allows it (retirement accounts, life insurance, some bank accounts), designate a beneficiary. This overrides your will. Review these any time your life circumstances change significantly — marriage, divorce, death of a loved one.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">4</div>
+        <div class="item-body">
+          <div class="item-title">Create a basic will or advance directive</div>
+          <div class="item-desc">A simple will can be created affordably through services like Trust &amp; Will or Willing. At minimum, specify who gets your assets and who would make medical decisions for you if incapacitated (healthcare proxy or power of attorney).</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">5</div>
+        <div class="item-body">
+          <div class="item-title">Read contracts before you sign</div>
+          <div class="item-desc">Develop the habit of actually reading leases, employment agreements, and service contracts before signing. Flag anything unclear and ask questions. Keep a copy of every signed contract in your documents folder.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 Health -->
+  <div class="section s4" id="s4">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title">Health</div>
+    </div>
+    <div class="items">
+      <div class="item">
+        <div class="item-num">1</div>
+        <div class="item-body">
+          <div class="item-title">Create a personal health record</div>
+          <div class="item-desc">Keep a simple document with your: blood type, known allergies, current medications and dosages, chronic conditions, immunization history, and past surgeries. Share it with your primary care doctor and keep a copy somewhere your emergency contacts can find it.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">2</div>
+        <div class="item-body">
+          <div class="item-title">Schedule preventive appointments</div>
+          <div class="item-desc">Set recurring calendar reminders for annual physicals, dental cleanings (twice a year is better), and eye exams every 1–2 years. Many of these are covered fully under preventive care on most insurance plans.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">3</div>
+        <div class="item-body">
+          <div class="item-title">Establish a primary care doctor</div>
+          <div class="item-desc">If you don't have one, find a PCP in your insurance network and make an introductory appointment. Having an established relationship with a doctor means you're not starting from scratch every time something comes up.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">4</div>
+        <div class="item-body">
+          <div class="item-title">Update emergency contacts everywhere</div>
+          <div class="item-desc">Make sure emergency contacts are updated in your phone, at your workplace, with your doctor, and on relevant accounts. Confirm that a trusted person knows where your important documents are and can access them in an emergency.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">5</div>
+        <div class="item-body">
+          <div class="item-title">Know your mental health resources</div>
+          <div class="item-desc">Identify at least one mental health resource before you need it — your insurance's mental health line, a therapist directory (Psychology Today, Open Path), or an employee assistance program. Knowing where to go is a meaningful step.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 Career & Education -->
+  <div class="section s5" id="s5">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title">Career &amp; Education</div>
+    </div>
+    <div class="items">
+      <div class="item">
+        <div class="item-num">1</div>
+        <div class="item-body">
+          <div class="item-title">Keep your resume updated</div>
+          <div class="item-desc">After any significant project, certification, promotion, or new skill — update your resume. Keep a "brag document" too: a running log of accomplishments and wins you can draw from later. Don't wait until you're job hunting.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">2</div>
+        <div class="item-body">
+          <div class="item-title">Understand your pay stub</div>
+          <div class="item-desc">Learn what FICA, federal/state withholding, and pre-tax deductions (health insurance, 401k contributions) mean. Use the IRS withholding calculator once a year to verify you're not dramatically over- or under-withholding.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">3</div>
+        <div class="item-body">
+          <div class="item-title">Track licenses and certifications</div>
+          <div class="item-desc">As an electrician, your license renewal timeline is critical. Set reminders well in advance for every credential: state license, specialty endorsements, OSHA certifications, first aid/CPR. Losing a license through lapse is an avoidable disaster.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">4</div>
+        <div class="item-body">
+          <div class="item-title">Know your full benefits package</div>
+          <div class="item-desc">Read through your employer's benefits guide once a year. Many people leave money on the table with HSA contributions, professional development stipends, or wellness reimbursements they didn't know existed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 Housing -->
+  <div class="section s6" id="s6">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-title">Housing</div>
+    </div>
+    <div class="items">
+      <div class="item">
+        <div class="item-num">1</div>
+        <div class="item-body">
+          <div class="item-title">Know your lease inside and out</div>
+          <div class="item-desc">When you sign or renew a lease, read it fully. Note: the exact rent amount, due date, notice required to move out, rules around subletting, and who is responsible for what maintenance. Keep a copy of the signed lease in your documents folder.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">2</div>
+        <div class="item-body">
+          <div class="item-title">Track important dates</div>
+          <div class="item-desc">Set calendar reminders for: when your lease is up for renewal (usually 60 days' notice to move out), when renter's insurance renews, and any scheduled building inspections.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">3</div>
+        <div class="item-body">
+          <div class="item-title">Document your space</div>
+          <div class="item-desc">When you move in, take dated photos or video of every room, noting any existing damage. This protects you against wrongful deductions from your security deposit. Send a copy to your landlord in writing so there's a timestamp.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">4</div>
+        <div class="item-body">
+          <div class="item-title">Set up a maintenance routine</div>
+          <div class="item-desc">Set a seasonal reminder to: replace HVAC filters, test smoke and carbon monoxide detectors (and replace batteries), check for leaks under sinks, and clean dryer vents. Report any landlord-responsibility issues in writing, not just verbally.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">5</div>
+        <div class="item-body">
+          <div class="item-title">Know your rights</div>
+          <div class="item-desc">California has some of the strongest tenant protections in the country, including limits on security deposit amounts and habitability requirements. Knowing these before a dispute arises puts you in a far better position.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 Digital Life -->
+  <div class="section s7" id="s7">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <div class="section-title">Digital Life</div>
+    </div>
+    <div class="items">
+      <div class="item">
+        <div class="item-num">1</div>
+        <div class="item-body">
+          <div class="item-title">Set up a password manager</div>
+          <div class="item-desc">Choose one password manager (Bitwarden is free and excellent; 1Password is great paid). Migrate your most important accounts first: email, banking, government, insurance. Use it to generate unique, strong passwords for each. This is one of the highest-leverage security moves you can make.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">2</div>
+        <div class="item-body">
+          <div class="item-title">Enable two-factor authentication</div>
+          <div class="item-desc">Prioritize 2FA on: email, bank accounts, retirement accounts, your password manager, and any account tied to your identity. Use an authenticator app (Authy, Google Authenticator) rather than SMS when possible — it's meaningfully more secure.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">3</div>
+        <div class="item-body">
+          <div class="item-title">Back up important data</div>
+          <div class="item-desc">Follow the 3-2-1 rule: 3 copies of important data, on 2 different media, with 1 offsite. In practice: files on your computer, backed up to an external hard drive, and synced to cloud storage (iCloud, Google Drive, Backblaze). Set this up once and automate it.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">4</div>
+        <div class="item-body">
+          <div class="item-title">Audit your subscriptions</div>
+          <div class="item-desc">Go through your bank and credit card statements looking for recurring charges. Cancel anything you're not actively using. Use a tool like Rocket Money or a spreadsheet. People routinely discover they're paying for 3–5 things they forgot about.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">5</div>
+        <div class="item-body">
+          <div class="item-title">Clean up your digital footprint periodically</div>
+          <div class="item-desc">Once a year: update email recovery options, review app permissions on your phone, check what apps have access to your Google or Apple account, and delete old accounts you no longer use. Tools like JustDeleteMe.xyz list how to delete accounts from hundreds of services.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8 Relationships & Estate -->
+  <div class="section s8" id="s8">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <div class="section-title">Relationships &amp; Estate</div>
+    </div>
+    <div class="items">
+      <div class="item">
+        <div class="item-num">1</div>
+        <div class="item-body">
+          <div class="item-title">Make sure the right people know the right things</div>
+          <div class="item-desc">At minimum, one trusted person should know: where your important documents are, what financial accounts exist and how to access them, and who to contact (doctor, employer, bank) in an emergency. Write a one-page "in case of emergency" document and share it with this person.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">2</div>
+        <div class="item-body">
+          <div class="item-title">Designate a healthcare proxy</div>
+          <div class="item-desc">A healthcare proxy (or healthcare power of attorney) is someone legally authorized to make medical decisions for you if you can't. This is a separate, simple document from a will. Choose someone who will honor your values and have a real conversation with them about what that means.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">3</div>
+        <div class="item-body">
+          <div class="item-title">Understand digital account succession</div>
+          <div class="item-desc">Most major platforms (Google, Apple, Facebook) have a legacy contact or inactive account policy. Set these up so a trusted person can access or close your accounts if something happens to you.</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="item-num">4</div>
+        <div class="item-body">
+          <div class="item-title">Revisit everything after major life changes</div>
+          <div class="item-desc">Marriage, having children, buying a home, changing jobs, losing someone close — these are triggers to revisit beneficiaries, insurance coverage, your will, and emergency contacts. Build this review into any major life transition.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Getting Started -->
+  <div class="started" id="started">
+    <div class="section-header">
+      <div class="section-num">★</div>
+      <div class="section-title">Getting Started: A Suggested Order</div>
+    </div>
+    <table class="timeline">
+      <tr><td class="tl-label">Week 1</td><td>Create a master document folder (digital and/or physical). Locate birth certificate, SS card, and passport.</td></tr>
+      <tr><td class="tl-label">Week 2</td><td>Set up or audit your budgeting system. Know your monthly income and expenses.</td></tr>
+      <tr><td class="tl-label">Week 3</td><td>Check your insurance coverage. Get renter's insurance if you don't have it.</td></tr>
+      <tr><td class="tl-label">Week 4</td><td>Set up a password manager and enable 2FA on your most critical accounts.</td></tr>
+      <tr><td class="tl-label">Month 2</td><td>Schedule all overdue health appointments.</td></tr>
+      <tr><td class="tl-label">Month 3</td><td>Draft a simple will or advance directive. Designate beneficiaries on all accounts.</td></tr>
+      <tr class="tl-ongoing"><td class="tl-label">Ongoing</td><td>Set a recurring calendar event once a year: "Life Admin Review." Use it to check expiration dates, review coverage, audit subscriptions, and update documents.</td></tr>
+    </table>
+    <div class="motto">The goal isn't perfection. It's building systems so that life's inevitable surprises don't become emergencies.</div>
+  </div>
+
+</div>
+</body>
+</html>
