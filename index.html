@@ -7,140 +7,178 @@
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon.svg">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#e06500">
+<meta name="theme-color" content="#c87800">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Keiji's Corner">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   /*
-   * Palette — inspired by PixelDeviant:
-   *   Light gray:  #b8bec6  (bg), #cdd2d8 (surface), #e2e6ea (light surface)
-   *   Orange:      #e06500  (active/accent), #f07820 (hover)
-   *   Light blue:  #5599cc  (title accent, links, decorations)
+   * Keiji's Corner — CRT Terminal redesign
+   * Palette:
+   *   Housing:  #c2c8d0 (bg), #b0b8c2 (surface), #9aa4ae (border)
+   *   Amber:    #c87800 (primary), #e09400 (bright/active), #a06000 (shadow)
+   *   Blue:     #4488cc (accent), #66aadd (highlight), #2a5a8a (dark)
+   *   Dark:     #1e2430 (header band), #2a3040 (deep)
    */
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --housing:    #080a0e;
+    --surface:    #0e1218;
+    --border:     #1e2840;
+    --border-dk:  #141a28;
+    --amber:      #e06500;
+    --amber-br:   #f07820;
+    --amber-dim:  #8a3c00;
+    --amber-glow: rgba(224, 101, 0, 0.35);
+    --blue:       #4488cc;
+    --blue-br:    #66aadd;
+    --blue-dim:   #2a5a8a;
+    --dark:       #040608;
+    --dark2:      #0a0c12;
+    --text:       #e06500;
+    --text-dim:   #4488cc;
+  }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; overflow: hidden; }
 
   body {
-    background: #b8bec6;
-    font-family: 'Courier New', monospace;
+    background: var(--housing);
+    font-family: 'Courier New', Courier, monospace;
     display: flex;
     flex-direction: column;
     height: 100vh;
-    height: 100dvh; /* dynamic viewport height — excludes Android browser chrome */
+    height: 100dvh;
   }
 
-  /* ── HEADER ─────────────────────────────────────── */
+  /* ── SCANLINE OVERLAY ────────────────────────────── */
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.04) 3px,
+      rgba(0, 0, 0, 0.04) 4px
+    );
+  }
+
+  /* ── HEADER ──────────────────────────────────────── */
   .site-header {
-    background: #8e97a2;
-    border-bottom: 3px solid #e06500;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    background: var(--dark);
+    border-bottom: 3px solid var(--amber);
+    padding: 0;
     flex-shrink: 0;
     position: relative;
     overflow: hidden;
   }
 
-  /* pixel-grid texture on header */
-  .site-header::before {
+  .site-header::after {
     content: '';
     position: absolute;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
-    background-size: 14px 14px;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.12) 2px,
+      rgba(0, 0, 0, 0.12) 3px
+    );
     pointer-events: none;
+    z-index: 2;
   }
 
-  .header-left { position: relative; z-index: 1; }
+  .header-topline {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber-dim), var(--amber), var(--amber-br), var(--amber), var(--amber-dim), transparent);
+    flex-shrink: 0;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .header-left { display: flex; flex-direction: column; gap: 3px; }
 
   .site-title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
-    letter-spacing: 5px;
+    letter-spacing: 6px;
     text-transform: uppercase;
-    color: #f0f2f4;
-    text-shadow: 2px 2px 0 #3a4450, 3px 3px 0 #2a3340;
+    color: var(--amber-br);
+    text-shadow:
+      0 0 6px var(--amber-glow),
+      0 0 14px var(--amber-glow),
+      1px 1px 0 var(--amber-dim);
     line-height: 1;
   }
 
-  .site-title .highlight { color: #e06500; text-shadow: 2px 2px 0 #7a3000, 3px 3px 0 #5a2000; }
+  .site-title .kc { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,0.3); }
 
   .site-subtitle {
-    color: #5599cc;
-    font-size: 9px;
+    color: var(--blue);
+    font-size: 8px;
     letter-spacing: 4px;
     text-transform: uppercase;
-    margin-top: 5px;
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+    text-shadow: 0 0 6px rgba(68, 136, 204, 0.4);
   }
 
-  /* corner decoration boxes */
-  .corner-deco {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    width: 8px; height: 8px;
-    border-top: 2px solid #5599cc;
-    border-left: 2px solid #5599cc;
-    pointer-events: none;
+  .cursor-blink {
+    display: inline-block;
+    color: var(--amber-br);
+    animation: blink 1.1s step-end infinite;
   }
-  .corner-deco-br {
-    top: auto; left: auto;
-    bottom: 6px; right: 6px;
-    border-top: none; border-left: none;
-    border-bottom: 2px solid #5599cc;
-    border-right: 2px solid #5599cc;
-  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-  /* ── CHARACTER AREA ─────────────────────────────── */
+  /* ── CHARACTER AREA ──────────────────────────────── */
   .char-area {
     display: flex;
     align-items: flex-end;
-    gap: 14px;
+    gap: 12px;
     position: relative;
-    z-index: 1;
+    z-index: 3;
   }
 
   .speech-bubble {
-    background: #e06500;
-    color: #ffffff;
-    font-size: 9px;
+    background: transparent;
+    border: 1px solid var(--amber);
+    color: var(--amber-br);
+    font-size: 8px;
     font-weight: bold;
-    padding: 7px 10px;
+    padding: 6px 10px;
     letter-spacing: 1px;
     text-transform: uppercase;
-    line-height: 1.5;
-    text-align: center;
+    line-height: 1.6;
+    text-align: right;
     position: relative;
-    border: 2px solid #8a3c00;
-    box-shadow: 2px 2px 0 #8a3c00;
-    max-width: 148px;
+    text-shadow: 0 0 6px var(--amber-glow);
+    max-width: 140px;
   }
 
   .speech-bubble::after {
     content: '';
     position: absolute;
     top: 50%;
-    right: -11px;
+    right: -8px;
     transform: translateY(-50%);
-    border-left: 9px solid #e06500;
-    border-top: 7px solid transparent;
-    border-bottom: 7px solid transparent;
+    border-left: 7px solid var(--amber);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
   }
 
   .char-frame {
-    border: 2px solid #6a7480;
-    box-shadow:
-      0 0 0 1px #4a5560,
-      2px 2px 8px rgba(0,0,0,0.35);
-    background: #8e97a2;
+    border: 1px solid var(--amber-dim);
+    box-shadow: 0 0 8px var(--amber-glow), 0 0 2px var(--amber-dim);
+    background: var(--dark2);
     padding: 0;
     line-height: 0;
   }
@@ -151,58 +189,74 @@
     display: block;
   }
 
+  .sprites-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+  }
+
   /* ── NAV BAR ─────────────────────────────────────── */
   .nav-bar {
-    background: #9aa2aa;
-    border-bottom: 2px solid #707880;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
     display: flex;
     align-items: stretch;
     flex-shrink: 0;
-    padding: 0 4px;
+    padding: 0;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    position: relative;
   }
   .nav-bar::-webkit-scrollbar { display: none; }
 
+  .nav-label {
+    font-size: 7px;
+    letter-spacing: 3px;
+    color: var(--border);
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
   .nav-tab {
-    padding: 8px 22px;
-    color: #3a4450;
+    padding: 7px 18px;
+    color: var(--text-dim);
     font-family: 'Courier New', monospace;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     cursor: pointer;
     border: none;
     background: none;
-    border-right: 1px solid #808890;
+    border-right: 1px solid var(--border);
     transition: background 0.1s, color 0.1s;
     position: relative;
     white-space: nowrap;
     flex-shrink: 0;
   }
 
-  .nav-tab:first-child { border-left: 1px solid #808890; margin-left: 4px; }
-
-  .nav-tab:hover { background: #adb5bc; color: #1a2430; }
-
-  .nav-tab.active {
-    background: #e06500;
-    color: #ffffff;
-    border-right-color: #8a3c00;
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+  .nav-tab:hover {
+    background: rgba(200,120,0,0.08);
+    color: var(--amber);
   }
 
-  .nav-tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-top: 5px solid #e06500;
+  .nav-tab.active {
+    background: rgba(200,120,0,0.12);
+    color: var(--amber-br);
+    text-shadow: 0 0 6px var(--amber-glow);
+    border-bottom: 3px solid var(--amber-br);
+  }
+
+  .nav-tab.active::before {
+    content: '▶ ';
+    color: var(--amber-br);
   }
 
   /* ── CONTENT ─────────────────────────────────────── */
@@ -210,6 +264,7 @@
     flex: 1;
     position: relative;
     overflow: hidden;
+    background: var(--housing);
   }
 
   .tab-panel {
@@ -235,12 +290,12 @@
 
   /* ── FOOTER ──────────────────────────────────────── */
   .site-footer {
-    background: #707880;
-    border-top: 2px solid #505860;
-    padding: 4px 20px;
+    background: var(--dark2);
+    border-top: 2px solid var(--amber-dim);
+    padding: 4px 16px;
     font-size: 8px;
-    color: #c8d0d8;
-    letter-spacing: 3px;
+    color: var(--amber-dim);
+    letter-spacing: 2px;
     text-transform: uppercase;
     display: flex;
     justify-content: space-between;
@@ -249,78 +304,96 @@
     gap: 8px;
   }
 
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--border);
+  }
+
+  .footer-sep { color: var(--border-dk); }
+
+  .footer-clock {
+    color: var(--amber);
+    text-shadow: 0 0 4px var(--amber-glow);
+    font-weight: bold;
+  }
+
+  .footer-status { color: var(--blue); text-shadow: 0 0 4px rgba(68,136,204,0.3); }
+
   .footer-btn {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.18);
-    color: #c8d0d8;
+    background: transparent;
+    border: 1px solid var(--border-dk);
+    color: var(--border);
     font-family: 'Courier New', monospace;
     font-size: 8px;
     font-weight: bold;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    padding: 3px 9px;
+    padding: 2px 8px;
     cursor: pointer;
-    border-radius: 2px;
-    transition: background 0.15s, color 0.15s;
+    transition: all 0.15s;
     white-space: nowrap;
   }
-  .footer-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
-  .footer-btn.restore:hover { background: rgba(224,101,0,0.5); border-color: #e06500; color: #fff; }
-
-  .footer-backup { display: flex; align-items: center; gap: 6px; }
+  .footer-btn:hover {
+    border-color: var(--amber);
+    color: var(--amber-br);
+    text-shadow: 0 0 4px var(--amber-glow);
+  }
+  .footer-btn.restore:hover {
+    border-color: var(--blue);
+    color: var(--blue-br);
+    text-shadow: 0 0 4px rgba(68,136,204,0.3);
+  }
 
   .footer-blink {
-    color: #5599cc;
-    animation: fblink 1.4s step-end infinite;
+    color: var(--amber);
+    animation: blink 1.4s step-end infinite;
+    text-shadow: 0 0 6px var(--amber-glow);
   }
 
-  @keyframes fblink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0; }
-  }
-
-  /* ── SPRITE CANVAS ───────────────────────────────── */
-  .sprites-layer {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-  }
+  .footer-right { display: flex; align-items: center; gap: 8px; }
 </style>
 </head>
 <body>
 
+<div class="header-topline"></div>
+
 <div class="site-header">
   <div class="sprites-layer" id="sprites-layer"></div>
-  <div class="corner-deco"></div>
-  <div class="corner-deco corner-deco-br"></div>
-
-  <div class="header-left">
-    <div class="site-title">★ KEIJI'S <span class="highlight">CORNER</span> ★</div>
-    <div class="site-subtitle">Personal Productivity Hub &nbsp;·&nbsp; Est. 2026</div>
-  </div>
-
-  <div class="char-area">
-    <div class="speech-bubble">TRAIN HARD.<br>STAY FOCUSED.<br>GET AFTER IT.</div>
-    <div class="char-frame">
-      <canvas id="char-canvas"></canvas>
+  <div class="header-inner">
+    <div class="header-left">
+      <div class="site-title">
+        <span class="kc">★ KEIJI'S </span>CORNER <span class="cursor-blink">█</span>
+      </div>
+      <div class="site-subtitle">Personal Productivity Hub &nbsp;·&nbsp; Est. 2026</div>
+    </div>
+    <div class="char-area">
+      <div class="speech-bubble">TRAIN HARD.<br>STAY FOCUSED.<br>GET AFTER IT.</div>
+      <div class="char-frame">
+        <canvas id="char-canvas"></canvas>
+      </div>
     </div>
   </div>
 </div>
 
 <div class="nav-bar">
-  <button class="nav-tab active" id="tab-dashboard"    onclick="showTab('dashboard', this)">🏠 Dashboard</button>
-  <button class="nav-tab" id="tab-calisthenics" onclick="showTab('calisthenics', this)">⚡ Calisthenics</button>
-  <button class="nav-tab" id="tab-timemgr"      onclick="showTab('timemgr', this)">⏱ Time Manager</button>
-  <button class="nav-tab" id="tab-books"         onclick="showTab('books', this)">📚 Books</button>
-  <button class="nav-tab" id="tab-mindmap"       onclick="showTab('mindmap', this)">🧠 Mind Map</button>
-  <button class="nav-tab" id="tab-curriculum"   onclick="showTab('curriculum', this)">🔬 Math/Sciences Study</button>
-  <button class="nav-tab" id="tab-electrical"   onclick="showTab('electrical', this)">⚡ Electrical Apprenticeship</button>
-  <button class="nav-tab" id="tab-lifeadmin"   onclick="showTab('lifeadmin', this)">📋 Life Admin</button>
+  <span class="nav-label">SYSTEM</span>
+  <button class="nav-tab active" id="tab-dashboard"   onclick="showTab('dashboard', this)">Dashboard</button>
+  <button class="nav-tab" id="tab-calisthenics"       onclick="showTab('calisthenics', this)">Calisthenics</button>
+  <button class="nav-tab" id="tab-timemgr"            onclick="showTab('timemgr', this)">Time Manager</button>
+  <button class="nav-tab" id="tab-books"              onclick="showTab('books', this)">Books</button>
+  <button class="nav-tab" id="tab-mindmap"            onclick="showTab('mindmap', this)">Mind Map</button>
+  <button class="nav-tab" id="tab-curriculum"         onclick="showTab('curriculum', this)">Math / Sciences</button>
+  <button class="nav-tab" id="tab-electrical"         onclick="showTab('electrical', this)">Electrical</button>
+  <button class="nav-tab" id="tab-lifeadmin"          onclick="showTab('lifeadmin', this)">Life Admin</button>
 </div>
 
 <div class="content-wrap">
+  <div class="scanlines"></div>
+  <div class="tab-panel active" id="panel-dashboard">
+    <iframe src="dashboard.html" title="Dashboard"></iframe>
+  </div>
   <div class="tab-panel" id="panel-calisthenics">
     <iframe src="calisthenics_program.html" title="Calisthenics Program"></iframe>
   </div>
@@ -336,9 +409,6 @@
   <div class="tab-panel" id="panel-electrical">
     <iframe src="electrical-apprenticeship.html" title="Electrical Apprenticeship"></iframe>
   </div>
-  <div class="tab-panel active" id="panel-dashboard">
-    <iframe src="dashboard.html" title="Dashboard"></iframe>
-  </div>
   <div class="tab-panel" id="panel-mindmap">
     <iframe src="mindmap.html" title="Mind Map"></iframe>
   </div>
@@ -348,18 +418,37 @@
 </div>
 
 <div class="site-footer">
-  <span>★ Keiji's Corner</span>
-  <span class="footer-blink">■</span>
-  <div class="footer-backup">
-    <button class="footer-btn" onclick="exportData()" title="Download all your data as a JSON backup file">💾 Backup</button>
-    <button class="footer-btn restore" onclick="importData()" title="Restore data from a backup file">📂 Restore</button>
+  <div class="footer-left">
+    <span>★ KEIJI'S CORNER</span>
+    <span class="footer-sep">|</span>
+    <span class="footer-clock" id="footer-clock">--:--:--</span>
+    <span class="footer-sep">|</span>
+    <span class="footer-status" id="footer-status">DASHBOARD — OVERVIEW</span>
+  </div>
+  <span class="footer-blink">█</span>
+  <div class="footer-right">
+    <button class="footer-btn" onclick="exportData()" title="Download all your data as a JSON backup file">[ BACKUP ]</button>
+    <button class="footer-btn restore" onclick="importData()" title="Restore data from a backup file">[ RESTORE ]</button>
   </div>
 </div>
 
 <script>
-// ── Draw 8-bit character ───────────────────────────────────────────
-const S  = 4;  // scale: each logical pixel = 4×4 real pixels
+// ── Clock ──────────────────────────────────────────────────────────
+(function() {
+  const el = document.getElementById('footer-clock');
+  function tick() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    el.textContent = `${h}:${m}:${s}`;
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
 
+// ── Draw 8-bit character ───────────────────────────────────────────
+const S  = 4;
 const __ = null;
 const H  = '#110600';
 const sk = '#efc090';
@@ -419,11 +508,9 @@ canvas.width  = cols * S;
 canvas.height = rows * S;
 const ctx = canvas.getContext('2d');
 
-// background matching the header
-ctx.fillStyle = '#8e97a2';
+ctx.fillStyle = '#1e2430';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// draw pixel art
 for (let r = 0; r < rows; r++) {
   for (let c = 0; c < cols; c++) {
     const color = px[r][c];
@@ -433,8 +520,7 @@ for (let r = 0; r < rows; r++) {
   }
 }
 
-// subtle grid overlay
-ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+ctx.strokeStyle = 'rgba(0,0,0,0.2)';
 ctx.lineWidth = 0.5;
 for (let r = 0; r <= rows; r++) {
   ctx.beginPath(); ctx.moveTo(0, r * S); ctx.lineTo(cols * S, r * S); ctx.stroke();
@@ -447,27 +533,24 @@ for (let c = 0; c <= cols; c++) {
 (function() {
   const layer  = document.getElementById('sprites-layer');
   const header = document.querySelector('.site-header');
-
-  // Pixel indices: 0=transparent 1=pale body 2=dark eye 3=body shadow
   const PALETTE = [null, 'rgba(230,248,242,0.93)', '#162420', 'rgba(185,228,212,0.86)'];
 
-  // Three sprite types, each with 2 walk frames
   const DEFS = [
-    { // Type A — standard (8w × 11h)
+    {
       frames: [
         [[0,0,1,1,1,1,0,0],[0,1,1,1,1,1,1,0],[1,1,1,1,1,1,1,1],[1,1,2,1,1,2,1,1],[1,1,1,1,1,1,1,1],[0,1,3,3,3,3,1,0],[0,0,3,3,3,3,0,0],[0,0,3,3,3,3,0,0],[0,0,1,0,0,1,0,0],[0,1,1,0,0,0,0,0],[0,1,0,0,0,0,0,0]],
         [[0,0,1,1,1,1,0,0],[0,1,1,1,1,1,1,0],[1,1,1,1,1,1,1,1],[1,1,2,1,1,2,1,1],[1,1,1,1,1,1,1,1],[0,1,3,3,3,3,1,0],[0,0,3,3,3,3,0,0],[0,0,3,3,3,3,0,0],[0,0,1,0,0,1,0,0],[0,0,0,0,0,1,1,0],[0,0,0,0,0,1,0,0]],
       ],
       scales: [2, 3, 4],
     },
-    { // Type B — small (6w × 9h)
+    {
       frames: [
         [[0,1,1,1,1,0],[1,1,1,1,1,1],[1,2,1,1,2,1],[1,1,1,1,1,1],[0,3,3,3,3,0],[0,3,3,3,3,0],[0,1,0,0,1,0],[1,1,0,0,0,0],[1,0,0,0,0,0]],
         [[0,1,1,1,1,0],[1,1,1,1,1,1],[1,2,1,1,2,1],[1,1,1,1,1,1],[0,3,3,3,3,0],[0,3,3,3,3,0],[0,1,0,0,1,0],[0,0,0,0,1,1],[0,0,0,0,1,0]],
       ],
       scales: [2, 3],
     },
-    { // Type C — big (10w × 12h)
+    {
       frames: [
         [[0,0,1,1,1,1,1,1,0,0],[0,1,1,1,1,1,1,1,1,0],[1,1,1,1,1,1,1,1,1,1],[1,1,1,2,1,1,2,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[0,1,3,3,3,3,3,3,1,0],[0,0,3,3,3,3,3,3,0,0],[0,0,3,3,3,3,3,3,0,0],[0,0,1,0,0,0,0,1,0,0],[0,1,1,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0,0]],
         [[0,0,1,1,1,1,1,1,0,0],[0,1,1,1,1,1,1,1,1,0],[1,1,1,1,1,1,1,1,1,1],[1,1,1,2,1,1,2,1,1,1],[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,1,1,1,1],[0,1,3,3,3,3,3,3,1,0],[0,0,3,3,3,3,3,3,0,0],[0,0,3,3,3,3,3,3,0,0],[0,0,1,0,0,0,0,1,0,0],[0,0,0,0,0,0,0,1,1,0],[0,0,0,0,0,0,0,1,0,0]],
@@ -476,7 +559,6 @@ for (let c = 0; c <= cols; c++) {
     },
   ];
 
-  // Bake each frame to an offscreen canvas
   function bake(grid, px) {
     const rows = grid.length, cols = grid[0].length;
     const cv = document.createElement('canvas');
@@ -492,54 +574,51 @@ for (let c = 0; c <= cols; c++) {
     return cv;
   }
 
-  // Flat list of baked variants (type × scale combos)
   const VARIANTS = [];
   for (const def of DEFS)
     for (const px of def.scales)
       VARIANTS.push({ frames: def.frames.map(f => bake(f, px)), w: def.frames[0][0].length * px, h: def.frames[0].length * px });
 
-  // Canvas
-  const canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:absolute;inset:0;pointer-events:none;image-rendering:pixelated;image-rendering:crisp-edges;';
-  layer.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
+  const cv = document.createElement('canvas');
+  cv.style.cssText = 'position:absolute;inset:0;pointer-events:none;image-rendering:pixelated;image-rendering:crisp-edges;';
+  layer.appendChild(cv);
+  const cx = cv.getContext('2d');
 
-  function resize() { canvas.width = header.offsetWidth; canvas.height = header.offsetHeight; }
+  function resize() { cv.width = header.offsetWidth; cv.height = header.offsetHeight; }
   resize();
   window.addEventListener('resize', resize);
 
-  // Spawn sprites spread across full width so belt looks continuous on load
   const N = 24;
   const sprites = Array.from({length: N}, (_, i) => {
     const v = VARIANTS[Math.floor(Math.random() * VARIANTS.length)];
     return {
       v,
-      x:     (i / N) * (canvas.width + v.w) - v.w,
+      x:     (i / N) * (cv.width + v.w) - v.w,
       speed: 0.45 + Math.random() * 0.40,
       frame: i % 2,
       tick:  Math.floor(Math.random() * 16),
-      yOff:  Math.floor(Math.random() * 3) * 3,  // slight depth variation
+      yOff:  Math.floor(Math.random() * 3) * 3,
     };
   });
 
   const FRAME_DUR = 16;
 
   function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.shadowColor = 'rgba(110,220,175,0.50)';
-    ctx.shadowBlur  = 5;
+    cx.clearRect(0, 0, cv.width, cv.height);
+    cx.shadowColor = 'rgba(200,120,0,0.30)';
+    cx.shadowBlur  = 4;
     for (const sp of sprites) {
       sp.x += sp.speed;
-      if (sp.x > canvas.width + sp.v.w) sp.x = -sp.v.w;
+      if (sp.x > cv.width + sp.v.w) sp.x = -sp.v.w;
       if (++sp.tick >= FRAME_DUR) { sp.tick = 0; sp.frame ^= 1; }
-      ctx.drawImage(sp.v.frames[sp.frame], Math.round(sp.x), canvas.height - sp.v.h - sp.yOff);
+      cx.drawImage(sp.v.frames[sp.frame], Math.round(sp.x), cv.height - sp.v.h - sp.yOff);
     }
     requestAnimationFrame(draw);
   }
   draw();
 })();
 
-// ── Service worker (PWA install) ──────────────────────────────────
+// ── Service Worker ─────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/keijis-corner/sw.js');
@@ -547,11 +626,23 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── Tab switching ──────────────────────────────────────────────────
+const statusLabels = {
+  dashboard:    'DASHBOARD — OVERVIEW',
+  calisthenics: 'CALISTHENICS — TRAINING PROGRAM',
+  timemgr:      'TIME MANAGER — SCHEDULE',
+  books:        'BOOK TRACKER — READING LOG',
+  mindmap:      'MIND MAP — KNOWLEDGE GRAPH',
+  curriculum:   'MATH / SCIENCES — STUDY PLAN',
+  electrical:   'ELECTRICAL — APPRENTICESHIP TRACKER',
+  lifeadmin:    'LIFE ADMIN — TASKS & SYSTEMS',
+};
+
 function showTab(name, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   btn.classList.add('active');
+  document.getElementById('footer-status').textContent = statusLabels[name] || 'READY';
 }
 
 // ── Data backup / restore ──────────────────────────────────────────
@@ -566,7 +657,7 @@ function exportData() {
   const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
-  a.href     = url;
+  a.href = url;
   a.download = `keijis-corner-${new Date().toISOString().slice(0,10)}.json`;
   document.body.appendChild(a);
   a.click();
@@ -585,17 +676,15 @@ function importData() {
     reader.onload = ev => {
       try {
         const parsed = JSON.parse(ev.target.result);
-        // Support both wrapped {data:{}} format and bare {key:value} format
         const src = parsed._version ? parsed.data : parsed;
         let count = 0;
         DATA_KEYS.forEach(k => {
           if (src[k] !== undefined) { localStorage.setItem(k, src[k]); count++; }
         });
         if (count === 0) { alert('No recognisable data found in this file.'); return; }
-        alert(`✓ Restored ${count} data store(s). Reloading tabs…`);
-        // Refresh all iframes so they pick up the restored data
+        alert(`Restored ${count} data store(s). Reloading tabs…`);
         document.querySelectorAll('iframe').forEach(f => { f.src = f.src; });
-      } catch { alert('Could not read the file — make sure it is a valid Keiji\'s Corner backup.'); }
+      } catch { alert("Could not read the file — make sure it is a valid Keiji's Corner backup."); }
     };
     reader.readAsText(file);
   };
