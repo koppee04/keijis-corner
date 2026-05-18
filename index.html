@@ -44,12 +44,23 @@
   html, body { height: 100%; overflow: hidden; }
 
   body {
-    background: var(--housing);
+    background: #020306;
     font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .site-wrap {
+    width: 100%;
+    max-width: 1200px;
     display: flex;
     flex-direction: column;
     height: 100vh;
     height: 100dvh;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
   }
 
   /* ── SCANLINE OVERLAY ────────────────────────────── */
@@ -356,6 +367,7 @@
 </style>
 </head>
 <body>
+<div class="site-wrap">
 
 <div class="header-topline"></div>
 
@@ -691,5 +703,6 @@ function importData() {
   input.click();
 }
 </script>
+</div><!-- /.site-wrap -->
 </body>
 </html>
