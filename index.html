@@ -113,7 +113,49 @@
     color: var(--red-br);
     animation: blink 1.1s step-end infinite;
   }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  @keyframes blink    { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  @keyframes scanDown {
+    0%   { top: -1px; opacity: 0; }
+    4%   { opacity: 1; }
+    96%  { opacity: 1; }
+    100% { top: calc(100% + 1px); opacity: 0; }
+  }
+  @keyframes typeIn {
+    from { max-width: 0; }
+    to   { max-width: 280px; }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scan sweep inside the dark header */
+  .site-header::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(34,85,221,0.5) 35%, rgba(34,85,221,0.5) 65%, transparent);
+    top: -1px;
+    animation: scanDown 7s ease-in-out 1s infinite;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Subtitle types in on load */
+  .site-subtitle {
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 0;
+    animation: typeIn 1.4s steps(36, end) 0.4s both;
+  }
+
+  /* Nav bar fades up */
+  .nav-bar { animation: fadeUp 0.4s ease 0.2s both; }
+
+  /* Footer fades up with slight delay */
+  .site-footer { animation: fadeUp 0.4s ease 0.35s both; }
 
   /* ── CHARACTER AREA ──────────────────────────────── */
   .char-area {
@@ -239,7 +281,21 @@
     background: var(--surface);
   }
 
-  .scanlines { display: none; }
+  /* Static CRT scan line texture over content area */
+  .scanlines {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.022) 2px,
+      rgba(0,0,0,0.022) 3px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
 
   .tab-panel {
     position: absolute;
@@ -247,6 +303,7 @@
     opacity: 0;
     pointer-events: none;
     z-index: 0;
+    transition: opacity 0.18s ease;
   }
 
   .tab-panel.active {
