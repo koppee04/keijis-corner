@@ -150,6 +150,14 @@
 
   .session-selector { display: none; }
 
+  .workout-timer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; gap: 10px; }
+  .workout-elapsed { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .workout-elapsed-time { font-size: 1.35rem; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+  .workout-timer-controls { display: flex; gap: 6px; }
+  .wt-btn { padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); cursor: pointer; font-size: 0.7rem; font-weight: 600; transition: all 0.15s; }
+  .wt-btn:hover { border-color: var(--accent); color: var(--text); }
+  .wt-btn.running { color: var(--accent2); border-color: rgba(204,0,0,0.3); }
+
   .cal-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 16px; }
   .cal-stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
   .cal-stat .val { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
@@ -614,6 +622,10 @@ let setStates = {};
 let timerInterval = null;
 let timerSeconds = 0;
 let timerTotal = 0;
+let workoutTimerInterval = null;
+let workoutStartTime = null;
+let workoutTimerPaused = false;
+let workoutElapsedOnPause = 0;
 
 function showTab(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -710,6 +722,16 @@ function renderWorkout(key) {
     <div class="workout-header">
       <div class="workout-title">${w.title}</div>
       <div class="workout-emphasis">${w.emphasis}</div>
+      <div class="workout-timer-row">
+        <div>
+          <div class="workout-elapsed">Workout Time</div>
+          <div class="workout-elapsed-time" id="workout-elapsed-time">00:00</div>
+        </div>
+        <div class="workout-timer-controls">
+          <button class="wt-btn running" id="wt-pause-btn" onclick="toggleWorkoutTimer()">⏸ Pause</button>
+          <button class="wt-btn" onclick="resetWorkoutTimer()">↺ Reset</button>
+        </div>
+      </div>
     </div>
     <button class="log-session-btn" id="log-session-btn" onclick="toggleTodayComplete()">
       <span class="lsb-icon">📅</span>
@@ -730,6 +752,7 @@ function renderWorkout(key) {
     li.style.animationDelay = `${i * 0.05 + 0.04}s`;
   });
   updateProgress();
+  startWorkoutTimer();
 }
 
 function renderTempo(tempo) {
@@ -816,6 +839,62 @@ function formatTime(seconds) {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   return m > 0 ? `${m}:${s.toString().padStart(2,'0')}` : `${s}s`;
+}
+
+function startWorkoutTimer() {
+  if (workoutTimerInterval) clearInterval(workoutTimerInterval);
+  workoutStartTime = Date.now();
+  workoutElapsedOnPause = 0;
+  workoutTimerPaused = false;
+  workoutTimerInterval = setInterval(tickWorkoutTimer, 1000);
+  tickWorkoutTimer();
+  updateWorkoutTimerBtn();
+}
+
+function tickWorkoutTimer() {
+  const el = document.getElementById('workout-elapsed-time');
+  if (!el) return;
+  const elapsed = workoutTimerPaused
+    ? workoutElapsedOnPause
+    : workoutElapsedOnPause + Math.floor((Date.now() - workoutStartTime) / 1000);
+  const h = Math.floor(elapsed / 3600);
+  const m = Math.floor((elapsed % 3600) / 60);
+  const s = elapsed % 60;
+  el.textContent = h > 0
+    ? `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`
+    : `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+
+function toggleWorkoutTimer() {
+  if (workoutTimerPaused) {
+    workoutStartTime = Date.now();
+    workoutTimerPaused = false;
+    if (!workoutTimerInterval) workoutTimerInterval = setInterval(tickWorkoutTimer, 1000);
+  } else {
+    workoutElapsedOnPause += Math.floor((Date.now() - workoutStartTime) / 1000);
+    workoutTimerPaused = true;
+    clearInterval(workoutTimerInterval);
+    workoutTimerInterval = null;
+  }
+  updateWorkoutTimerBtn();
+}
+
+function resetWorkoutTimer() {
+  clearInterval(workoutTimerInterval);
+  workoutTimerInterval = null;
+  workoutStartTime = Date.now();
+  workoutElapsedOnPause = 0;
+  workoutTimerPaused = false;
+  workoutTimerInterval = setInterval(tickWorkoutTimer, 1000);
+  tickWorkoutTimer();
+  updateWorkoutTimerBtn();
+}
+
+function updateWorkoutTimerBtn() {
+  const btn = document.getElementById('wt-pause-btn');
+  if (!btn) return;
+  btn.textContent = workoutTimerPaused ? '▶ Resume' : '⏸ Pause';
+  btn.classList.toggle('running', !workoutTimerPaused);
 }
 
 function startTimer(seconds, exName) {
