@@ -1,71 +1,67 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <pattern id="g" width="24" height="24" patternUnits="userSpaceOnUse">
-      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+    <pattern id="scan" width="512" height="4" patternUnits="userSpaceOnUse">
+      <rect width="512" height="2" fill="rgba(255,255,255,0.03)"/>
+      <rect width="512" height="2" y="2" fill="rgba(0,0,0,0.1)"/>
     </pattern>
     <clipPath id="rnd"><rect width="512" height="512" rx="72"/></clipPath>
   </defs>
 
-  <!-- Background -->
-  <rect width="512" height="512" rx="72" fill="#2a3a50"/>
-  <!-- Pixel-grid texture -->
-  <rect width="512" height="512" fill="url(#g)" clip-path="url(#rnd)"/>
+  <!-- Background: terminal black -->
+  <rect width="512" height="512" rx="72" fill="#111111"/>
+  <!-- Horizontal scanlines -->
+  <rect width="512" height="512" fill="url(#scan)" clip-path="url(#rnd)"/>
 
-  <!-- Orange top bar -->
-  <rect x="0" y="0" width="512" height="68" fill="#e06500" clip-path="url(#rnd)"/>
-  <!-- Thin dark separator under orange bar -->
-  <rect x="0" y="64" width="512" height="4" fill="#8a3c00"/>
+  <!-- Red top stripe (matches the 4px header topline on the site) -->
+  <rect x="0" y="0" width="512" height="32" fill="#cc0000" clip-path="url(#rnd)"/>
+  <!-- Terminal ">" prompt in the stripe -->
+  <text x="18" y="24" font-family="monospace" font-size="20" font-weight="bold"
+        fill="rgba(255,255,255,0.9)">&#62;</text>
+
+  <!-- Blue bottom stripe (matches the 3px blue border-bottom of the site header) -->
+  <rect x="0" y="484" width="512" height="28" fill="#2255dd" clip-path="url(#rnd)"/>
 
   <!-- Blue corner brackets -->
   <!-- Top-left -->
-  <rect x="40" y="100" width="44" height="8" fill="#5599cc"/>
-  <rect x="40" y="100" width="8" height="44" fill="#5599cc"/>
+  <rect x="40" y="64" width="44" height="8" fill="#2255dd"/>
+  <rect x="40" y="64" width="8" height="44" fill="#2255dd"/>
   <!-- Bottom-right -->
-  <rect x="428" y="404" width="44" height="8" fill="#5599cc"/>
-  <rect x="464" y="404" width="8" height="44" fill="#5599cc"/>
+  <rect x="428" y="444" width="44" height="8" fill="#2255dd"/>
+  <rect x="464" y="412" width="8" height="40" fill="#2255dd"/>
 
-  <!-- ────────────────────────────────────────────────
+  <!-- ─────────────────────────────────────────────────────────────────────
        Pixel-art K  ·  7 cols × 9 rows  ·  24 px/cell
-       x_start = (512 − 168) / 2 = 172
-       y_start = 68 + (444 − 216) / 2 = 68 + 114 = 182
-       Perfectly symmetric: arms reach col 6 on rows 0 and 8
-       ──────────────────────────────────────────────── -->
+       Content area: y 32–484 (452 px), K height 216 → top margin 118
+       x_start = (512 − 168) / 2 = 172   y_start = 32 + 118 = 150
+       ───────────────────────────────────────────────────────────────── -->
 
-  <!-- Row 0  (y=182): stem [0,1] + arm top [6] -->
-  <rect x="172" y="182" width="48" height="24" fill="#f0f2f4"/>
-  <rect x="316" y="182" width="24" height="24" fill="#f0f2f4"/>
+  <!-- Row 0 (y=150): stem [0,1] + arm [6] -->
+  <rect x="172" y="150" width="48" height="24" fill="#f0f2f4"/>
+  <rect x="316" y="150" width="24" height="24" fill="#f0f2f4"/>
+  <!-- Row 1 (y=174): stem [0,1] + arm [5] -->
+  <rect x="172" y="174" width="48" height="24" fill="#f0f2f4"/>
+  <rect x="292" y="174" width="24" height="24" fill="#f0f2f4"/>
+  <!-- Row 2 (y=198): stem [0,1] + arm [4] -->
+  <rect x="172" y="198" width="48" height="24" fill="#f0f2f4"/>
+  <rect x="268" y="198" width="24" height="24" fill="#f0f2f4"/>
+  <!-- Row 3 (y=222): stem [0,1] + arm [3] -->
+  <rect x="172" y="222" width="48" height="24" fill="#f0f2f4"/>
+  <rect x="244" y="222" width="24" height="24" fill="#f0f2f4"/>
+  <!-- Row 4 (y=246): spine [0,1,2] -->
+  <rect x="172" y="246" width="72" height="24" fill="#f0f2f4"/>
+  <!-- Row 5 (y=270): stem [0,1] + arm [3] -->
+  <rect x="172" y="270" width="48" height="24" fill="#f0f2f4"/>
+  <rect x="244" y="270" width="24" height="24" fill="#f0f2f4"/>
+  <!-- Row 6 (y=294): stem [0,1] + arm [4] -->
+  <rect x="172" y="294" width="48" height="24" fill="#f0f2f4"/>
+  <rect x="268" y="294" width="24" height="24" fill="#f0f2f4"/>
+  <!-- Row 7 (y=318): stem [0,1] + arm [5] -->
+  <rect x="172" y="318" width="48" height="24" fill="#f0f2f4"/>
+  <rect x="292" y="318" width="24" height="24" fill="#f0f2f4"/>
+  <!-- Row 8 (y=342): stem [0,1] + arm [6] -->
+  <rect x="172" y="342" width="48" height="24" fill="#f0f2f4"/>
+  <rect x="316" y="342" width="24" height="24" fill="#f0f2f4"/>
 
-  <!-- Row 1  (y=206): stem [0,1] + arm [5] -->
-  <rect x="172" y="206" width="48" height="24" fill="#f0f2f4"/>
-  <rect x="292" y="206" width="24" height="24" fill="#f0f2f4"/>
-
-  <!-- Row 2  (y=230): stem [0,1] + arm [4] -->
-  <rect x="172" y="230" width="48" height="24" fill="#f0f2f4"/>
-  <rect x="268" y="230" width="24" height="24" fill="#f0f2f4"/>
-
-  <!-- Row 3  (y=254): stem [0,1] + arm [3] -->
-  <rect x="172" y="254" width="48" height="24" fill="#f0f2f4"/>
-  <rect x="244" y="254" width="24" height="24" fill="#f0f2f4"/>
-
-  <!-- Row 4  (y=278): spine — stem meets arm [0,1,2] -->
-  <rect x="172" y="278" width="72" height="24" fill="#f0f2f4"/>
-
-  <!-- Row 5  (y=302): stem [0,1] + arm [3] -->
-  <rect x="172" y="302" width="48" height="24" fill="#f0f2f4"/>
-  <rect x="244" y="302" width="24" height="24" fill="#f0f2f4"/>
-
-  <!-- Row 6  (y=326): stem [0,1] + arm [4] -->
-  <rect x="172" y="326" width="48" height="24" fill="#f0f2f4"/>
-  <rect x="268" y="326" width="24" height="24" fill="#f0f2f4"/>
-
-  <!-- Row 7  (y=350): stem [0,1] + arm [5] -->
-  <rect x="172" y="350" width="48" height="24" fill="#f0f2f4"/>
-  <rect x="292" y="350" width="24" height="24" fill="#f0f2f4"/>
-
-  <!-- Row 8  (y=374): stem [0,1] + arm bottom [6] -->
-  <rect x="172" y="374" width="48" height="24" fill="#f0f2f4"/>
-  <rect x="316" y="374" width="24" height="24" fill="#f0f2f4"/>
-
-  <!-- Orange star accent (top-right of icon, in the header bar) -->
-  <text x="460" y="50" font-family="serif" font-size="38" text-anchor="middle" fill="rgba(255,255,255,0.85)">★</text>
+  <!-- Red cursor block (blinking cursor accent, below K stem) -->
+  <rect x="172" y="374" width="24" height="6" fill="#ee1111" opacity="0.9"/>
 </svg>
