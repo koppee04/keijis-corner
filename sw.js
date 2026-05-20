@@ -1,10 +1,11 @@
-const CACHE = 'keijis-corner-v4';
+const CACHE = 'keijis-corner-v5';
 
 // Only cache static assets that never change (icons)
 const STATIC = [
   '/keijis-corner/icon.svg',
   '/keijis-corner/icon-192.png',
   '/keijis-corner/icon-512.png',
+  '/keijis-corner/apple-touch-icon.png',
 ];
 
 self.addEventListener('install', e => {
